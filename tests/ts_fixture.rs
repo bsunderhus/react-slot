@@ -1,7 +1,13 @@
 use std::path::PathBuf;
-use swc_core::ecma::{transforms::testing::test_fixture, visit::as_folder};
+use swc_core::{
+    common::{chain, Mark},
+    ecma::{
+        transforms::{base::resolver, testing::test_fixture},
+        visit::as_folder,
+    },
+};
 use swc_ecma_parser::{Syntax, TsConfig};
-use swc_plugin_react_slot::*;
+use swc_plugin_react_slot::ReactSlotVisitor;
 
 #[testing::fixture("tests/fixture/**/input.tsx")]
 fn fixture_swc(input: PathBuf) {
@@ -14,8 +20,14 @@ fn fixture_swc(input: PathBuf) {
             dts: false,
             no_early_errors: true,
             disallow_ambiguous_jsx_like: true,
+            ..Default::default()
         }),
-        &|_| as_folder(ReactSlotVisitor),
+        &|_| {
+            chain!(
+                resolver(Mark::new(), Mark::new(), false),
+                as_folder(ReactSlotVisitor::new())
+            )
+        },
         &input,
         &output,
         Default::default(),

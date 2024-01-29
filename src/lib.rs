@@ -1,4 +1,5 @@
 #![feature(extract_if)]
+mod slot;
 mod visitor;
 
 use swc_core::{
@@ -10,6 +11,6 @@ pub use visitor::ReactSlotVisitor;
 
 #[plugin_transform]
 fn process_transform(mut program: Program, _: TransformPluginProgramMetadata) -> Program {
-    program.visit_mut_with(&mut ReactSlotVisitor);
+    program.visit_mut_with(&mut ReactSlotVisitor::new());
     program
 }

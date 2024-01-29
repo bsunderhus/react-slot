@@ -1,6 +1,4 @@
-<div content={{
-    children: <>content</>
-}}>
+<div content={<>content</>}>
 
   
 
