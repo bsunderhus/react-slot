@@ -1,5 +1,5 @@
 {
-  "name": "swc-plugin-react-slot",
+  "name": "@bsunderhus/swc-plugin-react-slot",
   "version": "0.0.1",
   "description": "SWC plugin to transform slot elements into properties",
   "author": "Bernardo Sunderhus <bernardo.sunderhus@gmail.com>",
