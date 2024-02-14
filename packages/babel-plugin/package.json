@@ -1,0 +1,24 @@
+{
+  "name": "@bsunderhus/babel-plugin-react-slot",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.23.3",
+    "@babel/core": "^7.23.9",
+    "@types/babel__core": "^7.20.5",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8",
+    "vite-plugin-dts": "^3.7.2",
+    "vitest": "^1.2.2"
+  },
+  "dependencies": {
+    "@babel/types": "^7.23.9"
+  }
+}

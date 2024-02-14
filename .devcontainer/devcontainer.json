@@ -1,5 +1,5 @@
 {
-  "name": "SWC Plugin",
+  "name": "react-slot",
   "build": {
     "dockerfile": "Dockerfile"
   },
@@ -7,6 +7,7 @@
     "vscode": {
       "extensions": [
         "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
         "streetsidesoftware.code-spell-checker",
         "EditorConfig.EditorConfig",
         "dbaeumer.vscode-eslint",
@@ -16,5 +17,6 @@
         "esbenp.prettier-vscode"
       ]
     }
-  }
+  },
+  "remoteUser": "root"
 }
