@@ -1,32 +1,28 @@
 import React from "react";
 import type {
-  SlotComponentMetadata,
   SlotShorthandValue,
   UnknownSlotProps,
   UnknownSlotRenderFunction,
   WithRef,
+  SlotStatus,
 } from "./types";
-import { SlotSignal } from "./signal";
-import {
-  slotRenderFunctionSymbol,
-  slotSignalSymbol,
-  slotTypeSymbol,
-} from "./constants";
+import { slotRenderFunctionSymbol, slotStatusSymbol } from "./constants";
 import { isIterable } from "./utils/isIterable";
+import { PluggedIn, UnPlugged } from "./constants";
 
 /**
  * Helper function that converts a slot shorthand or properties to a slot properties object
  * The main difference between this function and `slot` is that this function does not return the metadata required for a slot to be considered a properly renderable slot, it only converts the value to a slot properties object
  * @param value - the value of the slot, it can be a slot shorthand or a slot properties object
  */
-export function resolveShorthand<Props extends UnknownSlotProps>(
-  value: Props | UnknownSlotRenderFunction | SlotSignal | SlotShorthandValue,
+export const resolveShorthand = <Props extends UnknownSlotProps>(
+  value: Props | UnknownSlotRenderFunction | SlotStatus | SlotShorthandValue,
   defaultProps?: Partial<WithRef<Props>>
-): Props {
-  if (SlotSignal.is(value)) {
+): Props => {
+  if (value === PluggedIn || value === UnPlugged) {
     return {
       ...defaultProps,
-      [slotSignalSymbol]: value,
+      [slotStatusSymbol]: value,
       [slotRenderFunctionSymbol]: undefined,
     } as Props;
   }
@@ -34,7 +30,7 @@ export function resolveShorthand<Props extends UnknownSlotProps>(
     return {
       ...defaultProps,
       [slotRenderFunctionSymbol]: value,
-      [slotSignalSymbol]: SlotSignal.Create,
+      [slotStatusSymbol]: PluggedIn,
     } as Props;
   }
   if (
@@ -54,7 +50,7 @@ export function resolveShorthand<Props extends UnknownSlotProps>(
     return {
       ...defaultProps,
       children: value,
-      [slotSignalSymbol]: SlotSignal.Create,
+      [slotStatusSymbol]: PluggedIn,
       [slotRenderFunctionSymbol]: undefined,
     } as Props & { children: typeof value };
   }
@@ -71,7 +67,7 @@ export function resolveShorthand<Props extends UnknownSlotProps>(
   return {
     ...defaultProps,
     ...value,
-    [slotSignalSymbol]: SlotSignal.Create,
+    [slotStatusSymbol]: PluggedIn,
     [slotRenderFunctionSymbol]: undefined,
   };
-}
+};

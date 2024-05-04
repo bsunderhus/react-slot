@@ -4,25 +4,26 @@ import {
   UnknownSlotProps,
   ExtractSlotPropsAs,
   UnknownSlotRenderFunction,
+  SlotStatus,
   WithRef,
 } from "./types";
 import { resolveShorthand } from "./resolveShorthand";
-import { SlotSignal } from "./signal";
 import {
   slotRenderFunctionSymbol,
-  slotSignalSymbol,
+  slotStatusSymbol,
   slotTypeSymbol,
 } from "./constants";
+import { PluggedIn } from "./constants";
 
-export function slot<Props extends UnknownSlotProps>(
+export const createSlot = <Props extends UnknownSlotProps>(
   type: ExtractSlotPropsAs<Props>,
   value:
     | Props
     | UnknownSlotRenderFunction
     | SlotShorthandValue
-    | SlotSignal = SlotSignal.Create,
+    | SlotStatus = PluggedIn,
   defaultProps?: Partial<WithRef<Props>>
-): SlotComponentType<Props> {
+): SlotComponentType<Props> => {
   /**
    * Casting is required as SlotComponentType is a function, not an object.
    * Although SlotComponentType has a function signature, it is still just an object.
@@ -31,8 +32,8 @@ export function slot<Props extends UnknownSlotProps>(
    */
   return {
     [slotRenderFunctionSymbol]: undefined,
-    [slotSignalSymbol]: SlotSignal.Create,
+    [slotStatusSymbol]: PluggedIn,
     [slotTypeSymbol]: type,
     ...resolveShorthand(value, defaultProps),
   } as SlotComponentType<Props>;
-}
+};

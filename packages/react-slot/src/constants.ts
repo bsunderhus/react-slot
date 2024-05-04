@@ -19,6 +19,10 @@ export const slotTypeSymbol = Symbol();
 
 /**
  * @internal
- * Internal reference for the slot type
+ * Internal reference for the slot status
  */
-export const slotSignalSymbol = Symbol();
+export const slotStatusSymbol = Symbol();
+
+export const PluggedIn = Symbol();
+
+export const UnPlugged = Symbol();

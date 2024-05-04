@@ -1,10 +1,10 @@
 import { isValidElement } from "react";
 import type {
+  SlotStatus,
   SlotShorthandValue,
   UnknownSlotProps,
   UnknownSlotRenderFunction,
 } from "./types";
-import type { SlotSignal } from "./signal";
 import { isIterable } from "./utils/isIterable";
 
 /**
@@ -26,10 +26,7 @@ import { isIterable } from "./utils/isIterable";
  * })
  * ```
  */
-export function isResolvedShorthand<Props extends UnknownSlotProps>(
-  value: Props | UnknownSlotRenderFunction | SlotShorthandValue | SlotSignal
-): value is Props {
-  return (
-    typeof value === "object" && !isIterable(value) && !isValidElement(value)
-  );
-}
+export const isResolvedShorthand = <Props extends UnknownSlotProps>(
+  value: Props | UnknownSlotRenderFunction | SlotShorthandValue | SlotStatus
+): value is Props =>
+  typeof value === "object" && !isIterable(value) && !isValidElement(value);

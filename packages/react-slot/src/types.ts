@@ -1,11 +1,12 @@
-import * as React from "react";
+import type * as React from "react";
 import type {
   slotRefTypeSymbol,
   slotTypeSymbol,
   slotRenderFunctionSymbol,
-  slotSignalSymbol,
+  slotStatusSymbol,
 } from "./constants";
-import type { SlotSignal } from "./signal";
+import type { IntrinsicElementProps, IsUnion } from "./utils/helper.types";
+import type { PluggedIn, UnPlugged } from "./constants";
 
 /**
  * Minimal type for a value that can be used as the `as` prop.
@@ -32,7 +33,7 @@ export type UnknownSlotProps = {
    * @internal
    * Internal reference for the signal, it can be stripped away from types
    */
-  [slotSignalSymbol]?: SlotSignal;
+  [slotStatusSymbol]?: SlotStatus;
   /**
    * @internal
    * Internal reference for the render function, it can be stripped away from types
@@ -202,7 +203,7 @@ export type Slot<
         | WithSlotShorthandValue<WithOptionalAs<SlotProps<BaseSlotType>>>
         | SlotRenderFunction<BaseSlotType>
         | SlotProps<AlternativeSlotType>
-        | SlotSignal
+        | SlotStatus
     : never;
 
 /**
@@ -211,34 +212,37 @@ export type Slot<
  */
 export type ExtractSlotProps<SlotValue> = Exclude<
   SlotValue,
-  SlotShorthandValue | SlotSignal | SlotRenderFunction<any> | undefined
+  SlotShorthandValue | SlotStatus | SlotRenderFunction<any> | undefined
 >;
 
-/**
- * Type to declare the props of a component that uses slot discrimination based on the `as` property.
- * This type is quite similar to the {@link Slot} type, the main difference being that since we're on the component's
- * property declaration we can't use the {@link SlotShorthandValue} type, as it's not a valid type for a property.
- *
- * > __Another differences:__
- * > 1. a components props can't be `null` or `undefined` as it's not a valid type for a component's property
- * > 2. `ref` is removed from the props as it's not common to have `ref` as a property of a component (it's usually a side argument of a forwardRef component)
- */
-export type ComponentProps<
-  BaseSlotType extends UnknownSlotType,
-  AlternativeSlotType extends UnknownSlotType = never
-> =
-  // The `IsUnion` type is used to ensure that the `BaseSlotType` is not a union,
-  // as the base type will have the discrimination property (`as`) optional it can't be a union,
-  // as it would break the discrimination strategy
-  IsUnion<BaseSlotType> extends false
-    ? React.PropsWithoutRef<
-        WithOptionalAs<SlotProps<BaseSlotType>> | SlotProps<AlternativeSlotType>
-      >
-    : never;
+export namespace Slot {
+  /**
+   * Type to declare the props of a component that uses slot discrimination based on the `as` property.
+   * This type is quite similar to the {@link Slot} type, the main difference being that since we're on the component's
+   * property declaration we can't use the {@link SlotShorthandValue} type, as it's not a valid type for a property.
+   *
+   * > __Another differences:__
+   * > 1. a components props can't be `null` or `undefined` as it's not a valid type for a component's property
+   * > 2. `ref` is removed from the props as it's not common to have `ref` as a property of a component (it's usually a side argument of a forwardRef component)
+   */
+  export type Main<
+    BaseSlotType extends UnknownSlotType,
+    AlternativeSlotType extends UnknownSlotType = never
+  > =
+    // The `IsUnion` type is used to ensure that the `BaseSlotType` is not a union,
+    // as the base type will have the discrimination property (`as`) optional it can't be a union,
+    // as it would break the discrimination strategy
+    IsUnion<BaseSlotType> extends false
+      ? React.PropsWithoutRef<
+          | WithOptionalAs<SlotProps<BaseSlotType>>
+          | SlotProps<AlternativeSlotType>
+        >
+      : never;
+}
 
 /**
  * Ensures that the `as` property is optional.
- * This type is used by {@link Slot} and {@link ComponentProps}
+ * This type is used by {@link Slot} and {@link MainSlot}
  * to ensure that the `as` property is optional for the base type.
  */
 export type WithOptionalAs<Props extends UnknownSlotProps> =
@@ -270,7 +274,7 @@ export type WithRef<Props extends UnknownSlotProps> = Props &
  * but with some additional metadata that is used to determine how to render the slot.
  */
 export type SlotComponentType<Props extends UnknownSlotProps> =
-  React.ExoticComponent<React.PropsWithChildren<{}>> &
+  React.ExoticComponent<React.PropsWithChildren<WithRef<Props>>> &
     WithRef<Props> &
     SlotComponentMetadata<Props>;
 
@@ -282,7 +286,7 @@ export type SlotComponentMetadata<Props extends UnknownSlotProps> = {
   /**
    * @internal
    */
-  [slotSignalSymbol]: SlotSignal;
+  [slotStatusSymbol]: SlotStatus;
   /**
    * @internal
    */
@@ -296,89 +300,20 @@ export type ExtractSlotPropsAs<Props extends UnknownSlotProps> =
       : NonNullable<Props["as"]>
     : never;
 
-export type NoSignal<T> = Exclude<T, SlotSignal>;
-
 /**
- * -------------------------------------------------------------------------------
- * HELPER TYPES
- * -------------------------------------------------------------------------------
- */
-
-/**
- * HTML element types that are not allowed to have children.
+ * A slot status refers to the presence of a slot.
  *
- * Reference: https://developer.mozilla.org/en-US/docs/Glossary/Void_element
- */
-export type VoidIntrinsicElement =
-  | "area"
-  | "base"
-  | "br"
-  | "col"
-  | "embed"
-  | "hr"
-  | "img"
-  | "input"
-  | "link"
-  | "meta"
-  | "param"
-  | "source"
-  | "track"
-  | "wbr";
-
-/**
- * Helper type for {@link SlotProps}. Modifies `React.JSX.IntrinsicElements[Type]`:
- * Removes legacy string ref.
- * Disallows children for empty tags like 'img'.
- */
-export type IntrinsicElementProps<
-  Type extends keyof React.JSX.IntrinsicElements
-> = Type extends VoidIntrinsicElement
-  ? PropsWithoutChildren<React.PropsWithRef<React.JSX.IntrinsicElements[Type]>>
-  : React.PropsWithRef<React.JSX.IntrinsicElements[Type]>;
-
-/**
- * Removes the 'children' prop from the given Props type.
- */
-export type PropsWithoutChildren<P> = "children" extends keyof P
-  ? DistributiveOmit<P, "children">
-  : P;
-
-/**
- * Helper type that works similar to Omit,
- * but when modifying an union type it will distribute the omission to all the union members.
+ * If a slot is plugged in it means that it'll be render
+ * while an unplugged slot will not be rendered.
  *
- * See [distributive conditional types](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types) for more information
+ * > Note: in the context of electrical systems plugged in and unplugged are terms used to describe the connection between a plug and an outlet
  */
-// Traditional Omit is basically equivalent to => Pick<T, Exclude<keyof T, K>>
-//
-// let's say we have Omit<{ a: string } | { b: string }, 'a'>
-// equivalent to: Pick<{ a: string } | { b: string }, Exclude<keyof ({ a: string } | { b: string }), 'a'>>
-// The expected result would be {} | { b: string }, the omission of 'a' from all the union members,
-// but keyof ({ a: string } | { b: string }) is never as they don't share common keys
-// so  Exclude<never, 'a'> is never,
-// and Pick<{ a: string } | { b: string }, never> is {}.
-//
-// With DistributiveOmit on the other hand it becomes like this:
-// DistributiveOmit<{ a: string } | { b: string }, 'a'>
-// equivalent to: Omit<{ a: string }, 'a'> | Omit<{ b: string }, 'a'>
-// Since every single Omit clause in this case is being applied to a single union member there's no conflicts on keyof evaluation and in the second clause Omit<{ b: string }, 'a'> becomes { b: string },
-// so the result is {} | { b: string }, as expected.
-export type DistributiveOmit<T, K extends keyof any> = T extends any
-  ? Omit<T, K>
-  : T;
+export type SlotStatus = typeof PluggedIn | typeof UnPlugged;
 
 /**
- * Helper type that converts an union to an intersection.
- * It takes advantage of the contravariant behavior of function parameters to distribute the union over the intersection.
- * > The contravariant equivalent of an union is an intersection.
+ * Helper type that creates a slot that cannot receive Unplugged as a valid value.
+ * This removes the possibility of opting-out of a slot.
+ *
+ * > Note: In the context of electrical systems a Lock-in plug, is a plug that should never be unplugged from an outlet.
  */
-export type UnionToIntersection<U> = (
-  U extends any ? (x: U) => void : never
-) extends (x: infer I) => void
-  ? I
-  : never;
-
-/**
- * Helper type that checks if a type is an union.
- */
-export type IsUnion<T> = [T] extends [UnionToIntersection<T>] ? false : true;
+export type LockedIn<Value> = Exclude<Value, typeof UnPlugged>;

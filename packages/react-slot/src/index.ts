@@ -1,13 +1,11 @@
 export type {
   Slot,
   SlotProps,
-  ComponentProps,
   SlotShorthandValue,
   UnknownSlotProps,
   UnknownSlotType,
-  IntrinsicElementProps,
   WithSlotShorthandValue,
-  NoSignal,
+  SlotStatus as SlotConnection,
 } from "./types";
 
 export { forwardRef } from "./forwardRef";
@@ -17,6 +15,6 @@ export { isResolvedShorthand } from "./isResolvedShorthand";
 
 export { resolveShorthand } from "./resolveShorthand";
 
-export { slot } from "./slot";
+export { createSlot } from "./createSlot";
 
-export { SlotSignal } from "./signal";
+export { UnPlugged, PluggedIn } from "./constants";
