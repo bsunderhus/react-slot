@@ -1,31 +1,38 @@
 import * as React from "react";
-import type { LockedIn, Slot } from "./types";
+import { Plug, PlugProps } from "./types";
 import { forwardRef } from "./forwardRef";
-import { createSlot } from "./createSlot";
-import { UnPlugged } from "./constants";
+import { outlet } from "./outlet";
+import { type LockedIn, OutletStatus } from "./OutletStatus";
 
-type ButtonProps = Slot.Main<"button", "a"> & {
-  icon?: Slot<"i", "span">;
-  image?: Slot<"img">;
-  wrapper?: LockedIn<Slot<"div">>;
+type ButtonProps = PlugProps<"button", "a"> & {
+  icon?: Plug<"i", "span">;
+  image?: Plug<"img">;
+  wrapper?: LockedIn<Plug<"div">>;
 };
 
 export const Button = forwardRef<ButtonProps>((props, ref) => {
-  const { icon, image, wrapper, ...rest } = props;
+  const {
+    icon = OutletStatus.PluggedIn,
+    image = OutletStatus.UnPlugged,
+    wrapper = OutletStatus.PluggedIn,
+    ...rest
+  } = props;
 
-  const Root = createSlot("button", rest);
+  const Root = outlet.lockedIn("button", rest);
 
-  const Wrapper = createSlot("div", wrapper);
+  const Wrapper = outlet.lockedIn("div", wrapper);
 
-  const Icon = createSlot("i", icon, { children: "someIcon" });
+  const Icon = outlet("i", icon, {
+    children: "someIcon",
+  });
 
-  const Image = createSlot("img", image ?? UnPlugged);
+  const Image = outlet("img", image);
 
   return (
     <Root ref={ref}>
       <Icon />
       <Image />
-      <Wrapper>{Root.children}</Wrapper>
+      <Wrapper>{Root.props.children}</Wrapper>
     </Root>
   );
 });
@@ -46,7 +53,7 @@ const handleClickCustom = (s: string) => {};
   onClick={handleClickButton}
   ref={buttonRef}
   // @ts-expect-error - wrapper cannot be unplugged
-  wrapper={UnPlugged}
+  wrapper={unPluggedStatusSymbol}
 />;
 // @ts-expect-error - requires a button handler
 <Button onClick={handleClickAnchor} ref={aRef} />;

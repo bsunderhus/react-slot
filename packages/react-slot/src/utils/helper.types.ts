@@ -1,3 +1,5 @@
+import type * as React from "react";
+
 /**
  * -------------------------------------------------------------------------------
  * HELPER TYPES
@@ -26,7 +28,7 @@ export type VoidIntrinsicElement =
   | "wbr";
 
 /**
- * Helper type for {@link SlotProps}. Modifies `React.JSX.IntrinsicElements[Type]`:
+ * Helper type for {@link PlugProps}. Modifies `React.JSX.IntrinsicElements[Type]`:
  * Removes legacy string ref.
  * Disallows children for empty tags like 'img'.
  */

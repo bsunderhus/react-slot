@@ -1,6 +1,9 @@
 import * as React from "react";
-import { slotRefTypeSymbol } from "./constants";
-import type { WithRef, RefFromSlotProps, UnknownSlotProps } from "./types";
+import type {
+  PlugPropsWithRef,
+  UnknownPlugProps,
+  RefFromPlugProps,
+} from "./types";
 
 /**
  * Equivalent to `React.ForwardRefExoticComponent`
@@ -11,8 +14,10 @@ import type { WithRef, RefFromSlotProps, UnknownSlotProps } from "./types";
  *
  * This type fixes this issue.
  */
-export type ForwardRefComponent<Props extends UnknownSlotProps> =
-  React.NamedExoticComponent<Props extends any ? WithRef<Props> : never>;
+export type ForwardRefComponent<Props extends UnknownPlugProps> =
+  React.NamedExoticComponent<
+    Props extends any ? PlugPropsWithRef<Props> : never
+  >;
 
 /**
  * Wrapper around `React.forwardRef` that properly infers the `ref` type based on the `as` property.
@@ -21,6 +26,6 @@ export type ForwardRefComponent<Props extends UnknownSlotProps> =
  */
 // casting is required as React.forwardRef breaks props and refs into two separate arguments
 // making it inviable to do proper discrimination of unions based on `as` property
-export const forwardRef = React.forwardRef as <Props extends UnknownSlotProps>(
-  render: React.ForwardRefRenderFunction<RefFromSlotProps<Props>, Props>
+export const forwardRef = React.forwardRef as <Props extends UnknownPlugProps>(
+  render: React.ForwardRefRenderFunction<RefFromPlugProps<Props>, Props>
 ) => ForwardRefComponent<Props>;

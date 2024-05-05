@@ -1,28 +1,24 @@
 /**
  * @public - it has to be public otherwise it'll be stripped away from types
- * Internal symbol used to maintain proper ref types even if the slot ref is lost
+ * Internal symbol used to maintain proper ref types even if the plug ref is lost
  * a forward ref component normally has its ref value split from props into a separate exclusive argument
  */
-export const slotRefTypeSymbol = Symbol();
+export const plugRefTypeSymbol = Symbol();
 
 /**
  * @internal
  * Internal reference for the render function
  */
-export const slotRenderFunctionSymbol = Symbol();
+export const plugRendererSymbol = Symbol();
 
 /**
  * @internal
- * Internal reference for the slot type
+ * Internal reference for the plug type
  */
-export const slotTypeSymbol = Symbol();
+export const outletTypeSymbol = Symbol();
 
 /**
  * @internal
- * Internal reference for the slot status
+ * Internal reference for the plug status
  */
-export const slotStatusSymbol = Symbol();
-
-export const PluggedIn = Symbol();
-
-export const UnPlugged = Symbol();
+export const outletStatusSymbol = Symbol();

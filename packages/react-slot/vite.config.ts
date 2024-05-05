@@ -9,12 +9,12 @@ export default defineConfig({
     lib: {
       entry: "./src/index.ts",
       fileName: "react-slot",
-      formats: ["es"],
+      formats: ["es", "cjs"],
     },
     rollupOptions: {
       external: Object.keys(pkgJSON.dependencies),
     },
-    minify: "esbuild",
+    minify: false,
   },
   esbuild: {
     /**

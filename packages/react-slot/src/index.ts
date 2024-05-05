@@ -1,20 +1,19 @@
 export type {
-  Slot,
-  SlotProps,
-  SlotShorthandValue,
-  UnknownSlotProps,
-  UnknownSlotType,
-  WithSlotShorthandValue,
-  SlotStatus as SlotConnection,
+  Plug,
+  PlugProps,
+  PlugShorthandValue,
+  UnknownPlugProps,
+  UnknownPlugType,
+  WithPlugShorthandValue,
+  Outlet,
 } from "./types";
 
-export { forwardRef } from "./forwardRef";
-export type { ForwardRefComponent } from "./forwardRef";
+export { forwardRef, type ForwardRefComponent } from "./forwardRef";
 
-export { isResolvedShorthand } from "./isResolvedShorthand";
+export {
+  isOutletStatus,
+  type LockedIn,
+  type OutletStatus,
+} from "./OutletStatus";
 
-export { resolveShorthand } from "./resolveShorthand";
-
-export { createSlot } from "./createSlot";
-
-export { UnPlugged, PluggedIn } from "./constants";
+export { outlet, isOutlet, isPluggedIn, isUnplugged } from "./outlet";
