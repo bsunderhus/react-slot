@@ -6,6 +6,7 @@ edition = "2021"
 license = "MIT"
 publish = false
 version = "0.1.0"
+resolver = "2"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -19,8 +20,11 @@ strip = "symbols"
 [dependencies]
 serde = "1.0.186"
 serde_json = "1.0.79"
-swc_core = { version = "0.90.6", features = ["ecma_plugin_transform", "common"] }
-tracing = { version="0.1.37", features = ["release_max_level_info"] }
+swc_core = { version = "0.90.6", features = [
+  "ecma_plugin_transform",
+  "common",
+] }
+tracing = { version = "0.1.37", features = ["release_max_level_info"] }
 
 [dev-dependencies]
 testing = "0.33.21"

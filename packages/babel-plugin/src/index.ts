@@ -3,6 +3,9 @@ import type { JSXElement } from "@babel/types";
 import { getJSXNameAttributeValue, isJSXSlotElement } from "./utils/assert";
 import { jsxSlotElement } from "./utils/jsxSlotElement";
 
+/**
+ * @public
+ */
 export default function plugin(): PluginObj {
   return {
     visitor: {

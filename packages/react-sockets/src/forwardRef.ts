@@ -1,13 +1,13 @@
 import * as React from "react";
-import type {
-  PlugPropsWithRef,
-  UnknownPlugProps,
-  RefFromPlugProps,
-} from "./types";
+import type { UnknownPlugProps } from "./types/unknown.types";
+import type { PlugPropsWithRef, RefFromPlugProps } from "./types/plug.types";
 
 /**
+ * @public
+ *
  * Equivalent to `React.ForwardRefExoticComponent`
- * but with the `ref` type properly inferred based on discrimination of the `as` property.
+ * but with the `ref` type properly inferred based
+ * on discrimination of the `as` property.
  *
  * As `React.forwardRef` breaks props and refs into two separate arguments
  * it's inviable to do proper discrimination of unions based on `as` property.
@@ -20,6 +20,8 @@ export type ForwardRefComponent<Props extends UnknownPlugProps> =
   >;
 
 /**
+ * @public
+ *
  * Wrapper around `React.forwardRef` that properly infers the `ref` type based on the `as` property.
  * @param render - render function
  * @returns forward ref component

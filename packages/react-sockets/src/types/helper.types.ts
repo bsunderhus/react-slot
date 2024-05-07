@@ -1,12 +1,6 @@
 import type * as React from "react";
 
 /**
- * -------------------------------------------------------------------------------
- * HELPER TYPES
- * -------------------------------------------------------------------------------
- */
-
-/**
  * HTML element types that are not allowed to have children.
  *
  * Reference: https://developer.mozilla.org/en-US/docs/Glossary/Void_element

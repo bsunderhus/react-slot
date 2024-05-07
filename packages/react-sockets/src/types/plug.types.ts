@@ -1,19 +1,9 @@
 import type * as React from "react";
-import type {
-  outletTypeSymbol,
-  plugRefTypeSymbol,
-  outletStatusSymbol,
-  plugRendererSymbol,
-} from "./constants";
-import { IntrinsicElementProps, IsUnion } from "./utils/helper.types";
-import { UnknownPlugProps, UnknownPlugType } from "./utils/unknown.types";
-import { OutletStatus } from "./OutletStatus";
-
-export type {
-  UnknownPlugProps,
-  UnknownPlugType,
-  UnknownPlugRenderer as UnknownPlugRenderFunction,
-} from "./utils/unknown.types";
+import type { _plugRefTypeSymbol } from "../constants";
+import type { UnknownPlugProps, UnknownPlugType } from "./unknown.types";
+import type { IntrinsicElementProps, IsUnion } from "./helper.types";
+import type { WithSocketRenderer } from "./socket.types";
+import type { SocketStatus } from "../socket";
 
 /**
  * Ensures that the `as` property is optional.
@@ -45,7 +35,7 @@ type PlugPropsWithOptionalAs<PlugType extends UnknownPlugType> =
  * [Discriminated Unions](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions)
  * to create a type that represents a plug property that is discriminated by the `as` property
  *
- * @template PlugType The type of the plug property.
+ * @typeParam PlugType - The type of the plug property.
  *
  * @example
  * ```ts
@@ -58,7 +48,7 @@ type PlugPropsWithOptionalAs<PlugType extends UnknownPlugType> =
  * ```
  *
  */
-type PlugPropsWithRequiredAs<PlugType extends UnknownPlugType> =
+export type PlugPropsWithRequiredAs<PlugType extends UnknownPlugType> =
   PlugType extends keyof React.JSX.IntrinsicElements
     ? PlugPropsFromIntrinsicElementWithRequiredAs<PlugType>
     : PlugType extends React.ComponentType
@@ -86,7 +76,7 @@ type PlugPropsFromIntrinsicElementWithRequiredAs<
   PlugType extends any
     ? IntrinsicElementProps<PlugType> & {
         as: PlugType;
-        [plugRefTypeSymbol]?: IntrinsicElementProps<PlugType>["ref"] extends
+        [_plugRefTypeSymbol]?: IntrinsicElementProps<PlugType>["ref"] extends
           | React.Ref<infer T>
           | undefined
           ? T
@@ -116,7 +106,7 @@ type PlugPropsFromComponentTypeWithRequiredAs<
     ? PlugType extends React.ComponentType<infer P>
       ? P & {
           as: PlugType;
-          [plugRefTypeSymbol]?: "ref" extends keyof P
+          [_plugRefTypeSymbol]?: "ref" extends keyof P
             ? P["ref"] extends React.Ref<infer T> | undefined
               ? T
               : unknown
@@ -126,15 +116,16 @@ type PlugPropsFromComponentTypeWithRequiredAs<
     : never;
 
 /**
+ * @public
  * A plug property is a set of properties that can be used to define a plug.
  *
  * PlugProps receives PlugType (see {@link UnknownPlugType}) as generics,
  * it can be either native HTML element string (like `"div"` or `"button"`)
  * or a component type (like `typeof Button` or `React.ComponentType<ButtonProps>`).
  *
- * @template BasePlugType The base type of the plug. The base plug type represents the main default type a plug will be. This value can't be an union, to ensure unions discrimination strategy based on `as` property (see [Discriminated Unions](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions) for more details)
+ * @typeParam BasePlugType - The base type of the plug. The base plug type represents the main default type a plug will be. This value can't be an union, to ensure unions discrimination strategy based on `as` property (see [Discriminated Unions](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions) for more details)
  *
- * @template AlternativePlugType The alternative type of the plug. The alternative plug types are all other types a plug can have given the proper presence of the discrimination property `as`.
+ * @typeParam AlternativePlugType - The alternative type of the plug. The alternative plug types are all other types a plug can have given the proper presence of the discrimination property `as`.
  *
  * @example
  * Here's an example where the base type is `"button"` and alternative types are `"a" | "div"`
@@ -147,7 +138,7 @@ type PlugPropsFromComponentTypeWithRequiredAs<
  *   | {as: "div"} & IntrinsicElementProps<"div">
  * ```
  *
- * > **Note:** in the context of electrical systems, a plug is equivalent to the part of the system that is introduced by the external world, while the outlet is the part of the system that receives that external information.
+ * > **Note:** in the context of electrical systems, a plug is equivalent to the part of the system that is introduced by the external world, while the socket is the part of the system that receives that external information.
  */
 export type PlugProps<
   BasePlugType extends UnknownPlugType,
@@ -163,21 +154,20 @@ export type PlugProps<
     : never;
 
 /**
+ * @public
  * A plug can be either:
  * 1. {@link PlugProps} providing a plug with properties, e.g: `icon={{className: 'custom-class'}}`
  * 2. {@link PlugShorthandValue} simplification of `{{children: someValue}}`
- * 3. {@link PlugRenderer} a render function to completely override the markup
- * 4. {@link OutletStatus} indicating what the outlet that would receive the plug should do:
- *    * {@link OutletStatus.PluggedIn} indicates that the outlet should render the plug (normally this is by default, and it's unnecessary)
- *    * {@link OutletStatus.UnPlugged} indicates that an outlet should not render the plug (this is useful for removing markup, like a default chevron icon on an Accordion)
+ * 3. {@link SocketRenderer} a render function to completely override the markup
+ * 4. {@link SocketStatus} indicating what the socket that would receive the plug should do:
  *
  * Plug receives PlugType (see {@link UnknownPlugType}) as generics,
  * it can be either native HTML element string (like `"div"` or `"button"`)
  * or a component type (like `typeof Button` or `React.ComponentType<ButtonProps>`).
  *
- * @template BasePlugType The base type of the plug. The base plug type represents the main default type a plug will be. This value can't be an union, to ensure unions discrimination strategy based on `as` property (see [Discriminated Unions](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions) for more details)
+ * @typeParam BasePlugType - The base type of the plug. The base plug type represents the main default type a plug will be. This value can't be an union, to ensure unions discrimination strategy based on `as` property (see [Discriminated Unions](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions) for more details)
  *
- * @template AlternativePlugType The alternative type of the plug. The alternative plug types are all other types a plug can have given the proper presence of the discrimination property `as`.
+ * @typeParam AlternativePlugType - The alternative type of the plug. The alternative plug types are all other types a plug can have given the proper presence of the discrimination property `as`.
  *
  * @example
  * Here's an example where the base type is `"button"` and alternative types are `"a" | "div"`
@@ -190,10 +180,10 @@ export type PlugProps<
  *   | {as: "div"} & IntrinsicElementProps<"div">
  *   | PlugShorthandValue
  *   | PlugRenderFunction<'button'>
- *   | OutletStatus
+ *   | SocketStatus
  * ```
  *
- * > **Note:** in the context of electrical systems, a plug is equivalent to the part of the system that is introduced by the external world, while the outlet is the part of the system that receives that external information.
+ * > **Note:** in the context of electrical systems, a plug is equivalent to the part of the system that is introduced by the external world, while the socket is the part of the system that receives that external information.
  */
 export type Plug<
   BasePlugType extends UnknownPlugType,
@@ -204,12 +194,14 @@ export type Plug<
   // as it would break the discrimination strategy
   IsUnion<BasePlugType> extends false
     ?
-        | WithPlugShorthandValue<PlugProps<BasePlugType, AlternativePlugType>>
-        | PlugRenderer<BasePlugType>
-        | OutletStatus
+        | WithPlugShorthandValue<
+            WithSocketRenderer<PlugProps<BasePlugType, AlternativePlugType>>
+          >
+        | SocketStatus
     : never;
 
 /**
+ * @public
  * The shorthand value of a plug allows specifying its children in a more concise way.
  * It can be a string, a number, a React element, or an array of React nodes.
  * This is quite useful as in many cases when you're using a plug you're only
@@ -239,50 +231,22 @@ export type WithPlugShorthandValue<Props> =
       ? Extract<PlugShorthandValue, Props["children"]>
       : never);
 
-export type PlugRenderer<PlugType extends UnknownPlugType> =
-  // The `IsUnion` type is used to ensure that the `PlugType` is not a union,
-  // as the plug render function should be for a single type, not a union of types.
-  IsUnion<PlugType> extends false
-    ? (
-        baseType: PlugType,
-        props: Omit<PlugPropsWithRequiredAs<PlugType>, "as">
-      ) => React.ReactNode
-    : never;
-
-/**
- * Removes PlugShorthandValue, render function and signals from the plug type,
- * extracting just the plug's Props object.
- */
-export type ExtractPlugProps<PlugValue> = Exclude<
-  PlugValue,
-  PlugShorthandValue | OutletStatus | PlugRenderer<any> | undefined
->;
-
 export type RefFromPlugProps<Props extends UnknownPlugProps> = NonNullable<
-  Props[typeof plugRefTypeSymbol]
+  Props[typeof _plugRefTypeSymbol]
 >;
 
 export type PlugPropsWithRef<Props extends UnknownPlugProps> =
   React.PropsWithoutRef<Props> & React.RefAttributes<RefFromPlugProps<Props>>;
 
+export type PlugPropsWithoutRenderer<Props extends UnknownPlugProps> =
+  Props extends any ? Omit<Props, "dangerouslyRenderSocket"> : never;
+
+export type TypeFromPlugProps<Props extends UnknownPlugProps> = NonNullable<
+  Props["as"]
+>;
+
 /**
- * A definition of an outlet, as a component, very similar to how a React component is declared,
- * but with some additional metadata that is used to determine how to render the plug.
+ * -------------------------------------------------------------------------------
+ * PLUG TYPES - END
+ * -------------------------------------------------------------------------------
  */
-export type Outlet<Props extends UnknownPlugProps> = React.ExoticComponent<
-  React.PropsWithChildren<PlugPropsWithRef<Props>>
-> & {
-  readonly props: PlugPropsWithRef<Props>;
-  /**
-   * @internal
-   */
-  [outletTypeSymbol]: NonNullable<Props["as"]>;
-  /**
-   * @internal
-   */
-  [outletStatusSymbol]: OutletStatus;
-  /**
-   * @internal
-   */
-  [plugRendererSymbol]: PlugRenderer<NonNullable<Props["as"]>> | undefined;
-};

@@ -1,1 +1,1 @@
-## `swc-plugin-react-slot`
+## `swc-plugin-react-sockets`

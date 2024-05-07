@@ -1,14 +1,13 @@
 /// <reference types="vitest" />
 
 import { defineConfig } from "vite";
-import dts from "vite-plugin-dts";
 import * as pkgJSON from "./package.json";
 
 export default defineConfig({
   build: {
     lib: {
       entry: "./src/index.ts",
-      fileName: "react-slot",
+      fileName: "react-sockets",
       formats: ["es", "cjs"],
     },
     rollupOptions: {
@@ -25,5 +24,4 @@ export default defineConfig({
      */
     pure: ["console.log", "console.info", "console.error", "console.warn"],
   },
-  plugins: [dts({ rollupTypes: true })],
 });

@@ -1,12 +1,14 @@
 {
-  "name": "react-slot-monorepo",
+  "name": "react-sockets-monorepo",
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "prepack": "turbo prepack"
+    "prepack": "turbo prepack",
+    "clean": "turbo clean"
   },
   "devDependencies": {
-    "turbo": "1.12.2"
+    "rimraf": "^5.0.5",
+    "turbo": "1.13.3"
   },
   "packageManager": "pnpm@8.9.0",
   "engines": {

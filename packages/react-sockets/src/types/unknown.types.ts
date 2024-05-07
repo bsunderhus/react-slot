@@ -1,8 +1,8 @@
 import type * as React from "react";
-import type { plugRefTypeSymbol } from "../constants";
-import type { PlugRenderer } from "../types";
+import type { _plugRefTypeSymbol } from "../constants";
 
 /**
+ * @public
  * Minimal type for a value that can be used as the `as` prop.
  *
  * This should **ONLY** be used in type templates as in `extends UnknownPlugType`
@@ -14,14 +14,7 @@ export type UnknownPlugType =
   | React.ComponentType;
 
 /**
- * Minimal type for a plug render function.
- *
- * This should **ONLY** be used in type templates as in `extends UnknownPlugRenderFunction`
- * it shouldn't be used as the type of a plug render function.
- */
-export type UnknownPlugRenderer = PlugRenderer<any>;
-
-/**
+ * @public
  * Minimal type for a plug property definition.
  *
  * This should **ONLY** be used in type templates as in `extends UnknownPlugProps`;
@@ -33,5 +26,5 @@ export type UnknownPlugProps = {
    * This cannot be internal because its used to infer the plug reference,
    * if removed from public API it'll break the type inference
    */
-  [plugRefTypeSymbol]?: unknown;
+  [_plugRefTypeSymbol]?: unknown;
 };
