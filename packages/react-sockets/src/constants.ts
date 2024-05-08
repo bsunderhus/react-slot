@@ -13,12 +13,12 @@ export const _plugRefTypeSymbol = Symbol("plugRefType");
 export const _socketRendererSymbol = Symbol("socketRenderer");
 
 /**
- * @internal internal reference for the plug type
+ * @internal internal reference for the socket type
  */
 export const _socketTypeSymbol = Symbol("socketType");
 
 /**
- * @internal internal reference for the plug status
+ * @internal internal reference for the socket status
  */
 export const _socketStatusSymbol = Symbol("socketStatus");
 

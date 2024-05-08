@@ -3,17 +3,22 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["src", "vite.config.ts", "Cargo.toml"],
+      "inputs": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "Cargo.toml"],
       "outputs": ["dist/**"]
     },
     "build:types": {
       "dependsOn": ["^build:types"],
-      "inputs": ["src", "tsconfig.json", "tsconfig.*.json"],
+      "inputs": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "tsconfig.json",
+        "tsconfig.*.json"
+      ],
       "outputs": ["dist-tsc/**"]
     },
     "build:api": {
       "dependsOn": ["^build:api", "build:types"],
-      "inputs": ["src", "api-extractor.json"],
+      "inputs": ["src/**/*.ts", "src/**/*.tsx", "api-extractor.json"],
       "outputs": ["dist/**"]
     },
     "prepack": {

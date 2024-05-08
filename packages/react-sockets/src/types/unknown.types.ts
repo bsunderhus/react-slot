@@ -17,7 +17,7 @@ export type UnknownPlugType =
  * @public
  * Minimal type for a plug property definition.
  *
- * This should **ONLY** be used in type templates as in `extends UnknownPlugProps`;
+ * This should **ONLY** be used in type templates as in `extends UnknownPlugProps`
  * it shouldn't be used as the type of a plug props.
  */
 export type UnknownPlugProps = {
@@ -28,3 +28,12 @@ export type UnknownPlugProps = {
    */
   [_plugRefTypeSymbol]?: unknown;
 };
+
+/**
+ * @public
+ * Minimal type for a slot.
+ *
+ * This should **ONLY** be used in type templates as in `extends UnknownSlot`
+ * it shouldn't be used as the type of a slot.
+ */
+export type UnknownSlot = React.ReactNode;

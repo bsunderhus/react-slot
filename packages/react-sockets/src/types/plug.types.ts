@@ -1,8 +1,12 @@
 import type * as React from "react";
 import type { _plugRefTypeSymbol } from "../constants";
-import type { UnknownPlugProps, UnknownPlugType } from "./unknown.types";
+import type {
+  UnknownPlugProps,
+  UnknownPlugType,
+  UnknownSlot,
+} from "./unknown.types";
 import type { IntrinsicElementProps, IsUnion } from "./helper.types";
-import type { WithSocketRenderer } from "./socket.types";
+import type { WithSocketRenderer } from "../socket";
 import type { SocketStatus } from "../socket";
 
 /**
@@ -157,9 +161,8 @@ export type PlugProps<
  * @public
  * A plug can be either:
  * 1. {@link PlugProps} providing a plug with properties, e.g: `icon={{className: 'custom-class'}}`
- * 2. {@link PlugShorthandValue} simplification of `{{children: someValue}}`
- * 3. {@link SocketRenderer} a render function to completely override the markup
- * 4. {@link SocketStatus} indicating what the socket that would receive the plug should do:
+ * 2. {@link Slot} simplification of `{{children: someValue}}`
+ * 3. {@link SocketStatus} indicating what the socket that would receive the plug should do:
  *
  * Plug receives PlugType (see {@link UnknownPlugType}) as generics,
  * it can be either native HTML element string (like `"div"` or `"button"`)
@@ -178,7 +181,7 @@ export type PlugProps<
  *   | {as?: "button"} & IntrinsicElementProps<"button">
  *   | {as: "a"} & IntrinsicElementProps<"a">
  *   | {as: "div"} & IntrinsicElementProps<"div">
- *   | PlugShorthandValue
+ *   | Slot
  *   | PlugRenderFunction<'button'>
  *   | SocketStatus
  * ```
@@ -194,7 +197,7 @@ export type Plug<
   // as it would break the discrimination strategy
   IsUnion<BasePlugType> extends false
     ?
-        | WithPlugShorthandValue<
+        | WithSlot<
             WithSocketRenderer<PlugProps<BasePlugType, AlternativePlugType>>
           >
         | SocketStatus
@@ -202,34 +205,25 @@ export type Plug<
 
 /**
  * @public
- * The shorthand value of a plug allows specifying its children in a more concise way.
- * It can be a string, a number, a React element, or an array of React nodes.
- * This is quite useful as in many cases when you're using a plug you're only
- * interested in setting its children.
+ * A slot is a simplified version of a plug props,
+ * it is equivalent to `{{children: someValue}}`.
  *
- * @example
- * A Button component with an icon plug can be used like this:
- * ```tsx
- * <Button icon={<SomeIcon/>}/>
- * // instead of
- * <Button icon={{children: <SomeIcon/>}}/>
- * ```
+ * @typeParam Props - The plug properties that would be used to define the slot.
+ *
+ * > **Note:** in the context of electrical systems, a slot is the little hole in the socket where the plug prongs are inserted.
  */
-export type PlugShorthandValue =
-  | string
-  | number
-  | React.ReactElement
-  | Iterable<React.ReactNode>
-  | React.ReactPortal;
+export type Slot<Props extends UnknownPlugProps> = Props extends any
+  ? "children" extends keyof Props
+    ? Extract<UnknownSlot, Props["children"]>
+    : never
+  : never;
 
 /**
- * Helper type for {@link Plug}. Adds shorthand types that are assignable to the plug's `children`.
+ * Helper type for {@link Plug}. Adds slot types that are assignable to the plug's `children`.
  */
-export type WithPlugShorthandValue<Props> =
-  | Props
-  | ("children" extends keyof Props
-      ? Extract<PlugShorthandValue, Props["children"]>
-      : never);
+export type WithSlot<Props extends UnknownPlugProps> = Props extends any
+  ? Props | Slot<Props>
+  : never;
 
 export type RefFromPlugProps<Props extends UnknownPlugProps> = NonNullable<
   Props[typeof _plugRefTypeSymbol]
@@ -244,9 +238,3 @@ export type PlugPropsWithoutRenderer<Props extends UnknownPlugProps> =
 export type TypeFromPlugProps<Props extends UnknownPlugProps> = NonNullable<
   Props["as"]
 >;
-
-/**
- * -------------------------------------------------------------------------------
- * PLUG TYPES - END
- * -------------------------------------------------------------------------------
- */

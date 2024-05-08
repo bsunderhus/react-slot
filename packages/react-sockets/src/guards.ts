@@ -1,8 +1,9 @@
 import * as React from "react";
 import { _socketStatusSymbol, _socketTypeSymbol } from "./constants";
 import type { UnknownPlugProps } from "./types/unknown.types";
-import type { SocketComponent } from "./types/socket.types";
-import { SocketStatus } from "./socket";
+import { SocketComponent, SocketStatus } from "./socket";
+import { Slot } from "./types/plug.types";
+import { isPortal } from "react-is";
 
 /**
  * @public
@@ -47,11 +48,26 @@ export const isUnplugged = <O extends SocketComponent<UnknownPlugProps>>(
   socket: O
 ): boolean => socket[_socketStatusSymbol] === SocketStatus.UnPlugged;
 
+/**
+ * @internal
+ * Type guard for checking if a value is an iterable.
+ */
 export const isIterable = <T>(value: unknown): value is Iterable<T> =>
   typeof value === "object" && value !== null && Symbol.iterator in value;
 
-export const isValidNode = (node: unknown): node is React.ReactNode =>
+/**
+ * @public
+ * Type guard for checking if a value is a slot.
+ * @param node - value to check
+ */
+export const isSlot = <Props extends UnknownPlugProps>(
+  node: unknown
+): node is Slot<Props> =>
+  node === null ||
+  node === undefined ||
   typeof node === "string" ||
   typeof node === "number" ||
+  typeof node === "boolean" ||
   isIterable(node) ||
+  isPortal(node) ||
   React.isValidElement(node);
