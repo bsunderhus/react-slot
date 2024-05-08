@@ -4,21 +4,21 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["src", "vite.config.ts", "Cargo.toml"],
-      "outputs": ["dist"]
+      "outputs": ["dist/**"]
     },
     "build:types": {
       "dependsOn": ["^build:types"],
       "inputs": ["src", "tsconfig.json", "tsconfig.*.json"],
-      "outputs": ["dist-tsc"]
+      "outputs": ["dist-tsc/**"]
     },
     "build:api": {
       "dependsOn": ["^build:api", "build:types"],
       "inputs": ["src", "api-extractor.json"],
-      "outputs": ["dist"]
+      "outputs": ["dist/**"]
     },
     "prepack": {
       "dependsOn": ["build", "build:api"],
-      "outputs": ["*.wasm", "dist"]
+      "outputs": ["*.wasm", "dist/**"]
     },
     "clean": {
       "cache": false

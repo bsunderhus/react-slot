@@ -1,25 +1,8 @@
 {
+  "extends": "config/tsconfig.node.json",
   "compilerOptions": {
-    "composite": true,
-    "isolatedModules": true,
     "outDir": "dist-tsc",
-    "module": "ESNext",
-    "target": "ESNext",
-    "lib": ["ESNext", "DOM"],
-    "moduleResolution": "bundler",
-    "useDefineForClassFields": true,
-    "allowImportingTsExtensions": true,
-    "allowSyntheticDefaultImports": true,
-    "noEmitOnError": true,
-    "emitDeclarationOnly": true,
-    "declaration": true,
-    "declarationMap": true,
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true
+    "composite": true
   },
   "include": ["src/vite-env.d.ts", "src/**/*.test.ts"],
   "exclude": ["src/__snapshots__"],

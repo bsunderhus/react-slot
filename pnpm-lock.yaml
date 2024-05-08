@@ -15,6 +15,8 @@ importers:
         specifier: 1.13.3
         version: 1.13.3
 
+  config: {}
+
   packages/babel-plugin:
     dependencies:
       '@babel/types':
@@ -36,6 +38,9 @@ importers:
       '@types/node':
         specifier: ^20.12.10
         version: 20.12.10
+      config:
+        specifier: workspace:*
+        version: link:../../config
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -73,6 +78,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
         version: 4.2.1(vite@5.2.11)
+      config:
+        specifier: workspace:*
+        version: link:../../config
       typescript:
         specifier: ^5.4.5
         version: 5.4.5

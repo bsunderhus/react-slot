@@ -1,0 +1,12 @@
+{
+  "name": "config",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "files": [
+    "tsconfig.base.json",
+    "tsconfig.node.json",
+    "api-extractor.base.json",
+    "package.json"
+  ]
+}

@@ -1,48 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
-  "compiler": {
-    "tsconfigFilePath": "<projectFolder>/tsconfig.lib.json"
-  },
+  "extends": "config/api-extractor.base.json",
+  "projectFolder": ".",
   "mainEntryPointFilePath": "<projectFolder>/dist-tsc/src/index.d.ts",
-  "bundledPackages": [],
   "dtsRollup": {
     "enabled": true,
     "publicTrimmedFilePath": "<projectFolder>/dist/babel-plugin-react-sockets.d.ts",
-    "omitTrimmingComments": true
-  },
-  "docModel": {
-    "enabled": false
-  },
-  "apiReport": {
-    "enabled": false
-  },
-  "tsdocMetadata": {
-    "enabled": false
-  },
-  "messages": {
-    "compilerMessageReporting": {
-      "default": {
-        "logLevel": "error"
-      }
-    },
-    "extractorMessageReporting": {
-      "ae-forgotten-export": {
-        "logLevel": "none"
-      },
-      "ae-unresolved-link": {
-        "logLevel": "none"
-      },
-      "default": {
-        "logLevel": "warning"
-      }
-    },
-    "tsdocMessageReporting": {
-      "tsdoc-escape-greater-than": {
-        "logLevel": "none"
-      },
-      "default": {
-        "logLevel": "warning"
-      }
-    }
+    "untrimmedFilePath": "<projectFolder>/dist/babel-plugin-react-sockets.untrimmed.d.ts"
   }
 }
