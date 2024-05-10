@@ -1,6 +1,7 @@
 import * as React from "react";
-import type { UnknownPlugProps } from "./types/unknown.types";
-import type { PlugPropsWithRef, RefFromPlugProps } from "./types/plug.types";
+import type { PlugPropsDataType } from "./types/datatype.types";
+import type { PropsWithRef } from "./types/plug.types";
+import { _socketRefTypeSymbol } from "./constants";
 
 /**
  * @public
@@ -14,10 +15,8 @@ import type { PlugPropsWithRef, RefFromPlugProps } from "./types/plug.types";
  *
  * This type fixes this issue.
  */
-export type ForwardRefComponent<Props extends UnknownPlugProps> =
-  React.NamedExoticComponent<
-    Props extends any ? PlugPropsWithRef<Props> : never
-  >;
+export type ForwardRefComponent<Props extends PlugPropsDataType> =
+  React.NamedExoticComponent<Props extends any ? PropsWithRef<Props> : never>;
 
 /**
  * @public
@@ -28,6 +27,9 @@ export type ForwardRefComponent<Props extends UnknownPlugProps> =
  */
 // casting is required as React.forwardRef breaks props and refs into two separate arguments
 // making it inviable to do proper discrimination of unions based on `as` property
-export const forwardRef = React.forwardRef as <Props extends UnknownPlugProps>(
-  render: React.ForwardRefRenderFunction<RefFromPlugProps<Props>, Props>
+export const forwardRef = React.forwardRef as <Props extends PlugPropsDataType>(
+  render: React.ForwardRefRenderFunction<
+    NonNullable<Props[typeof _socketRefTypeSymbol]>,
+    Props
+  >
 ) => ForwardRefComponent<Props>;

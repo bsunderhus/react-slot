@@ -3,8 +3,16 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "Cargo.toml"],
-      "outputs": ["dist/**"]
+      "inputs": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "vite.config.ts",
+        "Cargo.toml",
+        "!src/**/*.types.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.test.tsx"
+      ],
+      "outputs": ["dist/**/*.js", "dist/**/*.cjs"]
     },
     "build:types": {
       "dependsOn": ["^build:types"],
@@ -12,18 +20,20 @@
         "src/**/*.ts",
         "src/**/*.tsx",
         "tsconfig.json",
-        "tsconfig.*.json"
+        "tsconfig.*.json",
+        "!src/**/*.test.ts",
+        "!src/**/*.test.tsx"
       ],
       "outputs": ["dist-tsc/**"]
     },
     "build:api": {
       "dependsOn": ["^build:api", "build:types"],
-      "inputs": ["src/**/*.ts", "src/**/*.tsx", "api-extractor.json"],
-      "outputs": ["dist/**"]
+      "inputs": ["dist-tsc/**/*.d.ts", "dist-tsc/**/*.d.ts.map"],
+      "outputs": ["dist/**/*.d.ts"]
     },
     "prepack": {
       "dependsOn": ["build", "build:api"],
-      "outputs": ["*.wasm", "dist/**"]
+      "outputs": ["*.wasm"]
     },
     "clean": {
       "cache": false

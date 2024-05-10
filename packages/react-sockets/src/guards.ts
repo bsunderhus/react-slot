@@ -1,9 +1,17 @@
 import * as React from "react";
-import { _socketStatusSymbol, _socketTypeSymbol } from "./constants";
-import type { UnknownPlugProps } from "./types/unknown.types";
-import { SocketComponent, SocketStatus } from "./socket";
-import { Slot } from "./types/plug.types";
+import {
+  _socketStatusSymbol,
+  _socketTypeSymbol,
+  SocketStatus,
+} from "./constants";
+import type {
+  PlugDataType,
+  PlugPropsDataType,
+  SlotDataType,
+  SocketTypeDataType,
+} from "./types/datatype.types";
 import { isPortal } from "react-is";
+import type { Socket } from "./types/socket.types";
 
 /**
  * @public
@@ -11,9 +19,12 @@ import { isPortal } from "react-is";
  * Type guard for checking if a value is an socket component.
  * @param value - value to check
  */
-export const isSocket = <Props extends UnknownPlugProps>(
+export const isSocket = <
+  BaseSocketType extends SocketTypeDataType,
+  AlternativeSocketType extends SocketTypeDataType = never
+>(
   value: unknown
-): value is SocketComponent<Props> =>
+): value is Socket<BaseSocketType, AlternativeSocketType> =>
   typeof value === "object" &&
   value !== null &&
   _socketTypeSymbol in value &&
@@ -25,7 +36,9 @@ export const isSocket = <Props extends UnknownPlugProps>(
  * Type guard for checking if a value is an socket status.
  * @param value - value to check
  */
-export const isSocketStatus = (value: unknown): value is SocketStatus =>
+export const isSocketStatus = <S extends SocketStatus>(
+  value: unknown
+): value is S =>
   value === SocketStatus.PluggedIn || value === SocketStatus.UnPlugged;
 
 /**
@@ -34,9 +47,8 @@ export const isSocketStatus = (value: unknown): value is SocketStatus =>
  * Type guard for checking if an socket is plugged in.
  * @param socket - socket to check
  */
-export const isPluggedIn = <O extends SocketComponent<UnknownPlugProps>>(
-  socket: O
-): boolean => socket[_socketStatusSymbol] === SocketStatus.PluggedIn;
+export const isPluggedIn = <S extends Socket<any, any>>(socket: S): boolean =>
+  socket[_socketStatusSymbol] === SocketStatus.PluggedIn;
 
 /**
  * @public
@@ -44,9 +56,8 @@ export const isPluggedIn = <O extends SocketComponent<UnknownPlugProps>>(
  * Type guard for checking if an socket is unplugged.
  * @param socket - socket to check
  */
-export const isUnplugged = <O extends SocketComponent<UnknownPlugProps>>(
-  socket: O
-): boolean => socket[_socketStatusSymbol] === SocketStatus.UnPlugged;
+export const isUnplugged = <S extends Socket<any, any>>(socket: S): boolean =>
+  socket[_socketStatusSymbol] === SocketStatus.UnPlugged;
 
 /**
  * @internal
@@ -57,17 +68,24 @@ export const isIterable = <T>(value: unknown): value is Iterable<T> =>
 
 /**
  * @public
- * Type guard for checking if a value is a slot.
- * @param node - value to check
+ * Type guard for checking if a plug is a slot.
+ * @param plug - plug to check
  */
-export const isSlot = <Props extends UnknownPlugProps>(
-  node: unknown
-): node is Slot<Props> =>
-  node === null ||
-  node === undefined ||
-  typeof node === "string" ||
-  typeof node === "number" ||
-  typeof node === "boolean" ||
-  isIterable(node) ||
-  isPortal(node) ||
-  React.isValidElement(node);
+export const isSlot = <P extends PlugDataType>(
+  plug: P
+): plug is Extract<P, SlotDataType> =>
+  typeof plug === "string" ||
+  typeof plug === "number" ||
+  typeof plug === "boolean" ||
+  isIterable(plug) ||
+  isPortal(plug) ||
+  React.isValidElement(plug);
+
+/**
+ * @public
+ * Type guard for checking if a plug is a valid socket props object.
+ */
+export const isPlugProps = <P extends PlugDataType>(
+  plug: P
+): plug is Extract<P, PlugPropsDataType> =>
+  typeof plug === "object" && plug !== null && !isSlot(plug);

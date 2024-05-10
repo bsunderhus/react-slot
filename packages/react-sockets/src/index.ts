@@ -1,21 +1,32 @@
+import * as plug from "./plug";
+export type {
+  PlugDataType,
+  PlugPropsDataType,
+  SlotDataType,
+  SocketTypeDataType,
+} from "./types/datatype.types";
+
 export {
   isSlot,
   isSocket,
-  isUnplugged,
   isPluggedIn,
+  isUnplugged,
+  isPlugProps,
   isSocketStatus,
 } from "./guards";
 
 export { forwardRef } from "./forwardRef";
 export type { ForwardRefComponent } from "./forwardRef";
 
-export { socket, SocketStatus } from "./socket";
-export type { LockedIn, SocketRenderer, SocketComponent } from "./socket";
-
+export { socket } from "./socket";
 export type {
-  UnknownSlot,
-  UnknownPlugType,
-  UnknownPlugProps,
-} from "./types/unknown.types";
+  LockedIn,
+  SocketRenderer,
+  Socket,
+  Slot,
+} from "./types/socket.types";
 
-export type { Plug, PlugProps, Slot } from "./types/plug.types";
+export { plug };
+export type { Plug, PlugProps, PrimaryPlug } from "./types/plug.types";
+
+export { SocketStatus } from "./constants";
