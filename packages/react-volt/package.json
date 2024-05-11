@@ -26,5 +26,24 @@
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
     "vitest": "^1.6.0"
+  },
+  "files": ["dist", "*.md"],
+  "main": "./dist/react-volt.cjs",
+  "module": "./dist/react-volt.js",
+  "typings": "./dist/react-volt.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/react-volt.d.ts",
+      "node": "./dist/react-volt.cjs",
+      "import": "./dist/react-volt.js",
+      "require": "./dist/react-volt.js"
+    },
+    "./untrimmed": {
+      "types": "./dist/react-volt.untrimmed.d.ts",
+      "node": "./dist/react-volt.cjs",
+      "import": "./dist/react-volt.js",
+      "require": "./dist/react-volt.js"
+    },
+    "./package.json": "./package.json"
   }
 }
