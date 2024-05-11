@@ -3,30 +3,30 @@ export type {
   PlugDataType,
   PlugPropsDataType,
   SlotDataType,
-  SocketTypeDataType,
+  OutletTypeDataType,
 } from "./types/datatype.types";
 
 export {
   isSlot,
-  isSocket,
+  isOutlet,
   isPluggedIn,
   isUnplugged,
   isPlugProps,
-  isSocketStatus,
+  isOutletStatus,
 } from "./guards";
 
 export { forwardRef } from "./forwardRef";
 export type { ForwardRefComponent } from "./forwardRef";
 
-export { socket } from "./socket";
+export { outlet } from "./outlet";
 export type {
   LockedIn,
-  SocketRenderer,
-  Socket,
+  OutletRenderer,
+  Outlet,
   Slot,
-} from "./types/socket.types";
+} from "./types/outlet.types";
 
 export { plug };
 export type { Plug, PlugProps, PrimaryPlug } from "./types/plug.types";
 
-export { SocketStatus } from "./constants";
+export { OutletStatus } from "./constants";

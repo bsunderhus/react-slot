@@ -1,4 +1,4 @@
-import type * as React from "react";
+import type { PropsWithRef } from "react";
 
 /**
  * HTML element types that are not allowed to have children.
@@ -22,15 +22,14 @@ export type VoidIntrinsicElement =
   | "wbr";
 
 /**
- * Helper type for {@link SocketProps}. Modifies `React.JSX.IntrinsicElements[Type]`:
+ * Helper type for {@link OutletProps}. Modifies `JSX.IntrinsicElements[Type]`:
  * Removes legacy string ref.
  * Disallows children for empty tags like 'img'.
  */
-export type IntrinsicElementProps<
-  Type extends keyof React.JSX.IntrinsicElements
-> = Type extends VoidIntrinsicElement
-  ? PropsWithoutChildren<React.PropsWithRef<React.JSX.IntrinsicElements[Type]>>
-  : React.PropsWithRef<React.JSX.IntrinsicElements[Type]>;
+export type IntrinsicElementProps<Type extends keyof JSX.IntrinsicElements> =
+  Type extends VoidIntrinsicElement
+    ? PropsWithoutChildren<PropsWithRef<JSX.IntrinsicElements[Type]>>
+    : PropsWithRef<JSX.IntrinsicElements[Type]>;
 
 /**
  * Removes the 'children' prop from the given Props type.

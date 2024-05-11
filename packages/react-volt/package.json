@@ -1,5 +1,5 @@
 {
-  "name": "react-sockets",
+  "name": "react-volt",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -17,13 +17,14 @@
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.43.2",
+    "@rollup/plugin-swc": "^0.3.0",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@types/react-is": "^18.2.4",
-    "@vitejs/plugin-react": "^4.2.1",
+    "config": "workspace:*",
+    "swc-plugin-de-indent-template-literal": "^1.4.0",
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
-    "vitest": "^1.6.0",
-    "config": "workspace:*"
+    "vitest": "^1.6.0"
   }
 }

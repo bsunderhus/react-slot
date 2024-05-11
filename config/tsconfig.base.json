@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "module": "ESNext",
     "target": "ESNext",
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "bundler",
     "useDefineForClassFields": true,
-    "allowImportingTsExtensions": true,
-    "allowSyntheticDefaultImports": true,
     "noEmitOnError": true,
     "emitDeclarationOnly": true,
     "declaration": true,

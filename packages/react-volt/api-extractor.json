@@ -5,7 +5,7 @@
   "mainEntryPointFilePath": "<projectFolder>/dist-tsc/src/index.d.ts",
   "dtsRollup": {
     "enabled": true,
-    "publicTrimmedFilePath": "<projectFolder>/dist/react-sockets.d.ts",
-    "untrimmedFilePath": "<projectFolder>/dist/react-sockets.untrimmed.d.ts"
+    "publicTrimmedFilePath": "<projectFolder>/dist/react-volt.d.ts",
+    "untrimmedFilePath": "<projectFolder>/dist/react-volt.untrimmed.d.ts"
   }
 }

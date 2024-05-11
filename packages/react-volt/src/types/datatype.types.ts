@@ -1,17 +1,11 @@
-import type {
-  ReactNode,
-  ReactElement,
-  ReactPortal,
-  JSX,
-  JSXElementConstructor,
-} from "react";
-import type { SocketStatus, _socketRefTypeSymbol } from "../constants";
-import { SocketRenderer } from "./socket.types";
+import type { ReactElement, ReactPortal, JSXElementConstructor } from "react";
+import type { OutletStatus, _outletRefTypeSymbol } from "../constants";
+import type { OutletRenderer } from "./outlet.types";
 
 /**
  * @public
  *
- * The base type of socket type.
+ * The base type of outlet type.
  *
  * This should **ONLY** be used in type templates as in `extends PlugDataType`
  * it shouldn't be used as the type itself.
@@ -21,7 +15,7 @@ import { SocketRenderer } from "./socket.types";
  *
  * > _The Suffix "DataType" will denote the building block types that will serve as "primitive" to all other types._
  */
-export type SocketTypeDataType =
+export type OutletTypeDataType =
   | keyof JSX.IntrinsicElements
   | JSXElementConstructor<any>;
 
@@ -39,19 +33,19 @@ export type SocketTypeDataType =
  */
 export type PlugPropsDataType = {
   /**
-   * The element type that the socket is connected to.
+   * The element type that the outlet is connected to.
    */
-  as?: SocketTypeDataType;
+  as?: OutletTypeDataType;
   /**
-   * A render function that can be used to completely override the markup of the socket.
+   * A render function that can be used to completely override the markup of the outlet.
    * This is a dangerous feature and should be used with caution.
    */
-  dangerouslyRenderSocket?: SocketRenderer<any>;
+  dangerouslyRenderOutlet?: OutletRenderer<any>;
   /**
    * This cannot be internal because its used to infer the plug reference,
    * if removed from public API it'll break the type inference
    */
-  [_socketRefTypeSymbol]?: unknown;
+  [_outletRefTypeSymbol]?: unknown;
 };
 
 /**
@@ -87,4 +81,4 @@ export type SlotDataType =
  *
  * > _The Suffix "DataType" will denote the building block types that will serve as "primitive" to all other types._
  */
-export type PlugDataType = PlugPropsDataType | SlotDataType | SocketStatus;
+export type PlugDataType = PlugPropsDataType | SlotDataType | OutletStatus;

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { test, assertType } from "vitest";
-import { plug, socket, Plug, PlugProps, PrimaryPlug, LockedIn } from "../index";
+import { plug, outlet, Plug, PlugProps, PrimaryPlug, LockedIn } from "../index";
 import { DistributiveOmit } from "../types/helper.types";
 
 type IconPlugProps = PlugProps<"span"> & {
@@ -23,13 +23,13 @@ type ButtonProps = DistributiveOmit<
 const Button = (props: ButtonProps) => {
   const { icon, content, children, ...rest } = props;
   const iconPosition = plug.resolve(icon)?.position ?? "before";
-  const Root = socket.lockedIn<"button", "a" | "div">("button", rest);
-  const Icon = socket(
+  const Root = outlet.lockedIn<"button", "a" | "div">("button", rest);
+  const Icon = outlet(
     "span",
     plug.adapter(icon, ({ position, ...rest }) => rest),
     { children: "some icon" }
   );
-  const Content = socket.lockedIn("div", content);
+  const Content = outlet.lockedIn("div", content);
   return (
     <Root>
       {iconPosition === "before" && <Icon />}

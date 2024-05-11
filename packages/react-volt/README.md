@@ -1,4 +1,4 @@
-# react-sockets
+# react-volt
 
 ## Slot Content and Outlet
 
