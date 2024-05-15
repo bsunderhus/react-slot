@@ -1,48 +1,38 @@
-import { OutletStatus } from "./constants";
+import { OutletStatus, _pluggedInSymbol } from "./constants";
 import { isSlot, isOutletStatus, isPlugProps } from "./guards";
 import type {
   PlugDataType,
   PlugPropsDataType,
   SlotDataType,
 } from "./types/datatype.types";
+import type { Slot } from "./types/outlet.types";
+import type { Adapter } from "./types/plug.types";
 
 /**
  * @public
+ *
  * Adapts a plug to the required props of a outlet.
  * This is useful when you want to change the props of a plug before it is rendered in a outlet.
  *
  * @typeParam Input - The type of the plug that will be adapted.
  * @typeParam Output - The type of the plug that will be returned.
  *
- * @param input - The plug that will be adapted.
- * @param plugPropsMapper - A function that will be used to adapt the plug.
+ * @param inputPlug - The plug that will be adapted.
+ * @param adapter - A function that will be used to adapt the plug.
  *
  * > **Note:** _In the context of electrical systems a plug adapter is a device that allows a plug to connect to a outlet that has a different shape or configuration._
  */
-export const adapter = <
+export const adapt = <
   Input extends PlugDataType,
-  Output extends PlugPropsDataType
+  OutputProps extends PlugPropsDataType
 >(
-  input: Input | OutletStatus.PluggedIn | undefined,
-  plugPropsMapper: (input: NoInfer<Extract<Input, PlugPropsDataType>>) => Output
-): NoInfer<
-  | Output
-  | OutletStatus.PluggedIn
-  | Extract<Input, OutletStatus>
-  | Extract<Input, SlotDataType>
-> => {
-  input ??= OutletStatus.PluggedIn;
-  if (isPlugProps(input)) {
-    return plugPropsMapper(input);
+  inputPlug: Input,
+  adapter: Adapter<Extract<Input, PlugPropsDataType>, OutputProps>
+): OutputProps | Exclude<Input, PlugPropsDataType> => {
+  if (isPlugProps<Extract<Input, PlugPropsDataType>>(inputPlug)) {
+    return adapter(inputPlug);
   }
-  if (isSlot(input) || isOutletStatus<Extract<Input, OutletStatus>>(input)) {
-    return input;
-  }
-  throw new Error(/** #__DE-INDENT__ */ `
-    [react-volt - adapter()]:
-    Invalid input plug "${String(input)}" (${typeof input}).
-    A valid value for a plug is a slot, plug properties or OutletStatus.
-  `);
+  return inputPlug as Exclude<Input, PlugPropsDataType>;
 };
 
 /**
@@ -60,9 +50,9 @@ export const adapter = <
  * @param plug - The plug that will be resolved.
  */
 export const resolve = <Props extends PlugPropsDataType>(
-  plug: Props | SlotDataType | OutletStatus | undefined
-): NoInfer<Props> | undefined => {
-  if (plug === undefined || isOutletStatus(plug)) {
+  plug: Props | SlotDataType | OutletStatus
+): Props | undefined => {
+  if (isOutletStatus(plug)) {
     return undefined;
   }
   if (isSlot(plug)) {
@@ -74,7 +64,7 @@ export const resolve = <Props extends PlugPropsDataType>(
      * if the user is not using typescript and is using a void element as a slot,
      * then React will console.error so we don't need to worry about this case
      */
-    return { children: plug } as Props & { children?: SlotDataType };
+    return { children: plug } as Props & { children?: Slot<Props> };
   }
   return plug;
 };

@@ -1,6 +1,7 @@
 import type {
   ExoticComponent,
-  PropsWithChildren,
+  JSXElementConstructor,
+  PropsWithRef,
   ReactElement,
   ReactNode,
 } from "react";
@@ -12,12 +13,8 @@ import type {
   OutletStatus,
 } from "../constants";
 import type { SlotDataType, OutletTypeDataType } from "./datatype.types";
-import type {
-  PlugProps,
-  PlugPropsWithRequiredAs,
-  PropsWithoutRenderer,
-  PropsWithRef,
-} from "./plug.types";
+import type { HTMLElementsProps } from "./helper.types";
+import type React from "react";
 
 /**
  * @public
@@ -32,10 +29,7 @@ import type {
  * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
 export type OutletRenderer<in out OutletType extends OutletTypeDataType> = (
-  element: ReactElement<
-    Omit<PlugPropsWithRequiredAs<OutletType>, "as">,
-    OutletType
-  >
+  element: ReactElement<PropsFromOutletType<OutletType>, OutletType>
 ) => ReactNode;
 
 /**
@@ -46,19 +40,13 @@ export type OutletRenderer<in out OutletType extends OutletTypeDataType> = (
  *
  * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
-export type Outlet<
+export interface Outlet<
   BaseOutletType extends OutletTypeDataType,
   AlternativeOutletType extends OutletTypeDataType = never
-> = ExoticComponent<
-  PropsWithChildren<
-    PropsWithoutRenderer<
-      PropsWithRef<PlugProps<BaseOutletType, AlternativeOutletType>>
-    >
-  >
-> & {
-  readonly props: PropsWithoutRenderer<
-    PropsWithRef<PlugProps<BaseOutletType, AlternativeOutletType>>
-  >;
+> extends ExoticComponent<
+    PropsFromOutletType<BaseOutletType | AlternativeOutletType>
+  > {
+  readonly props: PropsFromOutletType<BaseOutletType | AlternativeOutletType>;
   /**
    * @internal
    * Internal property to store the base type of the outlet.
@@ -76,9 +64,21 @@ export type Outlet<
    * can be used to completely override the markup of the outlet.
    */
   [_outletRendererSymbol]:
-    | OutletRenderer<BaseOutletType | AlternativeOutletType>
+    | ((
+        element: ReactElement<
+          PropsFromOutletType<BaseOutletType | AlternativeOutletType>,
+          BaseOutletType | AlternativeOutletType
+        >
+      ) => ReactNode)
     | undefined;
-};
+}
+
+type PropsFromOutletType<OutletType extends OutletTypeDataType> =
+  OutletType extends keyof HTMLElementsProps
+    ? PropsWithRef<JSX.IntrinsicElements[OutletType]>
+    : OutletType extends JSXElementConstructor<infer P>
+    ? P
+    : never;
 
 /**
  * @public
@@ -94,7 +94,7 @@ export type LockedIn<T> = Exclude<T, OutletStatus.UnPlugged>;
  * @public
  *
  * A slot is a simplified version of a plug props,
- * it is equivalent to `{{children: someValue}}`.
+ * it is equivalent to `{children: someValue}`.
  *
  * @typeParam Props - The plug properties that would be used to define the slot.
  *

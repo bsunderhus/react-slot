@@ -1,5 +1,5 @@
 import { isValidElement } from "react";
-import { isPortal } from "react-is";
+import { isPortal, isValidElementType } from "react-is";
 import {
   _outletStatusSymbol,
   _outletTypeSymbol,
@@ -12,6 +12,12 @@ import type {
   OutletTypeDataType,
 } from "./types/datatype.types";
 import type { Outlet } from "./types/outlet.types";
+
+export const isOutletType = isValidElementType as <
+  O extends OutletTypeDataType
+>(
+  value: unknown
+) => value is O;
 
 /**
  * @public
@@ -68,24 +74,33 @@ export const isIterable = <T>(value: unknown): value is Iterable<T> =>
 
 /**
  * @public
- * Type guard for checking if a plug is a slot.
- * @param plug - plug to check
+ * Type guard for checking if a value is a slot.
+ * @param value - plug to check
  */
-export const isSlot = <P extends PlugDataType>(
-  plug: P
-): plug is Extract<P, SlotDataType> =>
-  typeof plug === "string" ||
-  typeof plug === "number" ||
-  typeof plug === "boolean" ||
-  isIterable(plug) ||
-  isPortal(plug) ||
-  isValidElement(plug);
+export const isSlot = <Slot extends SlotDataType>(
+  value: unknown
+): value is Slot =>
+  typeof value === "string" ||
+  typeof value === "number" ||
+  typeof value === "boolean" ||
+  isIterable(value) ||
+  isPortal(value) ||
+  isValidElement(value);
 
 /**
  * @public
- * Type guard for checking if a plug is a valid outlet props object.
+ * Type guard for checking if a value is a valid outlet props object.
  */
-export const isPlugProps = <P extends PlugDataType>(
-  plug: P
-): plug is Extract<P, PlugPropsDataType> =>
-  typeof plug === "object" && plug !== null && !isSlot(plug);
+export const isPlugProps = <Props extends PlugPropsDataType>(
+  value: unknown
+): value is Props =>
+  typeof value === "object" && value !== null && !isSlot(value);
+
+/**
+ * @public
+ * Type guard for checking if a value is a valid plug.
+ */
+export const isPlug = <Plug extends PlugDataType>(
+  value: unknown
+): value is Plug =>
+  isPlugProps(value) || isSlot(value) || isOutletStatus(value);

@@ -6,22 +6,20 @@ import {
 } from "./constants";
 import { isSlot, isOutletStatus } from "./guards";
 import { resolve as resolvePlug } from "./plug";
-import type {
-  PlugProps,
-  PropsWithRef,
-  OutletTypePlug,
-} from "./types/plug.types";
-import type { Outlet, OutletRenderer, LockedIn } from "./types/outlet.types";
+import type { OutletTypePlug } from "./types/plug.types";
+import type { Outlet, LockedIn } from "./types/outlet.types";
 import type {
   PlugPropsDataType,
   SlotDataType,
   OutletTypeDataType,
 } from "./types/datatype.types";
 
+const emptyPropsObject: PlugPropsDataType = {};
+
 /**
  * @public
  *
- * Connects a outlet to a plug.
+ * Connects an outlet to a plug.
  *
  * @param outletType - the base element type of the outlet
  * @param plug - the plug that is connected to the outlet, a plug can be:
@@ -35,27 +33,25 @@ export const outlet = <
   const AlternativeOutletType extends OutletTypeDataType = never
 >(
   outletType: BaseOutletType,
-  plug?: NoInfer<OutletTypePlug<BaseOutletType, AlternativeOutletType>>,
-  defaultProps?: NoInfer<
-    Partial<PropsWithRef<PlugProps<BaseOutletType, AlternativeOutletType>>>
-  >
-): NoInfer<Outlet<BaseOutletType, AlternativeOutletType>> => {
-  const component = {
+  plug: OutletTypePlug<NoInfer<BaseOutletType>, NoInfer<AlternativeOutletType>>
+): Outlet<BaseOutletType, AlternativeOutletType> => {
+  const props = resolvePlug(plug) ?? emptyPropsObject;
+  const instance = {
     [_outletTypeSymbol]: outletType,
     [_outletStatusSymbol]: OutletStatus.PluggedIn,
     [_outletRendererSymbol]: undefined,
-    props: { ...defaultProps, ...resolvePlug(plug) },
+    props,
   } as Outlet<BaseOutletType, AlternativeOutletType>;
 
   if (plug === undefined) {
-    return component;
+    return instance;
   }
   if (isOutletStatus(plug)) {
-    component[_outletStatusSymbol] = plug;
-    return component;
+    instance[_outletStatusSymbol] = plug;
+    return instance;
   }
   if (isSlot(plug)) {
-    return component;
+    return instance;
   }
   if (process.env.NODE_ENV !== "production" && typeof plug !== "object") {
     console.error(/** #__DE-INDENT__ */ `
@@ -64,15 +60,18 @@ export const outlet = <
       A valid value for a plug is a slot, outlet properties or OutletStatus.
     `);
   }
-
-  if ("dangerouslyRenderOutlet" in component.props) {
-    component[_outletRendererSymbol] = component.props
-      .dangerouslyRenderOutlet as OutletRenderer<
-      BaseOutletType | AlternativeOutletType
-    >;
-    delete component.props.dangerouslyRenderOutlet;
+  if (props.as !== undefined && typeof outletType === "string") {
+    // FIXME: figure out what is wrong with props.as
+    instance[_outletTypeSymbol] = props.as as
+      | BaseOutletType
+      | AlternativeOutletType;
+    delete props.as;
   }
-  return component;
+  if (typeof props?.dangerouslyRenderOutlet === "function") {
+    instance[_outletRendererSymbol] = props.dangerouslyRenderOutlet;
+    delete props.dangerouslyRenderOutlet;
+  }
+  return instance;
 };
 
 /**
@@ -93,10 +92,7 @@ outlet.lockedIn = outlet as <
   const AlternativeOutletType extends OutletTypeDataType = never
 >(
   outletType: BaseOutletType,
-  plug?: NoInfer<
-    LockedIn<OutletTypePlug<BaseOutletType, AlternativeOutletType>>
-  >,
-  defaultProps?: NoInfer<
-    Partial<PropsWithRef<PlugProps<BaseOutletType, AlternativeOutletType>>>
+  plug: LockedIn<
+    OutletTypePlug<NoInfer<BaseOutletType>, NoInfer<AlternativeOutletType>>
   >
 ) => Outlet<BaseOutletType, AlternativeOutletType>;

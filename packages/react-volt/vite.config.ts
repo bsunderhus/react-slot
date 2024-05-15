@@ -27,4 +27,10 @@ export default defineConfig({
     },
     minify: false,
   },
+  test: {
+    typecheck: {
+      enabled: true,
+      tsconfig: "./tsconfig.test.json",
+    },
+  },
 });
