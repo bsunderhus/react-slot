@@ -28,13 +28,13 @@ const emptyPropsObject: PlugPropsDataType = {};
  *
  * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
-export const outlet = <
+export function outlet<
   const BaseOutletType extends OutletTypeDataType,
   const AlternativeOutletType extends OutletTypeDataType = never
 >(
   outletType: BaseOutletType,
-  plug: OutletTypePlug<NoInfer<BaseOutletType>, NoInfer<AlternativeOutletType>>
-): Outlet<BaseOutletType, AlternativeOutletType> => {
+  plug: NoInfer<OutletTypePlug<BaseOutletType, AlternativeOutletType>>
+): Outlet<BaseOutletType, AlternativeOutletType> {
   const props = resolvePlug(plug) ?? emptyPropsObject;
   const instance = {
     [_outletTypeSymbol]: outletType,
@@ -72,7 +72,7 @@ export const outlet = <
     delete props.dangerouslyRenderOutlet;
   }
   return instance;
-};
+}
 
 /**
  * @public
@@ -92,7 +92,5 @@ outlet.lockedIn = outlet as <
   const AlternativeOutletType extends OutletTypeDataType = never
 >(
   outletType: BaseOutletType,
-  plug: LockedIn<
-    OutletTypePlug<NoInfer<BaseOutletType>, NoInfer<AlternativeOutletType>>
-  >
+  plug: NoInfer<LockedIn<OutletTypePlug<BaseOutletType, AlternativeOutletType>>>
 ) => Outlet<BaseOutletType, AlternativeOutletType>;

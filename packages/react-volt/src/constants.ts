@@ -1,11 +1,13 @@
 /**
- * Internal symbol used to maintain proper ref types even if the outlet ref is lost
- * a forward ref component normally has its ref value split from props into
+ * Internal symbol used to maintain proper ref types even if the plug ref is lost.
+ * A forward ref component normally has its ref value split from props into
  * a separate exclusive argument
+ *
+ * This symbol represents the common reference from a plug to an outlet.
  *
  * @public it has to be public otherwise it'll be stripped away from types, and the ref type will be lost
  */
-export const _outletRefTypeSymbol = Symbol("outletRefType");
+export const _plugRefSymbol = Symbol("plugRefSymbol");
 
 /**
  * @internal internal reference for the render function

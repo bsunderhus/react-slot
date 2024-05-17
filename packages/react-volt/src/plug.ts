@@ -22,18 +22,18 @@ import type { Adapter } from "./types/plug.types";
  *
  * > **Note:** _In the context of electrical systems a plug adapter is a device that allows a plug to connect to a outlet that has a different shape or configuration._
  */
-export const adapt = <
+export function adapt<
   Input extends PlugDataType,
   OutputProps extends PlugPropsDataType
 >(
   inputPlug: Input,
   adapter: Adapter<Extract<Input, PlugPropsDataType>, OutputProps>
-): OutputProps | Exclude<Input, PlugPropsDataType> => {
+): OutputProps | Exclude<Input, PlugPropsDataType> {
   if (isPlugProps<Extract<Input, PlugPropsDataType>>(inputPlug)) {
     return adapter(inputPlug);
   }
   return inputPlug as Exclude<Input, PlugPropsDataType>;
-};
+}
 
 /**
  * @public
@@ -41,7 +41,7 @@ export const adapt = <
  * Resolves a plug to its props.
  *
  * * If the plug is {@link PlugPropsDataType | PlugProps}, it will be returned as is.
- * * If the plug is {@link SlotDataType | Slot}, it will be resolved to `{children: plug}`.
+ * * If the plug is a {@link SlotDataType | Slot}, it will be resolved to `{children: plug}`.
  * * If the plug is {@link OutletStatus}, it will be resolved to `undefined`.
  *
  * This is useful when you want to access a plug's properties before providing it to a outlet.
@@ -49,9 +49,9 @@ export const adapt = <
  * @typeParam Props - The type of the plug props that will be resolved.
  * @param plug - The plug that will be resolved.
  */
-export const resolve = <Props extends PlugPropsDataType>(
+export function resolve<Props extends PlugPropsDataType>(
   plug: Props | SlotDataType | OutletStatus
-): Props | undefined => {
+): Props | undefined {
   if (isOutletStatus(plug)) {
     return undefined;
   }
@@ -67,4 +67,4 @@ export const resolve = <Props extends PlugPropsDataType>(
     return { children: plug } as Props & { children?: Slot<Props> };
   }
   return plug;
-};
+}

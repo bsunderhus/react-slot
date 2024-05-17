@@ -1,5 +1,4 @@
 import type {
-  Ref,
   AnchorHTMLAttributes,
   AreaHTMLAttributes,
   AudioHTMLAttributes,
@@ -51,7 +50,12 @@ import type {
   VideoHTMLAttributes,
   WebViewHTMLAttributes,
   SlotHTMLAttributes,
+  SyntheticEvent,
+  Ref,
+  EventHandler,
+  RefObject,
 } from "react";
+import type { HTMLPlugAttributes } from "./plug.types";
 
 /**
  * Removes the 'children' prop from the given Props type.
@@ -95,16 +99,15 @@ export type UnionToIntersection<U> = (
   : never;
 
 /**
- * Override on React's ClassAttributes to stop using LegacyRef and use Ref instead.
+ * Helper type that is equivalent to `never`
+ * but it's more descriptive.
  */
-interface ClassAttributes<Element> {
-  ref?: Ref<Element> | undefined;
-}
+export type Error<Msg extends string> = never;
 
 type DetailedHTMLProps<
   E extends HTMLAttributes<HTMLElements[K]>,
   K extends keyof HTMLElements
-> = ClassAttributes<HTMLElements[K]> & E;
+> = HTMLPlugAttributes<K> & E;
 
 export interface HTMLElementsProps {
   a: DetailedHTMLProps<AnchorHTMLAttributes<HTMLAnchorElement>, "a">;

@@ -4,7 +4,7 @@ import type {
   JSXElementConstructor,
   ReactNode,
 } from "react";
-import type { OutletStatus, _outletRefTypeSymbol } from "../constants";
+import type { OutletStatus, _plugRefSymbol } from "../constants";
 import type { HTMLElementsProps } from "./helper.types";
 
 /**
@@ -65,7 +65,7 @@ export interface PlugPropsDataType {
    * This cannot be internal because its used to infer the plug reference,
    * if removed from public API it'll break the type inference
    */
-  [_outletRefTypeSymbol]?: unknown;
+  [_plugRefSymbol]?: unknown;
 }
 
 /**

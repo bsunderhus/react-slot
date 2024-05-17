@@ -6,7 +6,7 @@ import type {
   ReactNode,
   ReactElement,
 } from "react";
-import type { _outletRefTypeSymbol, OutletStatus } from "../constants";
+import type { _plugRefSymbol, OutletStatus } from "../constants";
 import type {
   PlugPropsDataType,
   OutletTypeDataType,
@@ -20,6 +20,7 @@ import type {
   HTMLElementsProps,
   HTMLElements,
   UnionToIntersection,
+  Error,
 } from "./helper.types";
 import type { Slot } from "./outlet.types";
 
@@ -46,7 +47,7 @@ export type AlternativePlugProps<
    * // DistributiveToArray<1|2|3> is 1[]|2[]|3[]
    * ```
    */
-  AlternativeOutletType extends any
+  AlternativeOutletType extends unknown
     ? BasePlugProps<AlternativeOutletType> & { as: AlternativeOutletType }
     : never;
 
@@ -61,29 +62,33 @@ export type AlternativePlugProps<
 export type BasePlugProps<BaseOutletType extends OutletTypeDataType> =
   BaseOutletType extends keyof HTMLElementsProps
     ? // Case for 'button' | 'div' | 'a' | ...
-      PluggableHTLElementProps<BaseOutletType>
+      HTMLElementsProps[BaseOutletType]
     : BaseOutletType extends JSXElementConstructor<
         infer CustomProps extends ObjectDataType
       >
     ? // Case for typeof Button | React.FC<ButtonProps> | ...
       PluggableCustomProps<BaseOutletType, CustomProps>
-    : never;
+    : Error<"BasePlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
 
-type PluggableHTLElementProps<OutletType extends keyof HTMLElementsProps> =
-  HTMLElementsProps[OutletType] & {
-    as?: OutletType;
-    /**
-     * A render function that can be used to completely override the markup of the outlet.
-     *
-     * This is a dangerous feature and should be used with caution.
-     *
-     * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
-     */
-    dangerouslyRenderOutlet?: (
-      element: ReactElement<HTMLElementsProps[OutletType], OutletType>
-    ) => ReactNode;
-    [_outletRefTypeSymbol]?: HTMLElements[OutletType];
-  };
+/**
+ * Override on React's ClassAttributes, it removes LegacyRef
+ * and adds plug related props.
+ */
+export interface HTMLPlugAttributes<Key extends keyof HTMLElements> {
+  ref?: Ref<HTMLElements[Key]> | undefined;
+  as?: Key;
+  /**
+   * A render function that can be used to completely override the markup of the outlet.
+   *
+   * This is a dangerous feature and should be used with caution.
+   *
+   * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
+   */
+  dangerouslyRenderOutlet?: (
+    element: ReactElement<HTMLElementsProps[Key], Key>
+  ) => ReactNode;
+  [_plugRefSymbol]?: HTMLElements[Key];
+}
 
 type PluggableCustomProps<
   OutletType extends JSXElementConstructor<Props>,
@@ -100,7 +105,7 @@ type PluggableCustomProps<
   dangerouslyRenderOutlet?: (
     element: ReactElement<Props, OutletType>
   ) => ReactNode;
-  [_outletRefTypeSymbol]?: Props extends { ref?: Ref<infer T> } ? T : never;
+  [_plugRefSymbol]?: Props extends { ref?: Ref<infer T> } ? T : never;
 };
 
 /**
@@ -156,7 +161,7 @@ export type Plug<
   ? OutletTypePlug<BaseOutletTypeOrPlugProps, AlternativeOutletType>
   : BaseOutletTypeOrPlugProps extends PlugPropsDataType
   ? PropsPlug<BaseOutletTypeOrPlugProps>
-  : never;
+  : Error<"BaseOutletTypeOrPlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
 
 /**
  * @typeParam BaseOutletType - The base type of the outlet the plug connects to. The base outlet type represents the main default type a plug will connect to. This value can't be an union, to ensure unions discrimination strategy based on `as` property (see {@link https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions | Discriminated Unions} for more details).
@@ -242,32 +247,21 @@ export type Adapter<
  *
  * A type that represents the reference of a plug.
  *
+ * The UnionToIntersection utility type is used here to convert
+ * an union of plug references into an intersection.
+ * This is necessary because we want to ensure that the forwarded ref
+ * includes all possible properties from the different plug references.
+ *
  * @typeParam Plug - The type of the plug.
  *
  * > **Note:** _In the context of electrical systems a plug is what allows a device to connect to an outlet. It is the sending end of the connection, while the outlet is the receiving end._
  */
-export type PlugRef<Plug extends PlugDataType> = Plug extends PlugPropsDataType
-  ? NonNullable<Plug[typeof _outletRefTypeSymbol]>
+export type PlugRefElement<Plug extends PlugDataType> = Plug extends {
+  [_plugRefSymbol]?: infer R;
+}
+  ? R
   : never;
 
-/**
- * @public
- *
- * A type that represents the reference of a plug that has been forwarded.
- * This type is used to ensure that the ref is forwarded correctly to the outlet.
- *
- * @typeParam Plug - The type of the plug.
- *
- * > **Note:** _In the context of electrical systems a plug is what allows a device to connect to an outlet. It is the sending end of the connection, while the outlet is the receiving end._
- */
-export type PlugForwardedRef<Plug extends PlugDataType> = UnionToIntersection<
-  PlugRef<Plug>
+export type PlugRef<Plug extends PlugDataType> = Ref<
+  UnionToIntersection<PlugRefElement<Plug>>
 >;
-
-export type PropsWithRef<Props extends PlugPropsDataType> = Props extends any
-  ? PropsWithoutRef<Props> &
-      RefAttributes<NonNullable<Props[typeof _outletRefTypeSymbol]>>
-  : never;
-
-export type PropsWithoutRenderer<Props extends PlugPropsDataType> =
-  Props extends any ? Omit<Props, "dangerouslyRenderOutlet"> : never;

@@ -6,7 +6,7 @@ import type {
   ReactNode,
 } from "react";
 import type {
-  _outletRefTypeSymbol,
+  _plugRefSymbol,
   _outletRendererSymbol,
   _outletStatusSymbol,
   _outletTypeSymbol,
@@ -14,7 +14,6 @@ import type {
 } from "../constants";
 import type { SlotDataType, OutletTypeDataType } from "./datatype.types";
 import type { HTMLElementsProps } from "./helper.types";
-import type React from "react";
 
 /**
  * @public
@@ -26,7 +25,7 @@ import type React from "react";
  * @typeParam OutletType - The type of the plug
  * @param element - The element that would be rendered in the outlet.
  *
- * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
+ * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
 export type OutletRenderer<in out OutletType extends OutletTypeDataType> = (
   element: ReactElement<PropsFromOutletType<OutletType>, OutletType>
@@ -38,7 +37,7 @@ export type OutletRenderer<in out OutletType extends OutletTypeDataType> = (
  * very similar to how a React component is declared,
  * but with some additional metadata that is used to determine how to render the plug.
  *
- * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
+ * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
 export interface Outlet<
   BaseOutletType extends OutletTypeDataType,
@@ -73,6 +72,9 @@ export interface Outlet<
     | undefined;
 }
 
+/**
+ * Infer props based on the outlet type.
+ */
 type PropsFromOutletType<OutletType extends OutletTypeDataType> =
   OutletType extends keyof HTMLElementsProps
     ? PropsWithRef<JSX.IntrinsicElements[OutletType]>
@@ -98,7 +100,7 @@ export type LockedIn<T> = Exclude<T, OutletStatus.UnPlugged>;
  *
  * @typeParam Props - The plug properties that would be used to define the slot.
  *
- * > **Note:** _in the context of electrical systems, a slot is the little hole in the outlet where the plug prongs are inserted. It is a common interface on every single outlet, making it a good analogy for a common part of a outlet definition_
+ * > **Note:** _in the context of electrical systems, a slot is the little hole in the outlet where the plug prongs are inserted. It is a common interface on every single outlet, making it a good analogy for a common part of an outlet definition_
  */
 export type Slot<Props> = "children" extends keyof Props
   ? Extract<SlotDataType, Props["children"]>

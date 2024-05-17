@@ -23,19 +23,26 @@ export type {
   OutletRenderer,
 } from "./types/outlet.types";
 
-// FIXME: _pluggedInSymbol import is a workaround for an error on API extractor
-// API extractor will error while resolving OutletStatus.PluggedIn
-import { _pluggedInSymbol } from "./constants";
-import { adapt, resolve } from "./plug";
+import * as plug from "./plug";
+import * as union from "./union";
 
-/**
- * @public
- *
- * A collection of utilities that can be used to manipulate plugs.
- *
- * > **Note:** _In the context of electrical systems a plug is what allows a device to connect to an outlet. It is the sending end of the connection, while the outlet is the receiving end._
- */
-export const plug = { adapt, resolve };
+export {
+  /**
+   * @public
+   *
+   * A collection of utilities that can be used to manipulate/assert plugs.
+   *
+   * > **Note:** _In the context of electrical systems a plug is what allows a device to connect to an outlet. It is the sending end of the connection, while the outlet is the receiving end._
+   */
+  plug,
+  /**
+   * @public
+   *
+   * A collection of utilities that can be used to manipulate/assert unions.
+   * This might be useful when dealing with a plug that can be multiple types
+   */
+  union,
+};
 
 export type {
   Adapter,
@@ -43,7 +50,7 @@ export type {
   PlugProps,
   PrimaryPlug,
   PlugRef,
-  PlugForwardedRef,
+  PlugRefElement,
 } from "./types/plug.types";
 
 export { OutletStatus } from "./constants";

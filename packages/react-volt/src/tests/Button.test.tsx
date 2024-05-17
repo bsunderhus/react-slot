@@ -1,14 +1,19 @@
 import * as React from "react";
 import { test, assertType } from "vitest";
-import { plug, outlet, OutletStatus } from "../index";
+import { OutletStatus, isPlugProps, outlet, plug, union } from "../index";
 import type {
   Plug,
   PlugProps,
   PrimaryPlug,
   LockedIn,
-  PlugForwardedRef,
+  PlugRefElement,
+  OutletTypeDataType,
 } from "../index";
-import type { DistributiveOmit } from "../types/helper.types";
+import type {
+  DistributiveOmit,
+  HTMLElements,
+  HTMLElementsProps,
+} from "../types/helper.types";
 
 type IconPlugProps = PlugProps<"span", "div"> & {
   /**
@@ -27,7 +32,7 @@ type ButtonProps = DistributiveOmit<
   content?: LockedIn<Plug<"div">>;
 };
 
-const Button = React.forwardRef<PlugForwardedRef<ButtonProps>, ButtonProps>(
+const Button = React.forwardRef<PlugRefElement<ButtonProps>, ButtonProps>(
   (props, ref) => {
     const {
       icon = OutletStatus.UnPlugged,
@@ -35,19 +40,34 @@ const Button = React.forwardRef<PlugForwardedRef<ButtonProps>, ButtonProps>(
       children,
       ...rest
     } = props;
-    const iconPosition = plug.resolve(icon)?.position ?? "before";
+    const onClick = union.ensureEventHandlerType(props.onClick);
+
+    const iconPosition =
+      (isPlugProps<IconPlugProps>(icon) && icon.position) || "before";
 
     const Root = outlet.lockedIn<"button", "a" | "div">("button", {
       ...rest,
-      ref,
+      ref: union.ensureRefType(ref),
+      onClick: (event: React.MouseEvent<PlugRefElement<ButtonProps>>) => {
+        // @ts-expect-error - we should verify that event.currentTarget is an anchor
+        event.currentTarget.href;
+        onClick?.(event);
+      },
     });
+
+    const iconRef: React.RefCallback<PlugRefElement<IconPlugProps>> = (
+      element
+    ) => null;
 
     const Icon = outlet<"span", "div">(
       "span",
-      plug.adapt(icon, ({ position, ...rest }) => rest)
+      plug.adapt(icon, ({ position, ...rest }) => ({
+        ...rest,
+        ref: iconRef,
+      }))
     );
 
-    const Content = outlet.lockedIn("div", content);
+    const Content = outlet.lockedIn<"div">("div", content);
 
     return (
       <Root>
@@ -66,6 +86,7 @@ test("Button", () => {
       icon={{
         children: <i>this is</i>,
         position: "after",
+        onClick: (event) => event.preventDefault(),
       }}
     />
   );
