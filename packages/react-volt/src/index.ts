@@ -48,7 +48,6 @@ export type {
   Adapter,
   Plug,
   PlugProps,
-  PrimaryPlug,
   PlugRef,
   PlugRefElement,
 } from "./types/plug.types";

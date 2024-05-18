@@ -13,7 +13,7 @@ import type {
   OutletStatus,
 } from "../constants";
 import type { SlotDataType, OutletTypeDataType } from "./datatype.types";
-import type { HTMLElementsProps } from "./helper.types";
+import type { IntrinsicElements } from "./helper.types";
 
 /**
  * @public
@@ -76,7 +76,7 @@ export interface Outlet<
  * Infer props based on the outlet type.
  */
 type PropsFromOutletType<OutletType extends OutletTypeDataType> =
-  OutletType extends keyof HTMLElementsProps
+  OutletType extends keyof IntrinsicElements
     ? PropsWithRef<JSX.IntrinsicElements[OutletType]>
     : OutletType extends JSXElementConstructor<infer P>
     ? P

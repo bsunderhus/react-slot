@@ -91,9 +91,9 @@ export const isSlot = <Slot extends SlotDataType>(
  * @public
  * Type guard for checking if a value is a valid outlet props object.
  */
-export const isPlugProps = <Props extends PlugPropsDataType>(
+export const isPlugProps = <P extends PlugDataType>(
   value: unknown
-): value is Props =>
+): value is Extract<P, PlugPropsDataType> =>
   typeof value === "object" && value !== null && !isSlot(value);
 
 /**

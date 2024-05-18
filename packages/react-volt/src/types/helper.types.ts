@@ -54,6 +54,7 @@ import type {
   Ref,
   EventHandler,
   RefObject,
+  Attributes,
 } from "react";
 import type { HTMLPlugAttributes } from "./plug.types";
 
@@ -105,302 +106,591 @@ export type UnionToIntersection<U> = (
 export type Error<Msg extends string> = never;
 
 type DetailedHTMLProps<
-  E extends HTMLAttributes<HTMLElements[K]>,
-  K extends keyof HTMLElements
-> = HTMLPlugAttributes<K> & E;
+  Attributes extends HTMLAttributes<Element>,
+  Element extends HTMLElement,
+  Key extends keyof IntrinsicElements
+> = HTMLPlugAttributes<Element, Key> & Attributes;
 
-export interface HTMLElementsProps {
-  a: DetailedHTMLProps<AnchorHTMLAttributes<HTMLAnchorElement>, "a">;
-  abbr: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "abbr">;
-  address: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "address">;
+export interface IntrinsicElements {
+  a: DetailedHTMLProps<
+    AnchorHTMLAttributes<HTMLAnchorElement>,
+    HTMLAnchorElement,
+    "a"
+  >;
+  abbr: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "abbr">;
+  address: DetailedHTMLProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "address"
+  >;
   area: PropsWithoutChildren<
-    DetailedHTMLProps<AreaHTMLAttributes<HTMLAreaElement>, "area">
+    DetailedHTMLProps<
+      AreaHTMLAttributes<HTMLAreaElement>,
+      HTMLAreaElement,
+      "area"
+    >
   >;
-  article: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "article">;
-  aside: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "aside">;
-  audio: DetailedHTMLProps<AudioHTMLAttributes<HTMLAudioElement>, "audio">;
-  b: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "b">;
+  article: DetailedHTMLProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "article"
+  >;
+  aside: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "aside">;
+  audio: DetailedHTMLProps<
+    AudioHTMLAttributes<HTMLAudioElement>,
+    HTMLAudioElement,
+    "audio"
+  >;
+  b: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "b">;
   base: PropsWithoutChildren<
-    DetailedHTMLProps<BaseHTMLAttributes<HTMLBaseElement>, "base">
+    DetailedHTMLProps<
+      BaseHTMLAttributes<HTMLBaseElement>,
+      HTMLBaseElement,
+      "base"
+    >
   >;
-  bdi: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "bdi">;
-  bdo: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "bdo">;
-  big: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "big">;
+  bdi: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "bdi">;
+  bdo: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "bdo">;
+  big: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "big">;
   blockquote: DetailedHTMLProps<
     BlockquoteHTMLAttributes<HTMLQuoteElement>,
+    HTMLQuoteElement,
     "blockquote"
   >;
-  body: DetailedHTMLProps<HTMLAttributes<HTMLBodyElement>, "body">;
-  br: PropsWithoutChildren<
-    DetailedHTMLProps<HTMLAttributes<HTMLBRElement>, "br">
+  body: DetailedHTMLProps<
+    HTMLAttributes<HTMLBodyElement>,
+    HTMLBodyElement,
+    "body"
   >;
-  button: DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, "button">;
-  canvas: DetailedHTMLProps<CanvasHTMLAttributes<HTMLCanvasElement>, "canvas">;
-  caption: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "caption">;
-  center: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "center">;
-  cite: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "cite">;
-  code: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "code">;
+  br: PropsWithoutChildren<
+    DetailedHTMLProps<HTMLAttributes<HTMLBRElement>, HTMLBRElement, "br">
+  >;
+  button: DetailedHTMLProps<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement,
+    "button"
+  >;
+  canvas: DetailedHTMLProps<
+    CanvasHTMLAttributes<HTMLCanvasElement>,
+    HTMLCanvasElement,
+    "canvas"
+  >;
+  caption: DetailedHTMLProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "caption"
+  >;
+  center: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "center">;
+  cite: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "cite">;
+  code: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "code">;
   col: PropsWithoutChildren<
-    DetailedHTMLProps<ColHTMLAttributes<HTMLTableColElement>, "col">
+    DetailedHTMLProps<
+      ColHTMLAttributes<HTMLTableColElement>,
+      HTMLTableColElement,
+      "col"
+    >
   >;
   colgroup: DetailedHTMLProps<
     ColgroupHTMLAttributes<HTMLTableColElement>,
+    HTMLTableColElement,
     "colgroup"
   >;
-  data: DetailedHTMLProps<DataHTMLAttributes<HTMLDataElement>, "data">;
-  datalist: DetailedHTMLProps<HTMLAttributes<HTMLDataListElement>, "datalist">;
-  dd: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "dd">;
-  del: DetailedHTMLProps<DelHTMLAttributes<HTMLModElement>, "del">;
+  data: DetailedHTMLProps<
+    DataHTMLAttributes<HTMLDataElement>,
+    HTMLDataElement,
+    "data"
+  >;
+  datalist: DetailedHTMLProps<
+    HTMLAttributes<HTMLDataListElement>,
+    HTMLDataListElement,
+    "datalist"
+  >;
+  dd: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "dd">;
+  del: DetailedHTMLProps<
+    DelHTMLAttributes<HTMLModElement>,
+    HTMLModElement,
+    "del"
+  >;
   details: DetailedHTMLProps<
     DetailsHTMLAttributes<HTMLDetailsElement>,
+    HTMLDetailsElement,
     "details"
   >;
-  dfn: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "dfn">;
-  dialog: DetailedHTMLProps<DialogHTMLAttributes<HTMLDialogElement>, "dialog">;
-  div: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, "div">;
-  dl: DetailedHTMLProps<HTMLAttributes<HTMLDListElement>, "dl">;
-  dt: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "dt">;
-  em: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "em">;
+  dfn: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "dfn">;
+  dialog: DetailedHTMLProps<
+    DialogHTMLAttributes<HTMLDialogElement>,
+    HTMLDialogElement,
+    "dialog"
+  >;
+  div: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement, "div">;
+  dl: DetailedHTMLProps<
+    HTMLAttributes<HTMLDListElement>,
+    HTMLDListElement,
+    "dl"
+  >;
+  dt: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "dt">;
+  em: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "em">;
   embed: PropsWithoutChildren<
-    DetailedHTMLProps<EmbedHTMLAttributes<HTMLEmbedElement>, "embed">
+    DetailedHTMLProps<
+      EmbedHTMLAttributes<HTMLEmbedElement>,
+      HTMLEmbedElement,
+      "embed"
+    >
   >;
   fieldset: DetailedHTMLProps<
     FieldsetHTMLAttributes<HTMLFieldSetElement>,
+    HTMLFieldSetElement,
     "fieldset"
   >;
-  figcaption: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "figcaption">;
-  figure: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "figure">;
-  footer: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "footer">;
-  form: DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, "form">;
-  h1: DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, "h1">;
-  h2: DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, "h2">;
-  h3: DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, "h3">;
-  h4: DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, "h4">;
-  h5: DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, "h5">;
-  h6: DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, "h6">;
-  head: DetailedHTMLProps<HTMLAttributes<HTMLHeadElement>, "head">;
-  header: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "header">;
-  hgroup: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "hgroup">;
-  hr: PropsWithoutChildren<
-    DetailedHTMLProps<HTMLAttributes<HTMLHRElement>, "hr">
+  figcaption: DetailedHTMLProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "figcaption"
   >;
-  html: DetailedHTMLProps<HtmlHTMLAttributes<HTMLHtmlElement>, "html">;
-  i: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "i">;
-  iframe: DetailedHTMLProps<IframeHTMLAttributes<HTMLIFrameElement>, "iframe">;
+  figure: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "figure">;
+  footer: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "footer">;
+  form: DetailedHTMLProps<
+    FormHTMLAttributes<HTMLFormElement>,
+    HTMLFormElement,
+    "form"
+  >;
+  h1: DetailedHTMLProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement,
+    "h1"
+  >;
+  h2: DetailedHTMLProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement,
+    "h2"
+  >;
+  h3: DetailedHTMLProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement,
+    "h3"
+  >;
+  h4: DetailedHTMLProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement,
+    "h4"
+  >;
+  h5: DetailedHTMLProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement,
+    "h5"
+  >;
+  h6: DetailedHTMLProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement,
+    "h6"
+  >;
+  head: DetailedHTMLProps<
+    HTMLAttributes<HTMLHeadElement>,
+    HTMLHeadElement,
+    "head"
+  >;
+  header: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "header">;
+  hgroup: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "hgroup">;
+  hr: PropsWithoutChildren<
+    DetailedHTMLProps<HTMLAttributes<HTMLHRElement>, HTMLHRElement, "hr">
+  >;
+  html: DetailedHTMLProps<
+    HtmlHTMLAttributes<HTMLHtmlElement>,
+    HTMLHtmlElement,
+    "html"
+  >;
+  i: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "i">;
+  iframe: DetailedHTMLProps<
+    IframeHTMLAttributes<HTMLIFrameElement>,
+    HTMLIFrameElement,
+    "iframe"
+  >;
   img: PropsWithoutChildren<
-    DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, "img">
+    DetailedHTMLProps<
+      ImgHTMLAttributes<HTMLImageElement>,
+      HTMLImageElement,
+      "img"
+    >
   >;
   input: PropsWithoutChildren<
-    DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, "input">
+    DetailedHTMLProps<
+      InputHTMLAttributes<HTMLInputElement>,
+      HTMLInputElement,
+      "input"
+    >
   >;
-  ins: DetailedHTMLProps<InsHTMLAttributes<HTMLModElement>, "ins">;
-  kbd: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "kbd">;
-  keygen: DetailedHTMLProps<KeygenHTMLAttributes<HTMLElement>, "keygen">;
-  label: DetailedHTMLProps<LabelHTMLAttributes<HTMLLabelElement>, "label">;
-  legend: DetailedHTMLProps<HTMLAttributes<HTMLLegendElement>, "legend">;
-  li: DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, "li">;
+  ins: DetailedHTMLProps<
+    InsHTMLAttributes<HTMLModElement>,
+    HTMLModElement,
+    "ins"
+  >;
+  kbd: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "kbd">;
+  keygen: DetailedHTMLProps<
+    KeygenHTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "keygen"
+  >;
+  label: DetailedHTMLProps<
+    LabelHTMLAttributes<HTMLLabelElement>,
+    HTMLLabelElement,
+    "label"
+  >;
+  legend: DetailedHTMLProps<
+    HTMLAttributes<HTMLLegendElement>,
+    HTMLLegendElement,
+    "legend"
+  >;
+  li: DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement, "li">;
   link: PropsWithoutChildren<
-    DetailedHTMLProps<LinkHTMLAttributes<HTMLLinkElement>, "link">
+    DetailedHTMLProps<
+      LinkHTMLAttributes<HTMLLinkElement>,
+      HTMLLinkElement,
+      "link"
+    >
   >;
-  main: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "main">;
-  map: DetailedHTMLProps<MapHTMLAttributes<HTMLMapElement>, "map">;
-  mark: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "mark">;
-  menu: DetailedHTMLProps<MenuHTMLAttributes<HTMLElement>, "menu">;
-  menuitem: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "menuitem">;
+  main: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "main">;
+  map: DetailedHTMLProps<
+    MapHTMLAttributes<HTMLMapElement>,
+    HTMLMapElement,
+    "map"
+  >;
+  mark: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "mark">;
+  menu: DetailedHTMLProps<MenuHTMLAttributes<HTMLElement>, HTMLElement, "menu">;
+  menuitem: DetailedHTMLProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "menuitem"
+  >;
   meta: PropsWithoutChildren<
-    DetailedHTMLProps<MetaHTMLAttributes<HTMLMetaElement>, "meta">
+    DetailedHTMLProps<
+      MetaHTMLAttributes<HTMLMetaElement>,
+      HTMLMetaElement,
+      "meta"
+    >
   >;
-  meter: DetailedHTMLProps<MeterHTMLAttributes<HTMLMeterElement>, "meter">;
-  nav: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "nav">;
-  noindex: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "noindex">;
-  noscript: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "noscript">;
-  object: DetailedHTMLProps<ObjectHTMLAttributes<HTMLObjectElement>, "object">;
-  ol: DetailedHTMLProps<OlHTMLAttributes<HTMLOListElement>, "ol">;
+  meter: DetailedHTMLProps<
+    MeterHTMLAttributes<HTMLMeterElement>,
+    HTMLMeterElement,
+    "meter"
+  >;
+  nav: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "nav">;
+  noindex: DetailedHTMLProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "noindex"
+  >;
+  noscript: DetailedHTMLProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "noscript"
+  >;
+  object: DetailedHTMLProps<
+    ObjectHTMLAttributes<HTMLObjectElement>,
+    HTMLObjectElement,
+    "object"
+  >;
+  ol: DetailedHTMLProps<
+    OlHTMLAttributes<HTMLOListElement>,
+    HTMLOListElement,
+    "ol"
+  >;
   optgroup: DetailedHTMLProps<
     OptgroupHTMLAttributes<HTMLOptGroupElement>,
+    HTMLOptGroupElement,
     "optgroup"
   >;
-  option: DetailedHTMLProps<OptionHTMLAttributes<HTMLOptionElement>, "option">;
-  output: DetailedHTMLProps<OutputHTMLAttributes<HTMLOutputElement>, "output">;
-  p: DetailedHTMLProps<HTMLAttributes<HTMLParagraphElement>, "p">;
-  param: PropsWithoutChildren<
-    DetailedHTMLProps<ParamHTMLAttributes<HTMLParamElement>, "param">
+  option: DetailedHTMLProps<
+    OptionHTMLAttributes<HTMLOptionElement>,
+    HTMLOptionElement,
+    "option"
   >;
-  picture: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "picture">;
-  pre: DetailedHTMLProps<HTMLAttributes<HTMLPreElement>, "pre">;
+  output: DetailedHTMLProps<
+    OutputHTMLAttributes<HTMLOutputElement>,
+    HTMLOutputElement,
+    "output"
+  >;
+  p: DetailedHTMLProps<
+    HTMLAttributes<HTMLParagraphElement>,
+    HTMLParagraphElement,
+    "p"
+  >;
+  param: PropsWithoutChildren<
+    DetailedHTMLProps<
+      ParamHTMLAttributes<HTMLParamElement>,
+      HTMLParamElement,
+      "param"
+    >
+  >;
+  picture: DetailedHTMLProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "picture"
+  >;
+  pre: DetailedHTMLProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement, "pre">;
   progress: DetailedHTMLProps<
     ProgressHTMLAttributes<HTMLProgressElement>,
+    HTMLProgressElement,
     "progress"
   >;
-  q: DetailedHTMLProps<QuoteHTMLAttributes<HTMLQuoteElement>, "q">;
-  rp: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "rp">;
-  rt: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "rt">;
-  ruby: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "ruby">;
-  s: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "s">;
-  samp: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "samp">;
-  search: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "search">;
-  slot: DetailedHTMLProps<SlotHTMLAttributes<HTMLSlotElement>, "slot">;
-  script: DetailedHTMLProps<ScriptHTMLAttributes<HTMLScriptElement>, "script">;
-  section: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "section">;
-  select: DetailedHTMLProps<SelectHTMLAttributes<HTMLSelectElement>, "select">;
-  small: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "small">;
-  source: PropsWithoutChildren<
-    DetailedHTMLProps<SourceHTMLAttributes<HTMLSourceElement>, "source">
+  q: DetailedHTMLProps<
+    QuoteHTMLAttributes<HTMLQuoteElement>,
+    HTMLQuoteElement,
+    "q"
   >;
-  span: DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, "span">;
-  strong: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "strong">;
-  style: DetailedHTMLProps<StyleHTMLAttributes<HTMLStyleElement>, "style">;
-  sub: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "sub">;
-  summary: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "summary">;
-  sup: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "sup">;
-  table: DetailedHTMLProps<TableHTMLAttributes<HTMLTableElement>, "table">;
-  template: DetailedHTMLProps<HTMLAttributes<HTMLTemplateElement>, "template">;
-  tbody: DetailedHTMLProps<HTMLAttributes<HTMLTableSectionElement>, "tbody">;
-  td: DetailedHTMLProps<TdHTMLAttributes<HTMLTableDataCellElement>, "td">;
+  rp: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "rp">;
+  rt: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "rt">;
+  ruby: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "ruby">;
+  s: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "s">;
+  samp: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "samp">;
+  search: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "search">;
+  slot: DetailedHTMLProps<
+    SlotHTMLAttributes<HTMLSlotElement>,
+    HTMLSlotElement,
+    "slot"
+  >;
+  script: DetailedHTMLProps<
+    ScriptHTMLAttributes<HTMLScriptElement>,
+    HTMLScriptElement,
+    "script"
+  >;
+  section: DetailedHTMLProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "section"
+  >;
+  select: DetailedHTMLProps<
+    SelectHTMLAttributes<HTMLSelectElement>,
+    HTMLSelectElement,
+    "select"
+  >;
+  small: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "small">;
+  source: PropsWithoutChildren<
+    DetailedHTMLProps<
+      SourceHTMLAttributes<HTMLSourceElement>,
+      HTMLSourceElement,
+      "source"
+    >
+  >;
+  span: DetailedHTMLProps<
+    HTMLAttributes<HTMLSpanElement>,
+    HTMLSpanElement,
+    "span"
+  >;
+  strong: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "strong">;
+  style: DetailedHTMLProps<
+    StyleHTMLAttributes<HTMLStyleElement>,
+    HTMLStyleElement,
+    "style"
+  >;
+  sub: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "sub">;
+  summary: DetailedHTMLProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "summary"
+  >;
+  sup: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "sup">;
+  table: DetailedHTMLProps<
+    TableHTMLAttributes<HTMLTableElement>,
+    HTMLTableElement,
+    "table"
+  >;
+  template: DetailedHTMLProps<
+    HTMLAttributes<HTMLTemplateElement>,
+    HTMLTemplateElement,
+    "template"
+  >;
+  tbody: DetailedHTMLProps<
+    HTMLAttributes<HTMLTableSectionElement>,
+    HTMLTableSectionElement,
+    "tbody"
+  >;
+  td: DetailedHTMLProps<
+    TdHTMLAttributes<HTMLTableDataCellElement>,
+    HTMLTableDataCellElement,
+    "td"
+  >;
   textarea: DetailedHTMLProps<
     TextareaHTMLAttributes<HTMLTextAreaElement>,
+    HTMLTextAreaElement,
     "textarea"
   >;
-  tfoot: DetailedHTMLProps<HTMLAttributes<HTMLTableSectionElement>, "tfoot">;
-  th: DetailedHTMLProps<ThHTMLAttributes<HTMLTableHeaderCellElement>, "th">;
-  thead: DetailedHTMLProps<HTMLAttributes<HTMLTableSectionElement>, "thead">;
-  time: DetailedHTMLProps<TimeHTMLAttributes<HTMLTimeElement>, "time">;
-  title: DetailedHTMLProps<HTMLAttributes<HTMLTitleElement>, "title">;
-  tr: DetailedHTMLProps<HTMLAttributes<HTMLTableRowElement>, "tr">;
-  track: PropsWithoutChildren<
-    DetailedHTMLProps<TrackHTMLAttributes<HTMLTrackElement>, "track">
+  tfoot: DetailedHTMLProps<
+    HTMLAttributes<HTMLTableSectionElement>,
+    HTMLTableSectionElement,
+    "tfoot"
   >;
-  u: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "u">;
-  ul: DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, "ul">;
-  var: DetailedHTMLProps<HTMLAttributes<HTMLElement>, "var">;
-  video: DetailedHTMLProps<VideoHTMLAttributes<HTMLVideoElement>, "video">;
+  th: DetailedHTMLProps<
+    ThHTMLAttributes<HTMLTableHeaderCellElement>,
+    HTMLTableHeaderCellElement,
+    "th"
+  >;
+  thead: DetailedHTMLProps<
+    HTMLAttributes<HTMLTableSectionElement>,
+    HTMLTableSectionElement,
+    "thead"
+  >;
+  time: DetailedHTMLProps<
+    TimeHTMLAttributes<HTMLTimeElement>,
+    HTMLTimeElement,
+    "time"
+  >;
+  title: DetailedHTMLProps<
+    HTMLAttributes<HTMLTitleElement>,
+    HTMLTitleElement,
+    "title"
+  >;
+  tr: DetailedHTMLProps<
+    HTMLAttributes<HTMLTableRowElement>,
+    HTMLTableRowElement,
+    "tr"
+  >;
+  track: PropsWithoutChildren<
+    DetailedHTMLProps<
+      TrackHTMLAttributes<HTMLTrackElement>,
+      HTMLTrackElement,
+      "track"
+    >
+  >;
+  u: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "u">;
+  ul: DetailedHTMLProps<
+    HTMLAttributes<HTMLUListElement>,
+    HTMLUListElement,
+    "ul"
+  >;
+  var: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "var">;
+  video: DetailedHTMLProps<
+    VideoHTMLAttributes<HTMLVideoElement>,
+    HTMLVideoElement,
+    "video"
+  >;
   wbr: PropsWithoutChildren<
-    DetailedHTMLProps<HTMLAttributes<HTMLElement>, "wbr">
+    DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "wbr">
   >;
   webview: DetailedHTMLProps<
     WebViewHTMLAttributes<HTMLWebViewElement>,
+    HTMLWebViewElement,
     "webview"
   >;
 }
 
-export interface HTMLElements {
-  a: HTMLAnchorElement;
-  abbr: HTMLElement;
-  address: HTMLElement;
-  area: HTMLAreaElement;
-  article: HTMLElement;
-  aside: HTMLElement;
-  audio: HTMLAudioElement;
-  b: HTMLElement;
-  base: HTMLBaseElement;
-  bdi: HTMLElement;
-  bdo: HTMLElement;
-  big: HTMLElement;
-  blockquote: HTMLQuoteElement;
-  body: HTMLBodyElement;
-  br: HTMLBRElement;
-  button: HTMLButtonElement;
-  canvas: HTMLCanvasElement;
-  caption: HTMLElement;
-  center: HTMLElement;
-  cite: HTMLElement;
-  code: HTMLElement;
-  col: HTMLTableColElement;
-  colgroup: HTMLTableColElement;
-  data: HTMLDataElement;
-  datalist: HTMLDataListElement;
-  dd: HTMLElement;
-  del: HTMLModElement;
-  details: HTMLDetailsElement;
-  dfn: HTMLElement;
-  dialog: HTMLDialogElement;
-  div: HTMLDivElement;
-  dl: HTMLDListElement;
-  dt: HTMLElement;
-  em: HTMLElement;
-  embed: HTMLEmbedElement;
-  fieldset: HTMLFieldSetElement;
-  figcaption: HTMLElement;
-  figure: HTMLElement;
-  footer: HTMLElement;
-  form: HTMLFormElement;
-  h1: HTMLHeadingElement;
-  h2: HTMLHeadingElement;
-  h3: HTMLHeadingElement;
-  h4: HTMLHeadingElement;
-  h5: HTMLHeadingElement;
-  h6: HTMLHeadingElement;
-  head: HTMLHeadElement;
-  header: HTMLElement;
-  hgroup: HTMLElement;
-  hr: HTMLHRElement;
-  html: HTMLHtmlElement;
-  i: HTMLElement;
-  iframe: HTMLIFrameElement;
-  img: HTMLImageElement;
-  input: HTMLInputElement;
-  ins: HTMLModElement;
-  kbd: HTMLElement;
-  keygen: HTMLElement;
-  label: HTMLLabelElement;
-  legend: HTMLLegendElement;
-  li: HTMLLIElement;
-  link: HTMLLinkElement;
-  main: HTMLElement;
-  map: HTMLMapElement;
-  mark: HTMLElement;
-  menu: HTMLMenuElement;
-  menuitem: HTMLElement;
-  meta: HTMLMetaElement;
-  meter: HTMLMeterElement;
-  nav: HTMLElement;
-  noindex: HTMLElement;
-  noscript: HTMLElement;
-  object: HTMLObjectElement;
-  ol: HTMLOListElement;
-  optgroup: HTMLOptGroupElement;
-  option: HTMLOptionElement;
-  output: HTMLOutputElement;
-  p: HTMLParagraphElement;
-  param: HTMLParamElement;
-  picture: HTMLPictureElement;
-  pre: HTMLPreElement;
-  progress: HTMLProgressElement;
-  q: HTMLQuoteElement;
-  rp: HTMLElement;
-  rt: HTMLElement;
-  ruby: HTMLElement;
-  s: HTMLElement;
-  samp: HTMLElement;
-  search: HTMLInputElement;
-  slot: HTMLSlotElement;
-  script: HTMLScriptElement;
-  section: HTMLElement;
-  select: HTMLSelectElement;
-  small: HTMLElement;
-  source: HTMLSourceElement;
-  span: HTMLSpanElement;
-  strong: HTMLElement;
-  style: HTMLStyleElement;
-  sub: HTMLElement;
-  summary: HTMLElement;
-  sup: HTMLElement;
-  table: HTMLTableElement;
-  template: HTMLTemplateElement;
-  tbody: HTMLTableSectionElement;
-  td: HTMLTableDataCellElement;
-  textarea: HTMLTextAreaElement;
-  tfoot: HTMLTableSectionElement;
-  th: HTMLTableHeaderCellElement;
-  thead: HTMLTableSectionElement;
-  time: HTMLTimeElement;
-  title: HTMLTitleElement;
-  tr: HTMLTableRowElement;
-  track: HTMLTrackElement;
-  u: HTMLElement;
-  ul: HTMLUListElement;
-  var: HTMLElement;
-  video: HTMLVideoElement;
-  wbr: HTMLElement;
-  webview: HTMLElement;
-}
+// export interface HTMLElements {
+//   a: HTMLAnchorElement;
+//   abbr: HTMLElement;
+//   address: HTMLElement;
+//   area: HTMLAreaElement;
+//   article: HTMLElement;
+//   aside: HTMLElement;
+//   audio: HTMLAudioElement;
+//   b: HTMLElement;
+//   base: HTMLBaseElement;
+//   bdi: HTMLElement;
+//   bdo: HTMLElement;
+//   big: HTMLElement;
+//   blockquote: HTMLQuoteElement;
+//   body: HTMLBodyElement;
+//   br: HTMLBRElement;
+//   button: HTMLButtonElement;
+//   canvas: HTMLCanvasElement;
+//   caption: HTMLElement;
+//   center: HTMLElement;
+//   cite: HTMLElement;
+//   code: HTMLElement;
+//   col: HTMLTableColElement;
+//   colgroup: HTMLTableColElement;
+//   data: HTMLDataElement;
+//   datalist: HTMLDataListElement;
+//   dd: HTMLElement;
+//   del: HTMLModElement;
+//   details: HTMLDetailsElement;
+//   dfn: HTMLElement;
+//   dialog: HTMLDialogElement;
+//   div: HTMLDivElement;
+//   dl: HTMLDListElement;
+//   dt: HTMLElement;
+//   em: HTMLElement;
+//   embed: HTMLEmbedElement;
+//   fieldset: HTMLFieldSetElement;
+//   figcaption: HTMLElement;
+//   figure: HTMLElement;
+//   footer: HTMLElement;
+//   form: HTMLFormElement;
+//   h1: HTMLHeadingElement;
+//   h2: HTMLHeadingElement;
+//   h3: HTMLHeadingElement;
+//   h4: HTMLHeadingElement;
+//   h5: HTMLHeadingElement;
+//   h6: HTMLHeadingElement;
+//   head: HTMLHeadElement;
+//   header: HTMLElement;
+//   hgroup: HTMLElement;
+//   hr: HTMLHRElement;
+//   html: HTMLHtmlElement;
+//   i: HTMLElement;
+//   iframe: HTMLIFrameElement;
+//   img: HTMLImageElement;
+//   input: HTMLInputElement;
+//   ins: HTMLModElement;
+//   kbd: HTMLElement;
+//   keygen: HTMLElement;
+//   label: HTMLLabelElement;
+//   legend: HTMLLegendElement;
+//   li: HTMLLIElement;
+//   link: HTMLLinkElement;
+//   main: HTMLElement;
+//   map: HTMLMapElement;
+//   mark: HTMLElement;
+//   menu: HTMLMenuElement;
+//   menuitem: HTMLElement;
+//   meta: HTMLMetaElement;
+//   meter: HTMLMeterElement;
+//   nav: HTMLElement;
+//   noindex: HTMLElement;
+//   noscript: HTMLElement;
+//   object: HTMLObjectElement;
+//   ol: HTMLOListElement;
+//   optgroup: HTMLOptGroupElement;
+//   option: HTMLOptionElement;
+//   output: HTMLOutputElement;
+//   p: HTMLParagraphElement;
+//   param: HTMLParamElement;
+//   picture: HTMLPictureElement;
+//   pre: HTMLPreElement;
+//   progress: HTMLProgressElement;
+//   q: HTMLQuoteElement;
+//   rp: HTMLElement;
+//   rt: HTMLElement;
+//   ruby: HTMLElement;
+//   s: HTMLElement;
+//   samp: HTMLElement;
+//   search: HTMLInputElement;
+//   slot: HTMLSlotElement;
+//   script: HTMLScriptElement;
+//   section: HTMLElement;
+//   select: HTMLSelectElement;
+//   small: HTMLElement;
+//   source: HTMLSourceElement;
+//   span: HTMLSpanElement;
+//   strong: HTMLElement;
+//   style: HTMLStyleElement;
+//   sub: HTMLElement;
+//   summary: HTMLElement;
+//   sup: HTMLElement;
+//   table: HTMLTableElement;
+//   template: HTMLTemplateElement;
+//   tbody: HTMLTableSectionElement;
+//   td: HTMLTableDataCellElement;
+//   textarea: HTMLTextAreaElement;
+//   tfoot: HTMLTableSectionElement;
+//   th: HTMLTableHeaderCellElement;
+//   thead: HTMLTableSectionElement;
+//   time: HTMLTimeElement;
+//   title: HTMLTitleElement;
+//   tr: HTMLTableRowElement;
+//   track: HTMLTrackElement;
+//   u: HTMLElement;
+//   ul: HTMLUListElement;
+//   var: HTMLElement;
+//   video: HTMLVideoElement;
+//   wbr: HTMLElement;
+//   webview: HTMLElement;
+// }

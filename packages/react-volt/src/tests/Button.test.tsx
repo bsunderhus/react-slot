@@ -1,19 +1,9 @@
 import * as React from "react";
 import { test, assertType } from "vitest";
 import { OutletStatus, isPlugProps, outlet, plug, union } from "../index";
-import type {
-  Plug,
-  PlugProps,
-  PrimaryPlug,
-  LockedIn,
-  PlugRefElement,
-  OutletTypeDataType,
-} from "../index";
-import type {
-  DistributiveOmit,
-  HTMLElements,
-  HTMLElementsProps,
-} from "../types/helper.types";
+import type { Plug, PlugProps, LockedIn, PlugRefElement } from "../index";
+import type { DistributiveOmit } from "../types/helper.types";
+import type { Primary } from "../types/plug.types";
 
 type IconPlugProps = PlugProps<"span", "div"> & {
   /**
@@ -24,12 +14,12 @@ type IconPlugProps = PlugProps<"span", "div"> & {
   position?: "before" | "after";
 };
 
-type ButtonProps = DistributiveOmit<
-  PrimaryPlug<"button", "a" | "div">,
-  "content"
-> & {
+type ButtonProps = Primary<Plug<"button", "a" | "div">> & {
   icon?: Plug<IconPlugProps>;
   content?: LockedIn<Plug<"div">>;
+  onIconSwitch?: React.EventHandler<
+    React.MouseEvent<PlugRefElement<ButtonProps>>
+  >;
 };
 
 const Button = React.forwardRef<PlugRefElement<ButtonProps>, ButtonProps>(
@@ -40,6 +30,7 @@ const Button = React.forwardRef<PlugRefElement<ButtonProps>, ButtonProps>(
       children,
       ...rest
     } = props;
+
     const onClick = union.ensureEventHandlerType(props.onClick);
 
     const iconPosition =
@@ -82,15 +73,17 @@ const Button = React.forwardRef<PlugRefElement<ButtonProps>, ButtonProps>(
 test("Button", () => {
   assertType(
     <Button
+      onIconSwitch={(ev) => ev.preventDefault()}
       onClick={(ev) => ev.preventDefault()}
       icon={{
         children: <i>this is</i>,
         position: "after",
+        //@ts-expect-error - event will be any
         onClick: (event) => event.preventDefault(),
       }}
     />
   );
-  assertType(<Button as="a" />);
+  assertType(<Button as="a" href="anchor value" />);
   assertType(<Button as="div" />);
   //@ts-expect-error - it should not  support span
   assertType(<Button as="span" />);
