@@ -4,7 +4,7 @@ import type {
   JSXElementConstructor,
   ReactNode,
 } from "react";
-import type { OutletStatus, _plugRefSymbol } from "../constants";
+import type { OutletStatus } from "../constants";
 import type { IntrinsicOptionalPlugs, IntrinsicPlugs } from "./helper.types";
 
 /**
@@ -27,7 +27,7 @@ export type ObjectDataType = Record<string, unknown>;
  *
  * The base type of outlet type.
  *
- * This should **ONLY** be used in type templates as in `extends PlugDataType`
+ * This should **ONLY** be used in type templates as in `extends OutletTypeDataType`
  * it shouldn't be used as the type itself.
  *
  *
@@ -39,6 +39,18 @@ export type OutletTypeDataType =
   | keyof IntrinsicPlugs
   | JSXElementConstructor<ObjectDataType>;
 
+/**
+ * @public
+ *
+ * The base type of a plug type.
+ *
+ * This should **ONLY** be used in type templates as in `extends PlugTypeDataType`
+ * it shouldn't be used as the type itself.
+ *
+ * > **Note:** _In the context of Javascript, {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Language_overview#data_types | data types} is the term used to refer to the primitive types of the language._
+ *
+ * > _The Suffix "DataType" will denote the building block types that will serve as "primitive" to all other types._
+ */
 export type PlugTypeDataType =
   | OutletTypeDataType
   | keyof IntrinsicOptionalPlugs;
@@ -48,7 +60,7 @@ export type PlugTypeDataType =
  *
  * The base type of plug properties.
  *
- * This should **ONLY** be used in type templates as in `extends PlugDataType`
+ * This should **ONLY** be used in type templates as in `extends PlugPropsDataType`
  * it shouldn't be used as the type itself.
  *
  * > **Note:** _In the context of Javascript, {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Language_overview#data_types | data types} is the term used to refer to the primitive types of the language._
@@ -65,11 +77,6 @@ export interface PlugPropsDataType {
    * This is a dangerous feature and should be used with caution.
    */
   dangerouslyRenderOutlet?: OutletRendererDataType;
-  /**
-   * This cannot be internal because its used to infer the plug reference,
-   * if removed from public API it'll break the type inference
-   */
-  [_plugRefSymbol]?: unknown;
 }
 
 /**
@@ -93,7 +100,7 @@ export type OutletRendererDataType = (
  *
  * The base type of a slot. Similar to ReactNode but without null | undefined
  *
- * This should **ONLY** be used in type templates as in `extends PlugDataType`
+ * This should **ONLY** be used in type templates as in `extends SlotDataType`
  * it shouldn't be used as the type itself.
  *
  * > **Note:** _In the context of Javascript, {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Language_overview#data_types | data types} is the term used to refer to the primitive types of the language._

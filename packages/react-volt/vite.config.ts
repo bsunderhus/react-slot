@@ -9,8 +9,16 @@ export default defineConfig({
     swc({
       swc: {
         jsc: {
+          parser: {
+            syntax: "typescript",
+            tsx: false,
+          },
+          preserveAllComments: true,
           experimental: {
             plugins: [["swc-plugin-de-indent-template-literal", {}]],
+          },
+          minify: {
+            compress: false,
           },
         },
       },

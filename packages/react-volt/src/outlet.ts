@@ -1,4 +1,5 @@
 import {
+  _outletElementType,
   _outletRendererSymbol,
   _outletStatusSymbol,
   _outletTypeSymbol,
@@ -7,14 +8,12 @@ import {
 import { isSlot, isOutletStatus } from "./guards";
 import { resolve as resolvePlug } from "./plug";
 import type { OutletTypePlug, PlugTypePlug } from "./types/plug.types";
-import type { Outlet, LockedIn } from "./types/outlet.types";
+import type { OutletComponent, LockedIn } from "./types/outlet.types";
 import type {
   PlugPropsDataType,
   SlotDataType,
   OutletTypeDataType,
-  PlugTypeDataType,
 } from "./types/datatype.types";
-import type { IntrinsicPlugs } from "./types/helper.types";
 
 const emptyPropsObject: PlugPropsDataType = {};
 
@@ -33,25 +32,26 @@ const emptyPropsObject: PlugPropsDataType = {};
 export function outlet<const OutletType extends OutletTypeDataType>(
   outletTypes: OutletType,
   plug: NoInfer<OutletTypePlug<OutletType>>
-): Outlet<OutletType> {
+): OutletComponent<OutletType> {
   const outletType = Array.isArray(outletTypes) ? outletTypes[0] : outletTypes;
   const props = resolvePlug(plug) ?? emptyPropsObject;
-  const instance = {
-    [_outletTypeSymbol]: outletType,
-    [_outletStatusSymbol]: OutletStatus.PluggedIn,
-    [_outletRendererSymbol]: undefined,
+  const component = {
     props,
-  } as Outlet<OutletType>;
+    $$typeof: _outletElementType,
+    [_outletTypeSymbol]: outletType,
+    [_outletRendererSymbol]: undefined,
+    [_outletStatusSymbol]: OutletStatus.PluggedIn,
+  } as OutletComponent<OutletType>;
 
   if (plug === undefined) {
-    return instance;
+    return component;
   }
   if (isOutletStatus(plug)) {
-    instance[_outletStatusSymbol] = plug;
-    return instance;
+    component[_outletStatusSymbol] = plug;
+    return component;
   }
   if (isSlot(plug)) {
-    return instance;
+    return component;
   }
   if (process.env.NODE_ENV !== "production" && typeof plug !== "object") {
     console.error(/** #__DE-INDENT__ */ `
@@ -62,14 +62,14 @@ export function outlet<const OutletType extends OutletTypeDataType>(
   }
   if (props.as !== undefined && typeof outletType === "string") {
     // FIXME: figure out what is wrong with props.as
-    instance[_outletTypeSymbol] = props.as as OutletType;
+    component[_outletTypeSymbol] = props.as as OutletType;
     delete props.as;
   }
   if (typeof props?.dangerouslyRenderOutlet === "function") {
-    instance[_outletRendererSymbol] = props.dangerouslyRenderOutlet;
+    component[_outletRendererSymbol] = props.dangerouslyRenderOutlet;
     delete props.dangerouslyRenderOutlet;
   }
-  return instance;
+  return component;
 }
 
 /**
@@ -88,4 +88,4 @@ export function outlet<const OutletType extends OutletTypeDataType>(
 outlet.lockedIn = outlet as <const OutletType extends OutletTypeDataType>(
   outletTypes: OutletType,
   plug: NoInfer<LockedIn<OutletTypePlug<OutletType>>>
-) => Outlet<OutletType>;
+) => OutletComponent<OutletType>;

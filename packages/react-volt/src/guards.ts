@@ -11,8 +11,14 @@ import type {
   SlotDataType,
   OutletTypeDataType,
 } from "./types/datatype.types";
-import type { Outlet } from "./types/outlet.types";
+import type { OutletComponent } from "./types/outlet.types";
 
+/**
+ * @public
+ *
+ * Type guard for checking if a value is an outlet type.
+ * @param value - value to check
+ */
 export const isOutletType = isValidElementType as <
   O extends OutletTypeDataType
 >(
@@ -27,7 +33,7 @@ export const isOutletType = isValidElementType as <
  */
 export const isOutlet = <OutletType extends OutletTypeDataType>(
   value: unknown
-): value is Outlet<OutletType> =>
+): value is OutletComponent<OutletType> =>
   typeof value === "object" &&
   value !== null &&
   _outletTypeSymbol in value &&
@@ -50,8 +56,9 @@ export const isOutletStatus = <S extends OutletStatus>(
  * Type guard for checking if an outlet is plugged in.
  * @param outlet - outlet to check
  */
-export const isPluggedIn = <S extends Outlet<any>>(outlet: S): boolean =>
-  outlet[_outletStatusSymbol] === OutletStatus.PluggedIn;
+export const isPluggedIn = <S extends OutletComponent<any>>(
+  outlet: S
+): boolean => outlet[_outletStatusSymbol] === OutletStatus.PluggedIn;
 
 /**
  * @public
@@ -59,8 +66,9 @@ export const isPluggedIn = <S extends Outlet<any>>(outlet: S): boolean =>
  * Type guard for checking if an outlet is unplugged.
  * @param outlet - outlet to check
  */
-export const isUnplugged = <S extends Outlet<any>>(outlet: S): boolean =>
-  outlet[_outletStatusSymbol] === OutletStatus.UnPlugged;
+export const isUnplugged = <S extends OutletComponent<any>>(
+  outlet: S
+): boolean => outlet[_outletStatusSymbol] === OutletStatus.UnPlugged;
 
 /**
  * @internal

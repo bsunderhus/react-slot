@@ -42,6 +42,9 @@ const Button = React.forwardRef<PlugRefElement<ButtonProps>, ButtonProps>(
       onClick: (event: React.MouseEvent<PlugRefElement<ButtonProps>>) => {
         // @ts-expect-error - we should verify that event.currentTarget is an anchor
         event.currentTarget.href;
+        if (event.currentTarget instanceof HTMLAnchorElement) {
+          event.currentTarget.href;
+        }
         onClick?.(event);
       },
     });
@@ -58,7 +61,7 @@ const Button = React.forwardRef<PlugRefElement<ButtonProps>, ButtonProps>(
       }))
     );
 
-    const Content = outlet.lockedIn("div", content);
+    const Content = outlet.lockedIn<"div">("div", content);
 
     return (
       <Root>

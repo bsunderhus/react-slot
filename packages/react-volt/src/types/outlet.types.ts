@@ -6,7 +6,7 @@ import type {
   ReactNode,
 } from "react";
 import type {
-  _plugRefSymbol,
+  _outletElementType,
   _outletRendererSymbol,
   _outletStatusSymbol,
   _outletTypeSymbol,
@@ -46,9 +46,14 @@ export type OutletRenderer<in out OutletType extends OutletTypeDataType> = (
  *
  * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
-export interface Outlet<OutletType extends OutletTypeDataType>
-  extends ExoticComponent<PropsFromOutletType<OutletType>> {
+export interface OutletComponent<OutletType extends OutletTypeDataType> {
+  (props: PropsFromOutletType<OutletType>): ReactNode;
   readonly props: PropsFromOutletType<OutletType>;
+  /**
+   * @internal
+   * Internal property to store the element type of the outlet.
+   */
+  readonly $$typeof: typeof _outletElementType;
   /**
    * @internal
    * Internal property to store the base type of the outlet.
@@ -65,11 +70,7 @@ export interface Outlet<OutletType extends OutletTypeDataType>
    * Internal property to store the render function that
    * can be used to completely override the markup of the outlet.
    */
-  [_outletRendererSymbol]:
-    | ((
-        element: ReactElement<PropsFromOutletType<OutletType>, OutletType>
-      ) => ReactNode)
-    | undefined;
+  [_outletRendererSymbol]: OutletRenderer<OutletType> | undefined;
 }
 
 /**

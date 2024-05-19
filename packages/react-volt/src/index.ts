@@ -1,8 +1,10 @@
 export type {
   PlugDataType,
-  PlugPropsDataType,
   SlotDataType,
+  PlugTypeDataType,
+  PlugPropsDataType,
   OutletTypeDataType,
+  OutletRendererDataType,
 } from "./types/datatype.types";
 
 export {
@@ -13,13 +15,14 @@ export {
   isUnplugged,
   isPlugProps,
   isOutletStatus,
+  isOutletType,
 } from "./guards";
 
 export { outlet } from "./outlet";
 export type {
-  LockedIn,
-  Outlet,
   Slot,
+  OutletComponent,
+  LockedIn,
   OutletRenderer,
 } from "./types/outlet.types";
 
@@ -45,11 +48,27 @@ export {
 };
 
 export type {
-  Adapter,
   Plug,
-  PlugProps,
   PlugRef,
+  Adapter,
+  Primary,
+  Optional,
+  Required,
+  PropsPlug,
+  PlugProps,
+  PlugTypePlug,
   PlugRefElement,
+  OutletTypePlug,
+  IntrinsicPlugAttributes,
+  IntrinsicOptionalPlugAttributes,
 } from "./types/plug.types";
 
-export { OutletStatus } from "./constants";
+export {
+  OutletStatus,
+  _outletRendererSymbol,
+  _outletStatusSymbol,
+  _outletTypeSymbol,
+  _pluggedInSymbol,
+  _unPluggedSymbol,
+  _outletElementType,
+} from "./constants";

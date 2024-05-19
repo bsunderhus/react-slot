@@ -4,8 +4,9 @@ import type {
   JSXElementConstructor,
   ReactNode,
   ReactElement,
+  ElementRef,
 } from "react";
-import type { _plugRefSymbol, OutletStatus } from "../constants";
+import type { OutletStatus } from "../constants";
 import type {
   PlugPropsDataType,
   OutletTypeDataType,
@@ -21,6 +22,7 @@ import type {
   IntrinsicOptionalPlugs,
 } from "./helper.types";
 import type { Slot } from "./outlet.types";
+import { outlet } from "../outlet";
 
 /**
  * @public
@@ -74,8 +76,10 @@ export type Optional<Plug extends PlugDataType> =
     : Plug;
 
 /**
- * Override on React's ClassAttributes, it removes LegacyRef
- * and adds plug related props.
+ * @public
+ *
+ * Substitutes React's ClassAttributes, it removes LegacyRef
+ * and adds plug related props with `as` optional.
  */
 export interface IntrinsicOptionalPlugAttributes<
   E extends Element,
@@ -92,11 +96,12 @@ export interface IntrinsicOptionalPlugAttributes<
   dangerouslyRenderOutlet?: (
     element: ReactElement<JSX.IntrinsicElements[Key], Key>
   ) => ReactNode;
-  [_plugRefSymbol]?: E;
 }
 
 /**
- * Override on React's ClassAttributes, it removes LegacyRef
+ * @public
+ *
+ * Substitutes React's ClassAttributes, it removes LegacyRef
  * and adds plug related props.
  */
 export interface IntrinsicPlugAttributes<
@@ -114,7 +119,6 @@ export interface IntrinsicPlugAttributes<
   dangerouslyRenderOutlet?: (
     element: ReactElement<JSX.IntrinsicElements[Key], Key>
   ) => ReactNode;
-  [_plugRefSymbol]?: E;
 }
 
 type PluggableProps<
@@ -132,25 +136,22 @@ type PluggableProps<
   dangerouslyRenderOutlet?: (
     element: ReactElement<Props, OutletType>
   ) => ReactNode;
-  [_plugRefSymbol]?: Props extends { ref?: Ref<infer T> } ? T : never;
 };
 
 /**
  * @public
+ *
  * Plug properties is a set of properties that can be used to define a plug, relative to its outlet.
  *
- * PlugProps receives OutletType (see {@link OutletTypeDataType}) as generics,
- * it can be either native HTML element string (like `"div"` or `"button"`)
- * or a component type (like `typeof Button` or `JSXElementConstructor<ButtonProps>`).
- *
- * @typeParam BaseOutletType - The base type of the outlet this plug connects to. The base outlet type represents the main default type the outlet will be. This value can't be an union, to ensure unions discrimination strategy based on `as` property (see [Discriminated Unions](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions) for more details)
- *
- * @typeParam OptionalOutletType - The alternative type of the outlet. The alternative outlet types are all other types a outlet can have given the proper presence of the discrimination property `as`.
+ * @typeParam PlugType - the type of the plug, it can be either:
+ * 1. native HTML element string (like `"div"` or `"button"`)
+ * 2. optional native HTML element string (like `"div?"` or `"button?"`)
+ * 3. a custom element type (like `typeof Button` or `JSXElementConstructor<ButtonProps>`)
  *
  * @example
  * Here's an example where the base type is `"button"` and alternative types are `"a" | "div"`
  * ```ts
- * type PlugProps = PlugProps<"button", "a" | "div">
+ * type PlugProps = PlugProps<"button?" | "a" | "div">
  * // slightly equivalent to the following:
  * type PlugProps =
  *   | {as?: "button"} & IntrinsicElementProps<"button">
@@ -175,10 +176,11 @@ export type PlugProps<PlugType extends PlugTypeDataType> =
 /**
  * @public
  *
- * There are 3 ways of declaring a plug:
+ * There are 4 ways of declaring a plug:
  * 1. {@link PropsPlug} is a plug built from custom properties.
  * 2. {@link PlugTypePlug} is a plug built from the type of the outlet it connects to.
  * 3. {@link PrimaryPlug} is a plug built from the properties of a component that declares outlets internally, this is a special type of plug that is defined exclusively by the props.
+ * 4. {@link OutletTypePlug} is a plug built from the type of the outlet it connects to.
  *
  * In exception to the {@link PrimaryPlug} plug, a plug will consist of a union of 3 types:
  *
@@ -197,14 +199,16 @@ export type Plug<
   : Error<"PlugTypeOrPlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
 
 /**
- * @typeParam BaseOutletType - The base type of the outlet the plug connects to. The base outlet type represents the main default type a plug will connect to. This value can't be an union, to ensure unions discrimination strategy based on `as` property (see {@link https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions | Discriminated Unions} for more details).
+ * @public
  *
- * @typeParam OptionalOutletType - The alternative type of the outlet. The alternative outlet types are all other types a plug can connect given the proper presence of the discrimination property `as`.
+ * The PlugTypePlug type declares a plug based on the type of the plug.
+ *
+ * @typeParam PlugType - The type of the plug (see {@link PlugTypeDataType} for how to properly define plug types)
  *
  * @example
  * Here's an example where the base type is `"button"` and alternative types are `"a" | "div"`
  * ```ts
- * type ButtonPlug = OutletTypePlug<"button", "a" | "div">
+ * type ButtonPlug = PlugTypePlug<"button?" | "a" | "div">
  * // slightly equivalent to the following:
  * type ButtonPlug =
  *   | {as?: "button"} & IntrinsicElementProps<"button">
@@ -221,12 +225,16 @@ export type PlugTypePlug<PlugType extends PlugTypeDataType> = PropsPlug<
 >;
 
 /**
+ * @public
+ *
+ * The PropsPlug type declares a plug based on the properties of the plug.
+ *
  * @typeParam Props - The plug properties that defines the plug (see {@link PlugProps} for how to properly define plug properties)
  *
  * @example
  * Here's an example where the base type is `"button"` and alternative types are `"a" | "div"`
  * ```ts
- * type ButtonPlugProps = PlugPropsPlug<PlugProps<"button", "a" | "div">>
+ * type ButtonPlugProps = PropsPlug<PlugProps<"button?" | "a" | "div">>
  * // slightly equivalent to the following:
  * type ButtonPlug =
  *   | {as?: "button"} & IntrinsicElementProps<"button">
@@ -261,6 +269,9 @@ export type Primary<Plug extends PlugDataType> = Plug extends PlugPropsDataType
  *
  * An adapter is a function that takes a set of input properties and returns a set of output properties.
  *
+ * @typeParam InputProps - The input properties that the adapter will receive.
+ * @typeParam OutputProps - The output properties that the adapter will return.
+ *
  * > **Note:** _In the context of electrical systems, an adapter is a device that allows a plug to connect to an outlet, even if the plug and outlet are not compatible._
  */
 export type Adapter<
@@ -271,7 +282,7 @@ export type Adapter<
 /**
  * @public
  *
- * A type that represents the reference of a plug.
+ * A type that represents the reference element of a plug.
  *
  * The UnionToIntersection utility type is used here to convert
  * an union of plug references into an intersection.
@@ -282,16 +293,32 @@ export type Adapter<
  *
  * > **Note:** _In the context of electrical systems a plug is what allows a device to connect to an outlet. It is the sending end of the connection, while the outlet is the receiving end._
  */
-export type PlugRefElement<Plug extends PlugDataType> = Plug extends {
-  [_plugRefSymbol]?: infer R;
-}
-  ? R
-  : never;
+export type PlugRefElement<Plug extends PlugDataType> =
+  Plug extends PlugPropsDataType ? ElementRef<NonNullable<Plug["as"]>> : never;
 
+/**
+ * @public
+ *
+ * A type that represents the `ref` of a plug.
+ *
+ * @typeParam Plug - The type of the plug.
+ *
+ * > **Note:** _In the context of electrical systems a plug is what allows a device to connect to an outlet. It is the sending end of the connection, while the outlet is the receiving end._
+ */
 export type PlugRef<Plug extends PlugDataType> = Ref<
   UnionToIntersection<PlugRefElement<Plug>>
 >;
 
+/**
+ * @public
+ *
+ * A helper type that declares a plug based on the type of the outlet it connects to.
+ * This is used internally by {@link outlet} method to declare the type of the plug the outlet will receive.
+ *
+ * @typeParam OutletType - The type of the outlet the plug connects to.
+ *
+ * > **Note:** _In the context of electrical systems a plug is what allows a device to connect to an outlet. It is the sending end of the connection, while the outlet is the receiving end._
+ */
 export type OutletTypePlug<OutletType extends OutletTypeDataType> = PropsPlug<
   PlugProps<
     OutletType extends keyof IntrinsicPlugs

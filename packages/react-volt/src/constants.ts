@@ -1,28 +1,22 @@
 /**
- * Internal symbol used to maintain proper ref types even if the plug ref is lost.
- * A forward ref component normally has its ref value split from props into
- * a separate exclusive argument
- *
- * This symbol represents the common reference from a plug to an outlet.
- *
- * @public it has to be public otherwise it'll be stripped away from types, and the ref type will be lost
- */
-export const _plugRefSymbol = Symbol("plugRefSymbol");
-
-/**
  * @internal internal reference for the render function
  */
-export const _outletRendererSymbol = Symbol("outletRenderer");
+export const _outletRendererSymbol = Symbol();
 
 /**
- * @internal internal reference for the outlet type
+ * @internal internal reference for the outlet type of an outlet
  */
-export const _outletTypeSymbol = Symbol("outletType");
+export const _outletTypeSymbol = Symbol();
 
 /**
- * @internal internal reference for the outlet status
+ * @internal internal reference for the element type of an outlet
  */
-export const _outletStatusSymbol = Symbol("outletStatus");
+export const _outletElementType = Symbol();
+
+/**
+ * @internal internal reference for the outlet status of an outlet
+ */
+export const _outletStatusSymbol = Symbol();
 
 /**
  * Internal symbol used to declare that the plug is plugged in the outlet
@@ -30,7 +24,7 @@ export const _outletStatusSymbol = Symbol("outletStatus");
  *
  * @public it has to be public otherwise it'll be stripped away from types.
  */
-export const _pluggedInSymbol = Symbol("pluggedIn");
+export const _pluggedInSymbol = Symbol();
 
 /**
  * Internal symbol used to declare that the plug is unplugged from the outlet
@@ -38,7 +32,7 @@ export const _pluggedInSymbol = Symbol("pluggedIn");
  *
  * @public it has to be public otherwise it'll be stripped away from types
  */
-export const _unPluggedSymbol = Symbol("unPlugged");
+export const _unPluggedSymbol = Symbol();
 
 /**
  * @public
@@ -47,7 +41,7 @@ export const _unPluggedSymbol = Symbol("unPlugged");
  * If a plug is plugged in the outlet it means that it'll be rendered
  * while an unplugged plug will not be rendered.
  *
- * > **Note:** in the context of electrical systems plugged in and unplugged are terms used to describe the connection between a plug and an outlet
+ * > **Note:** _in the context of electrical systems plugged in and unplugged are terms used to describe the connection between a plug and an outlet_
  */
 export type OutletStatus = OutletStatus.PluggedIn | OutletStatus.UnPlugged;
 

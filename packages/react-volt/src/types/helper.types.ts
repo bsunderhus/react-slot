@@ -50,17 +50,10 @@ import type {
   VideoHTMLAttributes,
   WebViewHTMLAttributes,
   SlotHTMLAttributes,
-  SyntheticEvent,
-  Ref,
-  EventHandler,
-  RefObject,
-  Attributes,
 } from "react";
 import type {
   IntrinsicPlugAttributes,
   IntrinsicOptionalPlugAttributes,
-  Optional,
-  Required,
 } from "./plug.types";
 
 /**
