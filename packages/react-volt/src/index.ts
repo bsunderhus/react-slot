@@ -21,9 +21,9 @@ export {
 export { outlet } from "./outlet";
 export type {
   Slot,
-  OutletComponent,
   LockedIn,
   OutletRenderer,
+  OutletComponent,
 } from "./types/outlet.types";
 
 import * as plug from "./plug";
@@ -57,18 +57,18 @@ export type {
   PropsPlug,
   PlugProps,
   PlugTypePlug,
-  PlugRefElement,
   OutletTypePlug,
+  PlugRefElement,
   IntrinsicPlugAttributes,
   IntrinsicOptionalPlugAttributes,
 } from "./types/plug.types";
 
 export {
   OutletStatus,
-  _outletRendererSymbol,
-  _outletStatusSymbol,
-  _outletTypeSymbol,
-  _pluggedInSymbol,
   _unPluggedSymbol,
+  _pluggedInSymbol,
+  _outletTypeSymbol,
   _outletElementType,
+  _outletStatusSymbol,
+  _outletRendererSymbol,
 } from "./constants";

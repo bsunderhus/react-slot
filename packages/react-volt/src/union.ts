@@ -1,9 +1,98 @@
-import type { ReactEventHandler, Ref, RefCallback, RefObject } from "react";
+import type {
+  Ref,
+  RefObject,
+  RefCallback,
+  UIEventHandler,
+  FormEventHandler,
+  DragEventHandler,
+  WheelEventHandler,
+  FocusEventHandler,
+  MouseEventHandler,
+  ReactEventHandler,
+  TouchEventHandler,
+  ChangeEventHandler,
+  PointerEventHandler,
+  KeyboardEventHandler,
+  AnimationEventHandler,
+  ClipboardEventHandler,
+  TransitionEventHandler,
+  CompositionEventHandler,
+} from "react";
 import type { UnionToIntersection } from "./types/helper.types";
 
 type EnsureEventHandlerType = {
+  <H extends TransitionEventHandler | undefined>(handler: H):
+    | TransitionEventHandler<
+        H extends TransitionEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends AnimationEventHandler | undefined>(handler: H):
+    | AnimationEventHandler<
+        H extends AnimationEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends WheelEventHandler | undefined>(handler: H):
+    | WheelEventHandler<
+        H extends WheelEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends PointerEventHandler | undefined>(handler: H):
+    | PointerEventHandler<
+        H extends PointerEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends TouchEventHandler | undefined>(handler: H):
+    | TouchEventHandler<
+        H extends TouchEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends DragEventHandler | undefined>(handler: H):
+    | DragEventHandler<
+        H extends DragEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends MouseEventHandler | undefined>(handler: H):
+    | MouseEventHandler<
+        H extends MouseEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends KeyboardEventHandler | undefined>(handler: H):
+    | KeyboardEventHandler<
+        H extends KeyboardEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends ChangeEventHandler | undefined>(handler: H):
+    | ChangeEventHandler<
+        H extends ChangeEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends FormEventHandler | undefined>(handler: H):
+    | FormEventHandler<
+        H extends FormEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends FocusEventHandler | undefined>(handler: H):
+    | FocusEventHandler<
+        H extends FocusEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends CompositionEventHandler | undefined>(handler: H):
+    | CompositionEventHandler<
+        H extends CompositionEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends ClipboardEventHandler | undefined>(handler: H):
+    | ClipboardEventHandler<
+        H extends ClipboardEventHandler<infer Element> ? Element : never
+      >
+    | Extract<H, undefined>;
+  <H extends UIEventHandler | undefined>(handler: H):
+    | UIEventHandler<H extends UIEventHandler<infer Element> ? Element : never>
+    | Extract<H, undefined>;
   <H extends ReactEventHandler | undefined>(handler: H):
-    | ReactEventHandler<H extends ReactEventHandler<infer T> ? T : never>
+    | ReactEventHandler<
+        H extends ReactEventHandler<infer Element> ? Element : never
+      >
     | Extract<H, undefined>;
 };
 
@@ -65,7 +154,5 @@ export const ensureEventHandlerType: EnsureEventHandlerType = noop;
  *   });
  * }
  * ```
- *
- *
  */
 export const ensureRefType: EnsureRefType = noop;
