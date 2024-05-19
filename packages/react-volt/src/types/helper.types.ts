@@ -56,7 +56,12 @@ import type {
   RefObject,
   Attributes,
 } from "react";
-import type { HTMLPlugAttributes } from "./plug.types";
+import type {
+  IntrinsicPlugAttributes,
+  IntrinsicOptionalPlugAttributes,
+  Optional,
+  Required,
+} from "./plug.types";
 
 /**
  * Removes the 'children' prop from the given Props type.
@@ -90,6 +95,7 @@ export type PropsWithoutChildren<P extends object> = P extends {
 export type DistributiveOmit<T, K extends keyof any> = T extends any
   ? Omit<T, K>
   : T;
+
 /**
  * Helper type that converts a union to an intersection.
  */
@@ -105,592 +111,1098 @@ export type UnionToIntersection<U> = (
  */
 export type Error<Msg extends string> = never;
 
-type DetailedHTMLProps<
+type DetailedPlugProps<
   Attributes extends HTMLAttributes<Element>,
   Element extends HTMLElement,
-  Key extends keyof IntrinsicElements
-> = HTMLPlugAttributes<Element, Key> & Attributes;
+  Key extends keyof IntrinsicPlugs
+> = IntrinsicPlugAttributes<Element, Key> & Attributes;
 
-export interface IntrinsicElements {
-  a: DetailedHTMLProps<
+type DetailedOptionalPlugProps<
+  Attributes extends HTMLAttributes<Element>,
+  Element extends HTMLElement,
+  Key extends keyof IntrinsicPlugs
+> = IntrinsicOptionalPlugAttributes<Element, Key> & Attributes;
+
+export interface IntrinsicPlugs {
+  a: DetailedPlugProps<
     AnchorHTMLAttributes<HTMLAnchorElement>,
     HTMLAnchorElement,
     "a"
   >;
-  abbr: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "abbr">;
-  address: DetailedHTMLProps<
+  abbr: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "abbr">;
+  address: DetailedPlugProps<
     HTMLAttributes<HTMLElement>,
     HTMLElement,
     "address"
   >;
   area: PropsWithoutChildren<
-    DetailedHTMLProps<
+    DetailedPlugProps<
       AreaHTMLAttributes<HTMLAreaElement>,
       HTMLAreaElement,
       "area"
     >
   >;
-  article: DetailedHTMLProps<
+  article: DetailedPlugProps<
     HTMLAttributes<HTMLElement>,
     HTMLElement,
     "article"
   >;
-  aside: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "aside">;
-  audio: DetailedHTMLProps<
+  aside: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "aside">;
+  audio: DetailedPlugProps<
     AudioHTMLAttributes<HTMLAudioElement>,
     HTMLAudioElement,
     "audio"
   >;
-  b: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "b">;
+  b: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "b">;
   base: PropsWithoutChildren<
-    DetailedHTMLProps<
+    DetailedPlugProps<
       BaseHTMLAttributes<HTMLBaseElement>,
       HTMLBaseElement,
       "base"
     >
   >;
-  bdi: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "bdi">;
-  bdo: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "bdo">;
-  big: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "big">;
-  blockquote: DetailedHTMLProps<
+  bdi: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "bdi">;
+  bdo: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "bdo">;
+  big: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "big">;
+  blockquote: DetailedPlugProps<
     BlockquoteHTMLAttributes<HTMLQuoteElement>,
     HTMLQuoteElement,
     "blockquote"
   >;
-  body: DetailedHTMLProps<
+  body: DetailedPlugProps<
     HTMLAttributes<HTMLBodyElement>,
     HTMLBodyElement,
     "body"
   >;
   br: PropsWithoutChildren<
-    DetailedHTMLProps<HTMLAttributes<HTMLBRElement>, HTMLBRElement, "br">
+    DetailedPlugProps<HTMLAttributes<HTMLBRElement>, HTMLBRElement, "br">
   >;
-  button: DetailedHTMLProps<
+  button: DetailedPlugProps<
     ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement,
     "button"
   >;
-  canvas: DetailedHTMLProps<
+  canvas: DetailedPlugProps<
     CanvasHTMLAttributes<HTMLCanvasElement>,
     HTMLCanvasElement,
     "canvas"
   >;
-  caption: DetailedHTMLProps<
+  caption: DetailedPlugProps<
     HTMLAttributes<HTMLElement>,
     HTMLElement,
     "caption"
   >;
-  center: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "center">;
-  cite: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "cite">;
-  code: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "code">;
+  center: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "center">;
+  cite: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "cite">;
+  code: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "code">;
   col: PropsWithoutChildren<
-    DetailedHTMLProps<
+    DetailedPlugProps<
       ColHTMLAttributes<HTMLTableColElement>,
       HTMLTableColElement,
       "col"
     >
   >;
-  colgroup: DetailedHTMLProps<
+  colgroup: DetailedPlugProps<
     ColgroupHTMLAttributes<HTMLTableColElement>,
     HTMLTableColElement,
     "colgroup"
   >;
-  data: DetailedHTMLProps<
+  data: DetailedPlugProps<
     DataHTMLAttributes<HTMLDataElement>,
     HTMLDataElement,
     "data"
   >;
-  datalist: DetailedHTMLProps<
+  datalist: DetailedPlugProps<
     HTMLAttributes<HTMLDataListElement>,
     HTMLDataListElement,
     "datalist"
   >;
-  dd: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "dd">;
-  del: DetailedHTMLProps<
+  dd: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "dd">;
+  del: DetailedPlugProps<
     DelHTMLAttributes<HTMLModElement>,
     HTMLModElement,
     "del"
   >;
-  details: DetailedHTMLProps<
+  details: DetailedPlugProps<
     DetailsHTMLAttributes<HTMLDetailsElement>,
     HTMLDetailsElement,
     "details"
   >;
-  dfn: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "dfn">;
-  dialog: DetailedHTMLProps<
+  dfn: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "dfn">;
+  dialog: DetailedPlugProps<
     DialogHTMLAttributes<HTMLDialogElement>,
     HTMLDialogElement,
     "dialog"
   >;
-  div: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement, "div">;
-  dl: DetailedHTMLProps<
+  div: DetailedPlugProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement, "div">;
+  dl: DetailedPlugProps<
     HTMLAttributes<HTMLDListElement>,
     HTMLDListElement,
     "dl"
   >;
-  dt: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "dt">;
-  em: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "em">;
+  dt: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "dt">;
+  em: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "em">;
   embed: PropsWithoutChildren<
-    DetailedHTMLProps<
+    DetailedPlugProps<
       EmbedHTMLAttributes<HTMLEmbedElement>,
       HTMLEmbedElement,
       "embed"
     >
   >;
-  fieldset: DetailedHTMLProps<
+  fieldset: DetailedPlugProps<
     FieldsetHTMLAttributes<HTMLFieldSetElement>,
     HTMLFieldSetElement,
     "fieldset"
   >;
-  figcaption: DetailedHTMLProps<
+  figcaption: DetailedPlugProps<
     HTMLAttributes<HTMLElement>,
     HTMLElement,
     "figcaption"
   >;
-  figure: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "figure">;
-  footer: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "footer">;
-  form: DetailedHTMLProps<
+  figure: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "figure">;
+  footer: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "footer">;
+  form: DetailedPlugProps<
     FormHTMLAttributes<HTMLFormElement>,
     HTMLFormElement,
     "form"
   >;
-  h1: DetailedHTMLProps<
+  h1: DetailedPlugProps<
     HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h1"
   >;
-  h2: DetailedHTMLProps<
+  h2: DetailedPlugProps<
     HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h2"
   >;
-  h3: DetailedHTMLProps<
+  h3: DetailedPlugProps<
     HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h3"
   >;
-  h4: DetailedHTMLProps<
+  h4: DetailedPlugProps<
     HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h4"
   >;
-  h5: DetailedHTMLProps<
+  h5: DetailedPlugProps<
     HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h5"
   >;
-  h6: DetailedHTMLProps<
+  h6: DetailedPlugProps<
     HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h6"
   >;
-  head: DetailedHTMLProps<
+  head: DetailedPlugProps<
     HTMLAttributes<HTMLHeadElement>,
     HTMLHeadElement,
     "head"
   >;
-  header: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "header">;
-  hgroup: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "hgroup">;
+  header: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "header">;
+  hgroup: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "hgroup">;
   hr: PropsWithoutChildren<
-    DetailedHTMLProps<HTMLAttributes<HTMLHRElement>, HTMLHRElement, "hr">
+    DetailedPlugProps<HTMLAttributes<HTMLHRElement>, HTMLHRElement, "hr">
   >;
-  html: DetailedHTMLProps<
+  html: DetailedPlugProps<
     HtmlHTMLAttributes<HTMLHtmlElement>,
     HTMLHtmlElement,
     "html"
   >;
-  i: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "i">;
-  iframe: DetailedHTMLProps<
+  i: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "i">;
+  iframe: DetailedPlugProps<
     IframeHTMLAttributes<HTMLIFrameElement>,
     HTMLIFrameElement,
     "iframe"
   >;
   img: PropsWithoutChildren<
-    DetailedHTMLProps<
+    DetailedPlugProps<
       ImgHTMLAttributes<HTMLImageElement>,
       HTMLImageElement,
       "img"
     >
   >;
   input: PropsWithoutChildren<
-    DetailedHTMLProps<
+    DetailedPlugProps<
       InputHTMLAttributes<HTMLInputElement>,
       HTMLInputElement,
       "input"
     >
   >;
-  ins: DetailedHTMLProps<
+  ins: DetailedPlugProps<
     InsHTMLAttributes<HTMLModElement>,
     HTMLModElement,
     "ins"
   >;
-  kbd: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "kbd">;
-  keygen: DetailedHTMLProps<
+  kbd: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "kbd">;
+  keygen: DetailedPlugProps<
     KeygenHTMLAttributes<HTMLElement>,
     HTMLElement,
     "keygen"
   >;
-  label: DetailedHTMLProps<
+  label: DetailedPlugProps<
     LabelHTMLAttributes<HTMLLabelElement>,
     HTMLLabelElement,
     "label"
   >;
-  legend: DetailedHTMLProps<
+  legend: DetailedPlugProps<
     HTMLAttributes<HTMLLegendElement>,
     HTMLLegendElement,
     "legend"
   >;
-  li: DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement, "li">;
+  li: DetailedPlugProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement, "li">;
   link: PropsWithoutChildren<
-    DetailedHTMLProps<
+    DetailedPlugProps<
       LinkHTMLAttributes<HTMLLinkElement>,
       HTMLLinkElement,
       "link"
     >
   >;
-  main: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "main">;
-  map: DetailedHTMLProps<
+  main: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "main">;
+  map: DetailedPlugProps<
     MapHTMLAttributes<HTMLMapElement>,
     HTMLMapElement,
     "map"
   >;
-  mark: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "mark">;
-  menu: DetailedHTMLProps<MenuHTMLAttributes<HTMLElement>, HTMLElement, "menu">;
-  menuitem: DetailedHTMLProps<
+  mark: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "mark">;
+  menu: DetailedPlugProps<MenuHTMLAttributes<HTMLElement>, HTMLElement, "menu">;
+  menuitem: DetailedPlugProps<
     HTMLAttributes<HTMLElement>,
     HTMLElement,
     "menuitem"
   >;
   meta: PropsWithoutChildren<
-    DetailedHTMLProps<
+    DetailedPlugProps<
       MetaHTMLAttributes<HTMLMetaElement>,
       HTMLMetaElement,
       "meta"
     >
   >;
-  meter: DetailedHTMLProps<
+  meter: DetailedPlugProps<
     MeterHTMLAttributes<HTMLMeterElement>,
     HTMLMeterElement,
     "meter"
   >;
-  nav: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "nav">;
-  noindex: DetailedHTMLProps<
+  nav: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "nav">;
+  noindex: DetailedPlugProps<
     HTMLAttributes<HTMLElement>,
     HTMLElement,
     "noindex"
   >;
-  noscript: DetailedHTMLProps<
+  noscript: DetailedPlugProps<
     HTMLAttributes<HTMLElement>,
     HTMLElement,
     "noscript"
   >;
-  object: DetailedHTMLProps<
+  object: DetailedPlugProps<
     ObjectHTMLAttributes<HTMLObjectElement>,
     HTMLObjectElement,
     "object"
   >;
-  ol: DetailedHTMLProps<
+  ol: DetailedPlugProps<
     OlHTMLAttributes<HTMLOListElement>,
     HTMLOListElement,
     "ol"
   >;
-  optgroup: DetailedHTMLProps<
+  optgroup: DetailedPlugProps<
     OptgroupHTMLAttributes<HTMLOptGroupElement>,
     HTMLOptGroupElement,
     "optgroup"
   >;
-  option: DetailedHTMLProps<
+  option: DetailedPlugProps<
     OptionHTMLAttributes<HTMLOptionElement>,
     HTMLOptionElement,
     "option"
   >;
-  output: DetailedHTMLProps<
+  output: DetailedPlugProps<
     OutputHTMLAttributes<HTMLOutputElement>,
     HTMLOutputElement,
     "output"
   >;
-  p: DetailedHTMLProps<
+  p: DetailedPlugProps<
     HTMLAttributes<HTMLParagraphElement>,
     HTMLParagraphElement,
     "p"
   >;
   param: PropsWithoutChildren<
-    DetailedHTMLProps<
+    DetailedPlugProps<
       ParamHTMLAttributes<HTMLParamElement>,
       HTMLParamElement,
       "param"
     >
   >;
-  picture: DetailedHTMLProps<
+  picture: DetailedPlugProps<
     HTMLAttributes<HTMLElement>,
     HTMLElement,
     "picture"
   >;
-  pre: DetailedHTMLProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement, "pre">;
-  progress: DetailedHTMLProps<
+  pre: DetailedPlugProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement, "pre">;
+  progress: DetailedPlugProps<
     ProgressHTMLAttributes<HTMLProgressElement>,
     HTMLProgressElement,
     "progress"
   >;
-  q: DetailedHTMLProps<
+  q: DetailedPlugProps<
     QuoteHTMLAttributes<HTMLQuoteElement>,
     HTMLQuoteElement,
     "q"
   >;
-  rp: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "rp">;
-  rt: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "rt">;
-  ruby: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "ruby">;
-  s: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "s">;
-  samp: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "samp">;
-  search: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "search">;
-  slot: DetailedHTMLProps<
+  rp: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "rp">;
+  rt: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "rt">;
+  ruby: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "ruby">;
+  s: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "s">;
+  samp: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "samp">;
+  search: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "search">;
+  slot: DetailedPlugProps<
     SlotHTMLAttributes<HTMLSlotElement>,
     HTMLSlotElement,
     "slot"
   >;
-  script: DetailedHTMLProps<
+  script: DetailedPlugProps<
     ScriptHTMLAttributes<HTMLScriptElement>,
     HTMLScriptElement,
     "script"
   >;
-  section: DetailedHTMLProps<
+  section: DetailedPlugProps<
     HTMLAttributes<HTMLElement>,
     HTMLElement,
     "section"
   >;
-  select: DetailedHTMLProps<
+  select: DetailedPlugProps<
     SelectHTMLAttributes<HTMLSelectElement>,
     HTMLSelectElement,
     "select"
   >;
-  small: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "small">;
+  small: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "small">;
   source: PropsWithoutChildren<
-    DetailedHTMLProps<
+    DetailedPlugProps<
       SourceHTMLAttributes<HTMLSourceElement>,
       HTMLSourceElement,
       "source"
     >
   >;
-  span: DetailedHTMLProps<
+  span: DetailedPlugProps<
     HTMLAttributes<HTMLSpanElement>,
     HTMLSpanElement,
     "span"
   >;
-  strong: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "strong">;
-  style: DetailedHTMLProps<
+  strong: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "strong">;
+  style: DetailedPlugProps<
     StyleHTMLAttributes<HTMLStyleElement>,
     HTMLStyleElement,
     "style"
   >;
-  sub: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "sub">;
-  summary: DetailedHTMLProps<
+  sub: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "sub">;
+  summary: DetailedPlugProps<
     HTMLAttributes<HTMLElement>,
     HTMLElement,
     "summary"
   >;
-  sup: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "sup">;
-  table: DetailedHTMLProps<
+  sup: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "sup">;
+  table: DetailedPlugProps<
     TableHTMLAttributes<HTMLTableElement>,
     HTMLTableElement,
     "table"
   >;
-  template: DetailedHTMLProps<
+  template: DetailedPlugProps<
     HTMLAttributes<HTMLTemplateElement>,
     HTMLTemplateElement,
     "template"
   >;
-  tbody: DetailedHTMLProps<
+  tbody: DetailedPlugProps<
     HTMLAttributes<HTMLTableSectionElement>,
     HTMLTableSectionElement,
     "tbody"
   >;
-  td: DetailedHTMLProps<
+  td: DetailedPlugProps<
     TdHTMLAttributes<HTMLTableDataCellElement>,
     HTMLTableDataCellElement,
     "td"
   >;
-  textarea: DetailedHTMLProps<
+  textarea: DetailedPlugProps<
     TextareaHTMLAttributes<HTMLTextAreaElement>,
     HTMLTextAreaElement,
     "textarea"
   >;
-  tfoot: DetailedHTMLProps<
+  tfoot: DetailedPlugProps<
     HTMLAttributes<HTMLTableSectionElement>,
     HTMLTableSectionElement,
     "tfoot"
   >;
-  th: DetailedHTMLProps<
+  th: DetailedPlugProps<
     ThHTMLAttributes<HTMLTableHeaderCellElement>,
     HTMLTableHeaderCellElement,
     "th"
   >;
-  thead: DetailedHTMLProps<
+  thead: DetailedPlugProps<
     HTMLAttributes<HTMLTableSectionElement>,
     HTMLTableSectionElement,
     "thead"
   >;
-  time: DetailedHTMLProps<
+  time: DetailedPlugProps<
     TimeHTMLAttributes<HTMLTimeElement>,
     HTMLTimeElement,
     "time"
   >;
-  title: DetailedHTMLProps<
+  title: DetailedPlugProps<
     HTMLAttributes<HTMLTitleElement>,
     HTMLTitleElement,
     "title"
   >;
-  tr: DetailedHTMLProps<
+  tr: DetailedPlugProps<
     HTMLAttributes<HTMLTableRowElement>,
     HTMLTableRowElement,
     "tr"
   >;
   track: PropsWithoutChildren<
-    DetailedHTMLProps<
+    DetailedPlugProps<
       TrackHTMLAttributes<HTMLTrackElement>,
       HTMLTrackElement,
       "track"
     >
   >;
-  u: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "u">;
-  ul: DetailedHTMLProps<
+  u: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "u">;
+  ul: DetailedPlugProps<
     HTMLAttributes<HTMLUListElement>,
     HTMLUListElement,
     "ul"
   >;
-  var: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "var">;
-  video: DetailedHTMLProps<
+  var: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "var">;
+  video: DetailedPlugProps<
     VideoHTMLAttributes<HTMLVideoElement>,
     HTMLVideoElement,
     "video"
   >;
   wbr: PropsWithoutChildren<
-    DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement, "wbr">
+    DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "wbr">
   >;
-  webview: DetailedHTMLProps<
+  webview: DetailedPlugProps<
     WebViewHTMLAttributes<HTMLWebViewElement>,
     HTMLWebViewElement,
     "webview"
   >;
 }
 
-// export interface HTMLElements {
-//   a: HTMLAnchorElement;
-//   abbr: HTMLElement;
-//   address: HTMLElement;
-//   area: HTMLAreaElement;
-//   article: HTMLElement;
-//   aside: HTMLElement;
-//   audio: HTMLAudioElement;
-//   b: HTMLElement;
-//   base: HTMLBaseElement;
-//   bdi: HTMLElement;
-//   bdo: HTMLElement;
-//   big: HTMLElement;
-//   blockquote: HTMLQuoteElement;
-//   body: HTMLBodyElement;
-//   br: HTMLBRElement;
-//   button: HTMLButtonElement;
-//   canvas: HTMLCanvasElement;
-//   caption: HTMLElement;
-//   center: HTMLElement;
-//   cite: HTMLElement;
-//   code: HTMLElement;
-//   col: HTMLTableColElement;
-//   colgroup: HTMLTableColElement;
-//   data: HTMLDataElement;
-//   datalist: HTMLDataListElement;
-//   dd: HTMLElement;
-//   del: HTMLModElement;
-//   details: HTMLDetailsElement;
-//   dfn: HTMLElement;
-//   dialog: HTMLDialogElement;
-//   div: HTMLDivElement;
-//   dl: HTMLDListElement;
-//   dt: HTMLElement;
-//   em: HTMLElement;
-//   embed: HTMLEmbedElement;
-//   fieldset: HTMLFieldSetElement;
-//   figcaption: HTMLElement;
-//   figure: HTMLElement;
-//   footer: HTMLElement;
-//   form: HTMLFormElement;
-//   h1: HTMLHeadingElement;
-//   h2: HTMLHeadingElement;
-//   h3: HTMLHeadingElement;
-//   h4: HTMLHeadingElement;
-//   h5: HTMLHeadingElement;
-//   h6: HTMLHeadingElement;
-//   head: HTMLHeadElement;
-//   header: HTMLElement;
-//   hgroup: HTMLElement;
-//   hr: HTMLHRElement;
-//   html: HTMLHtmlElement;
-//   i: HTMLElement;
-//   iframe: HTMLIFrameElement;
-//   img: HTMLImageElement;
-//   input: HTMLInputElement;
-//   ins: HTMLModElement;
-//   kbd: HTMLElement;
-//   keygen: HTMLElement;
-//   label: HTMLLabelElement;
-//   legend: HTMLLegendElement;
-//   li: HTMLLIElement;
-//   link: HTMLLinkElement;
-//   main: HTMLElement;
-//   map: HTMLMapElement;
-//   mark: HTMLElement;
-//   menu: HTMLMenuElement;
-//   menuitem: HTMLElement;
-//   meta: HTMLMetaElement;
-//   meter: HTMLMeterElement;
-//   nav: HTMLElement;
-//   noindex: HTMLElement;
-//   noscript: HTMLElement;
-//   object: HTMLObjectElement;
-//   ol: HTMLOListElement;
-//   optgroup: HTMLOptGroupElement;
-//   option: HTMLOptionElement;
-//   output: HTMLOutputElement;
-//   p: HTMLParagraphElement;
-//   param: HTMLParamElement;
-//   picture: HTMLPictureElement;
-//   pre: HTMLPreElement;
-//   progress: HTMLProgressElement;
-//   q: HTMLQuoteElement;
-//   rp: HTMLElement;
-//   rt: HTMLElement;
-//   ruby: HTMLElement;
-//   s: HTMLElement;
-//   samp: HTMLElement;
-//   search: HTMLInputElement;
-//   slot: HTMLSlotElement;
-//   script: HTMLScriptElement;
-//   section: HTMLElement;
-//   select: HTMLSelectElement;
-//   small: HTMLElement;
-//   source: HTMLSourceElement;
-//   span: HTMLSpanElement;
-//   strong: HTMLElement;
-//   style: HTMLStyleElement;
-//   sub: HTMLElement;
-//   summary: HTMLElement;
-//   sup: HTMLElement;
-//   table: HTMLTableElement;
-//   template: HTMLTemplateElement;
-//   tbody: HTMLTableSectionElement;
-//   td: HTMLTableDataCellElement;
-//   textarea: HTMLTextAreaElement;
-//   tfoot: HTMLTableSectionElement;
-//   th: HTMLTableHeaderCellElement;
-//   thead: HTMLTableSectionElement;
-//   time: HTMLTimeElement;
-//   title: HTMLTitleElement;
-//   tr: HTMLTableRowElement;
-//   track: HTMLTrackElement;
-//   u: HTMLElement;
-//   ul: HTMLUListElement;
-//   var: HTMLElement;
-//   video: HTMLVideoElement;
-//   wbr: HTMLElement;
-//   webview: HTMLElement;
-// }
+export interface IntrinsicOptionalPlugs {
+  "a?": DetailedOptionalPlugProps<
+    AnchorHTMLAttributes<HTMLAnchorElement>,
+    HTMLAnchorElement,
+    "a"
+  >;
+  "abbr?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "abbr"
+  >;
+  "address?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "address"
+  >;
+  "area?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      AreaHTMLAttributes<HTMLAreaElement>,
+      HTMLAreaElement,
+      "area"
+    >
+  >;
+  "article?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "article"
+  >;
+  "aside?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "aside"
+  >;
+  "audio?": DetailedOptionalPlugProps<
+    AudioHTMLAttributes<HTMLAudioElement>,
+    HTMLAudioElement,
+    "audio"
+  >;
+  "b?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "b"
+  >;
+  "base?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      BaseHTMLAttributes<HTMLBaseElement>,
+      HTMLBaseElement,
+      "base"
+    >
+  >;
+  "bdi?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "bdi"
+  >;
+  "bdo?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "bdo"
+  >;
+  "big?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "big"
+  >;
+  "blockquote?": DetailedOptionalPlugProps<
+    BlockquoteHTMLAttributes<HTMLQuoteElement>,
+    HTMLQuoteElement,
+    "blockquote"
+  >;
+  "body?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLBodyElement>,
+    HTMLBodyElement,
+    "body"
+  >;
+  "br?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      HTMLAttributes<HTMLBRElement>,
+      HTMLBRElement,
+      "br"
+    >
+  >;
+  "button?": DetailedOptionalPlugProps<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement,
+    "button"
+  >;
+  "canvas?": DetailedOptionalPlugProps<
+    CanvasHTMLAttributes<HTMLCanvasElement>,
+    HTMLCanvasElement,
+    "canvas"
+  >;
+  "caption?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "caption"
+  >;
+  "center?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "center"
+  >;
+  "cite?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "cite"
+  >;
+  "code?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "code"
+  >;
+  "col?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      ColHTMLAttributes<HTMLTableColElement>,
+      HTMLTableColElement,
+      "col"
+    >
+  >;
+  "colgroup?": DetailedOptionalPlugProps<
+    ColgroupHTMLAttributes<HTMLTableColElement>,
+    HTMLTableColElement,
+    "colgroup"
+  >;
+  "data?": DetailedOptionalPlugProps<
+    DataHTMLAttributes<HTMLDataElement>,
+    HTMLDataElement,
+    "data"
+  >;
+  "datalist?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLDataListElement>,
+    HTMLDataListElement,
+    "datalist"
+  >;
+  "dd?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "dd"
+  >;
+  "del?": DetailedOptionalPlugProps<
+    DelHTMLAttributes<HTMLModElement>,
+    HTMLModElement,
+    "del"
+  >;
+  "details?": DetailedOptionalPlugProps<
+    DetailsHTMLAttributes<HTMLDetailsElement>,
+    HTMLDetailsElement,
+    "details"
+  >;
+  "dfn?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "dfn"
+  >;
+  "dialog?": DetailedOptionalPlugProps<
+    DialogHTMLAttributes<HTMLDialogElement>,
+    HTMLDialogElement,
+    "dialog"
+  >;
+  "div?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement,
+    "div"
+  >;
+  "dl?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLDListElement>,
+    HTMLDListElement,
+    "dl"
+  >;
+  "dt?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "dt"
+  >;
+  "em?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "em"
+  >;
+  "embed?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      EmbedHTMLAttributes<HTMLEmbedElement>,
+      HTMLEmbedElement,
+      "embed"
+    >
+  >;
+  "fieldset?": DetailedOptionalPlugProps<
+    FieldsetHTMLAttributes<HTMLFieldSetElement>,
+    HTMLFieldSetElement,
+    "fieldset"
+  >;
+  "figcaption?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "figcaption"
+  >;
+  "figure?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "figure"
+  >;
+  "footer?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "footer"
+  >;
+  "form?": DetailedOptionalPlugProps<
+    FormHTMLAttributes<HTMLFormElement>,
+    HTMLFormElement,
+    "form"
+  >;
+  "h1?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement,
+    "h1"
+  >;
+  "h2?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement,
+    "h2"
+  >;
+  "h3?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement,
+    "h3"
+  >;
+  "h4?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement,
+    "h4"
+  >;
+  "h5?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement,
+    "h5"
+  >;
+  "h6?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement,
+    "h6"
+  >;
+  "head?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLHeadElement>,
+    HTMLHeadElement,
+    "head"
+  >;
+  "header?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "header"
+  >;
+  "hgroup?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "hgroup"
+  >;
+  "hr?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      HTMLAttributes<HTMLHRElement>,
+      HTMLHRElement,
+      "hr"
+    >
+  >;
+  "html?": DetailedOptionalPlugProps<
+    HtmlHTMLAttributes<HTMLHtmlElement>,
+    HTMLHtmlElement,
+    "html"
+  >;
+  "i?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "i"
+  >;
+  "iframe?": DetailedOptionalPlugProps<
+    IframeHTMLAttributes<HTMLIFrameElement>,
+    HTMLIFrameElement,
+    "iframe"
+  >;
+  "img?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      ImgHTMLAttributes<HTMLImageElement>,
+      HTMLImageElement,
+      "img"
+    >
+  >;
+  "input?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      InputHTMLAttributes<HTMLInputElement>,
+      HTMLInputElement,
+      "input"
+    >
+  >;
+  "ins?": DetailedOptionalPlugProps<
+    InsHTMLAttributes<HTMLModElement>,
+    HTMLModElement,
+    "ins"
+  >;
+  "kbd?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "kbd"
+  >;
+  "keygen?": DetailedOptionalPlugProps<
+    KeygenHTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "keygen"
+  >;
+  "label?": DetailedOptionalPlugProps<
+    LabelHTMLAttributes<HTMLLabelElement>,
+    HTMLLabelElement,
+    "label"
+  >;
+  "legend?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLLegendElement>,
+    HTMLLegendElement,
+    "legend"
+  >;
+  "li?": DetailedOptionalPlugProps<
+    LiHTMLAttributes<HTMLLIElement>,
+    HTMLLIElement,
+    "li"
+  >;
+  "link?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      LinkHTMLAttributes<HTMLLinkElement>,
+      HTMLLinkElement,
+      "link"
+    >
+  >;
+  "main?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "main"
+  >;
+  "map?": DetailedOptionalPlugProps<
+    MapHTMLAttributes<HTMLMapElement>,
+    HTMLMapElement,
+    "map"
+  >;
+  "mark?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "mark"
+  >;
+  "menu?": DetailedOptionalPlugProps<
+    MenuHTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "menu"
+  >;
+  "menuitem?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "menuitem"
+  >;
+  "meta?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      MetaHTMLAttributes<HTMLMetaElement>,
+      HTMLMetaElement,
+      "meta"
+    >
+  >;
+  "meter?": DetailedOptionalPlugProps<
+    MeterHTMLAttributes<HTMLMeterElement>,
+    HTMLMeterElement,
+    "meter"
+  >;
+  "nav?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "nav"
+  >;
+  "noindex?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "noindex"
+  >;
+  "noscript?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "noscript"
+  >;
+  "object?": DetailedOptionalPlugProps<
+    ObjectHTMLAttributes<HTMLObjectElement>,
+    HTMLObjectElement,
+    "object"
+  >;
+  "ol?": DetailedOptionalPlugProps<
+    OlHTMLAttributes<HTMLOListElement>,
+    HTMLOListElement,
+    "ol"
+  >;
+  "optgroup?": DetailedOptionalPlugProps<
+    OptgroupHTMLAttributes<HTMLOptGroupElement>,
+    HTMLOptGroupElement,
+    "optgroup"
+  >;
+  "option?": DetailedOptionalPlugProps<
+    OptionHTMLAttributes<HTMLOptionElement>,
+    HTMLOptionElement,
+    "option"
+  >;
+  "output?": DetailedOptionalPlugProps<
+    OutputHTMLAttributes<HTMLOutputElement>,
+    HTMLOutputElement,
+    "output"
+  >;
+  "p?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLParagraphElement>,
+    HTMLParagraphElement,
+    "p"
+  >;
+  "param?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      ParamHTMLAttributes<HTMLParamElement>,
+      HTMLParamElement,
+      "param"
+    >
+  >;
+  "picture?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "picture"
+  >;
+  "pre?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLPreElement>,
+    HTMLPreElement,
+    "pre"
+  >;
+  "progress?": DetailedOptionalPlugProps<
+    ProgressHTMLAttributes<HTMLProgressElement>,
+    HTMLProgressElement,
+    "progress"
+  >;
+  "q?": DetailedOptionalPlugProps<
+    QuoteHTMLAttributes<HTMLQuoteElement>,
+    HTMLQuoteElement,
+    "q"
+  >;
+  "rp?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "rp"
+  >;
+  "rt?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "rt"
+  >;
+  "ruby?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "ruby"
+  >;
+  "s?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "s"
+  >;
+  "samp?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "samp"
+  >;
+  "search?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "search"
+  >;
+  "slot?": DetailedOptionalPlugProps<
+    SlotHTMLAttributes<HTMLSlotElement>,
+    HTMLSlotElement,
+    "slot"
+  >;
+  "script?": DetailedOptionalPlugProps<
+    ScriptHTMLAttributes<HTMLScriptElement>,
+    HTMLScriptElement,
+    "script"
+  >;
+  "section?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "section"
+  >;
+  "select?": DetailedOptionalPlugProps<
+    SelectHTMLAttributes<HTMLSelectElement>,
+    HTMLSelectElement,
+    "select"
+  >;
+  "small?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "small"
+  >;
+  "source?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      SourceHTMLAttributes<HTMLSourceElement>,
+      HTMLSourceElement,
+      "source"
+    >
+  >;
+  "span?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLSpanElement>,
+    HTMLSpanElement,
+    "span"
+  >;
+  "strong?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "strong"
+  >;
+  "style?": DetailedOptionalPlugProps<
+    StyleHTMLAttributes<HTMLStyleElement>,
+    HTMLStyleElement,
+    "style"
+  >;
+  "sub?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "sub"
+  >;
+  "summary?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "summary"
+  >;
+  "sup?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "sup"
+  >;
+  "table?": DetailedOptionalPlugProps<
+    TableHTMLAttributes<HTMLTableElement>,
+    HTMLTableElement,
+    "table"
+  >;
+  "template?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLTemplateElement>,
+    HTMLTemplateElement,
+    "template"
+  >;
+  "tbody?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLTableSectionElement>,
+    HTMLTableSectionElement,
+    "tbody"
+  >;
+  "td?": DetailedOptionalPlugProps<
+    TdHTMLAttributes<HTMLTableDataCellElement>,
+    HTMLTableDataCellElement,
+    "td"
+  >;
+  "textarea?": DetailedOptionalPlugProps<
+    TextareaHTMLAttributes<HTMLTextAreaElement>,
+    HTMLTextAreaElement,
+    "textarea"
+  >;
+  "tfoot?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLTableSectionElement>,
+    HTMLTableSectionElement,
+    "tfoot"
+  >;
+  "th?": DetailedOptionalPlugProps<
+    ThHTMLAttributes<HTMLTableHeaderCellElement>,
+    HTMLTableHeaderCellElement,
+    "th"
+  >;
+  "thead?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLTableSectionElement>,
+    HTMLTableSectionElement,
+    "thead"
+  >;
+  "time?": DetailedOptionalPlugProps<
+    TimeHTMLAttributes<HTMLTimeElement>,
+    HTMLTimeElement,
+    "time"
+  >;
+  "title?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLTitleElement>,
+    HTMLTitleElement,
+    "title"
+  >;
+  "tr?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLTableRowElement>,
+    HTMLTableRowElement,
+    "tr"
+  >;
+  "track?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<
+      TrackHTMLAttributes<HTMLTrackElement>,
+      HTMLTrackElement,
+      "track"
+    >
+  >;
+  "u?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "u"
+  >;
+  "ul?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLUListElement>,
+    HTMLUListElement,
+    "ul"
+  >;
+  "var?": DetailedOptionalPlugProps<
+    HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "var"
+  >;
+  "video?": DetailedOptionalPlugProps<
+    VideoHTMLAttributes<HTMLVideoElement>,
+    HTMLVideoElement,
+    "video"
+  >;
+  "wbr?": PropsWithoutChildren<
+    DetailedOptionalPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "wbr">
+  >;
+  "webview?": DetailedOptionalPlugProps<
+    WebViewHTMLAttributes<HTMLWebViewElement>,
+    HTMLWebViewElement,
+    "webview"
+  >;
+}

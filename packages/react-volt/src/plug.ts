@@ -28,7 +28,7 @@ export function adapt<
 >(
   inputPlug: Input,
   adapter: Adapter<Extract<Input, PlugPropsDataType>, OutputProps>
-): OutputProps | Exclude<Input, PlugPropsDataType> {
+): NoInfer<OutputProps | Exclude<Input, PlugPropsDataType>> {
   if (isPlugProps<Extract<Input, PlugPropsDataType>>(inputPlug)) {
     return adapter(inputPlug);
   }

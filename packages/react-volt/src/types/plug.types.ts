@@ -1,7 +1,6 @@
 import type {
   Ref,
   RefAttributes,
-  PropsWithoutRef,
   JSXElementConstructor,
   ReactNode,
   ReactElement,
@@ -13,12 +12,13 @@ import type {
   ObjectDataType,
   PlugDataType,
   SlotDataType,
+  PlugTypeDataType,
 } from "./datatype.types";
 import type {
-  DistributiveOmit,
-  IntrinsicElements,
+  IntrinsicPlugs,
   UnionToIntersection,
   Error,
+  IntrinsicOptionalPlugs,
 } from "./helper.types";
 import type { Slot } from "./outlet.types";
 
@@ -26,9 +26,9 @@ import type { Slot } from "./outlet.types";
  * @public
  *
  * Helper type that ensures that the `as` property is present in the plug properties.
- * This is the case for alternative outlet types, where the `as` property is required.
+ * This is the case for outlet types where the `as` property is required.
  */
-export type Optional<Plug extends PlugDataType> =
+export type Required<Plug extends PlugDataType> =
   /**
    * Props extends any takes advantage of the distributive property of conditional types,
    * to ensure that the conditional type is distributed over the union of types, creating a union of the conditional types.
@@ -49,33 +49,61 @@ export type Optional<Plug extends PlugDataType> =
     : never;
 
 /**
- * Type to define a discriminated union of outlet properties, by using the concept of
- * [Discriminated Unions](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions)
- * to create a type that represents outlet properties that is discriminated by the `as` property
+ * @public
  *
- * @typeParam OutletType - The type of the plug.
- *
+ * Helper type that ensures that the `as` property is optional in the plug properties.
  */
-export type BasePlugProps<BaseOutletType extends OutletTypeDataType> =
-  // Case for 'button' | 'div' | 'a' | ...
-  BaseOutletType extends keyof IntrinsicElements
-    ? IntrinsicElements[BaseOutletType]
-    : // Case for typeof Button | React.FC<ButtonProps> | ...
-    BaseOutletType extends JSXElementConstructor<
-        infer Props extends ObjectDataType
-      >
-    ? PluggableProps<BaseOutletType, Props>
-    : Error<"BasePlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
+export type Optional<Plug extends PlugDataType> =
+  /**
+   * Props extends any takes advantage of the distributive property of conditional types,
+   * to ensure that the conditional type is distributed over the union of types, creating a union of the conditional types.
+   *
+   * see {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types} for more information
+   *
+   * @example
+   * ```ts
+   * type ToArray<T> = T[]
+   * // ToArray<1|2|3> is 1|2|3[]
+   *
+   * type DistributiveToArray<T> = T extends any ? T[] : never
+   * // DistributiveToArray<1|2|3> is 1[]|2[]|3[]
+   * ```
+   */
+  Plug extends PlugPropsDataType
+    ? Omit<Plug, "as"> & { as?: Plug["as"] }
+    : Plug;
 
 /**
  * Override on React's ClassAttributes, it removes LegacyRef
  * and adds plug related props.
  */
-export interface HTMLPlugAttributes<
-  E extends HTMLElement,
-  Key extends keyof IntrinsicElements
+export interface IntrinsicOptionalPlugAttributes<
+  E extends Element,
+  Key extends keyof IntrinsicPlugs
 > extends RefAttributes<E> {
   as?: Key;
+  /**
+   * A render function that can be used to completely override the markup of the outlet.
+   *
+   * This is a dangerous feature and should be used with caution.
+   *
+   * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
+   */
+  dangerouslyRenderOutlet?: (
+    element: ReactElement<JSX.IntrinsicElements[Key], Key>
+  ) => ReactNode;
+  [_plugRefSymbol]?: E;
+}
+
+/**
+ * Override on React's ClassAttributes, it removes LegacyRef
+ * and adds plug related props.
+ */
+export interface IntrinsicPlugAttributes<
+  E extends Element,
+  Key extends keyof IntrinsicPlugs
+> extends RefAttributes<E> {
+  as: Key;
   /**
    * A render function that can be used to completely override the markup of the outlet.
    *
@@ -132,17 +160,24 @@ type PluggableProps<
  *
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
  */
-export type PlugProps<
-  BaseOutletType extends OutletTypeDataType,
-  OptionalOutletType extends OutletTypeDataType = never
-> = BasePlugProps<BaseOutletType> | Optional<BasePlugProps<OptionalOutletType>>;
+export type PlugProps<PlugType extends PlugTypeDataType> =
+  PlugType extends keyof IntrinsicPlugs
+    ? // Case for 'button' | 'div' | 'input'
+      IntrinsicPlugs[PlugType]
+    : PlugType extends keyof IntrinsicOptionalPlugs
+    ? // Case for 'button?' | 'div?' | 'input?'
+      IntrinsicOptionalPlugs[PlugType]
+    : // Case for typeof Button | React.FC<ButtonProps> | ...
+    PlugType extends JSXElementConstructor<infer Props extends ObjectDataType>
+    ? PluggableProps<PlugType, Props>
+    : Error<"BasePlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
 
 /**
  * @public
  *
  * There are 3 ways of declaring a plug:
  * 1. {@link PropsPlug} is a plug built from custom properties.
- * 2. {@link OutletTypePlug} is a plug built from the type of the outlet it connects to.
+ * 2. {@link PlugTypePlug} is a plug built from the type of the outlet it connects to.
  * 3. {@link PrimaryPlug} is a plug built from the properties of a component that declares outlets internally, this is a special type of plug that is defined exclusively by the props.
  *
  * In exception to the {@link PrimaryPlug} plug, a plug will consist of a union of 3 types:
@@ -154,13 +189,12 @@ export type PlugProps<
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
  */
 export type Plug<
-  BaseOutletTypeOrPlugProps extends OutletTypeDataType | PlugPropsDataType,
-  OptionalOutletType extends OutletTypeDataType = never
-> = BaseOutletTypeOrPlugProps extends OutletTypeDataType
-  ? OutletTypePlug<BaseOutletTypeOrPlugProps, OptionalOutletType>
-  : BaseOutletTypeOrPlugProps extends PlugPropsDataType
-  ? PropsPlug<BaseOutletTypeOrPlugProps>
-  : Error<"BaseOutletTypeOrPlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
+  PlugTypeOrPlugProps extends PlugTypeDataType | PlugPropsDataType
+> = PlugTypeOrPlugProps extends PlugTypeDataType
+  ? PlugTypePlug<PlugTypeOrPlugProps>
+  : PlugTypeOrPlugProps extends PlugPropsDataType
+  ? PropsPlug<PlugTypeOrPlugProps>
+  : Error<"PlugTypeOrPlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
 
 /**
  * @typeParam BaseOutletType - The base type of the outlet the plug connects to. The base outlet type represents the main default type a plug will connect to. This value can't be an union, to ensure unions discrimination strategy based on `as` property (see {@link https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions | Discriminated Unions} for more details).
@@ -182,10 +216,9 @@ export type Plug<
  *
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
  */
-export type OutletTypePlug<
-  BaseOutletType extends OutletTypeDataType,
-  OptionalOutletType extends OutletTypeDataType = never
-> = PropsPlug<PlugProps<BaseOutletType, OptionalOutletType>>;
+export type PlugTypePlug<PlugType extends PlugTypeDataType> = PropsPlug<
+  PlugProps<PlugType>
+>;
 
 /**
  * @typeParam Props - The plug properties that defines the plug (see {@link PlugProps} for how to properly define plug properties)
@@ -215,7 +248,7 @@ export type PropsPlug<Props extends PlugPropsDataType> =
  * The Primary plug is a special type of Lock-in plug that is used to define the properties
  * of a component that will be using outlets internally.
  *
- * Unlike other plugs, the primary plug is defined exclusively by its props ({@link PlugProps}, omitting `ref` and `dangerouslyRenderOutlet`).
+ * Unlike other plugs, the primary plug is defined exclusively by its props ({@link PlugPropsDataType | PlugProps}, omitting `ref` and `dangerouslyRenderOutlet`).
  *
  * > **Note:** _There is no such thing as a primary plug in the context of electrical systems. This is a borrowed analogy from ignition systems and database systems. In ignition systems the "Primary Circuit" is the main circuit that powers the ignition system. In relational database systems a "Primary Key" is the main unique identifier for records._
  */
@@ -258,3 +291,15 @@ export type PlugRefElement<Plug extends PlugDataType> = Plug extends {
 export type PlugRef<Plug extends PlugDataType> = Ref<
   UnionToIntersection<PlugRefElement<Plug>>
 >;
+
+export type OutletTypePlug<OutletType extends OutletTypeDataType> = PropsPlug<
+  PlugProps<
+    OutletType extends keyof IntrinsicPlugs
+      ? OptionalPlugTypes[OutletType]
+      : OutletType
+  >
+>;
+
+type OptionalPlugTypes = {
+  [K in keyof IntrinsicPlugs]: `${K}?`;
+};

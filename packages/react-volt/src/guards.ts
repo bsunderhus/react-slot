@@ -25,12 +25,9 @@ export const isOutletType = isValidElementType as <
  * Type guard for checking if a value is an outlet component.
  * @param value - value to check
  */
-export const isOutlet = <
-  BaseOutletType extends OutletTypeDataType,
-  AlternativeOutletType extends OutletTypeDataType = never
->(
+export const isOutlet = <OutletType extends OutletTypeDataType>(
   value: unknown
-): value is Outlet<BaseOutletType, AlternativeOutletType> =>
+): value is Outlet<OutletType> =>
   typeof value === "object" &&
   value !== null &&
   _outletTypeSymbol in value &&
@@ -53,7 +50,7 @@ export const isOutletStatus = <S extends OutletStatus>(
  * Type guard for checking if an outlet is plugged in.
  * @param outlet - outlet to check
  */
-export const isPluggedIn = <S extends Outlet<any, any>>(outlet: S): boolean =>
+export const isPluggedIn = <S extends Outlet<any>>(outlet: S): boolean =>
   outlet[_outletStatusSymbol] === OutletStatus.PluggedIn;
 
 /**
@@ -62,7 +59,7 @@ export const isPluggedIn = <S extends Outlet<any, any>>(outlet: S): boolean =>
  * Type guard for checking if an outlet is unplugged.
  * @param outlet - outlet to check
  */
-export const isUnplugged = <S extends Outlet<any, any>>(outlet: S): boolean =>
+export const isUnplugged = <S extends Outlet<any>>(outlet: S): boolean =>
   outlet[_outletStatusSymbol] === OutletStatus.UnPlugged;
 
 /**

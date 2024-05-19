@@ -12,8 +12,15 @@ import type {
   _outletTypeSymbol,
   OutletStatus,
 } from "../constants";
-import type { SlotDataType, OutletTypeDataType } from "./datatype.types";
-import type { IntrinsicElements } from "./helper.types";
+import type {
+  SlotDataType,
+  OutletTypeDataType,
+  PlugTypeDataType,
+} from "./datatype.types";
+import type { IntrinsicPlugs } from "./helper.types";
+
+export type OutletType<PlugType extends PlugTypeDataType> =
+  PlugType extends `${infer K extends keyof IntrinsicPlugs}?` ? K : PlugType;
 
 /**
  * @public
@@ -39,18 +46,14 @@ export type OutletRenderer<in out OutletType extends OutletTypeDataType> = (
  *
  * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
-export interface Outlet<
-  BaseOutletType extends OutletTypeDataType,
-  AlternativeOutletType extends OutletTypeDataType = never
-> extends ExoticComponent<
-    PropsFromOutletType<BaseOutletType | AlternativeOutletType>
-  > {
-  readonly props: PropsFromOutletType<BaseOutletType | AlternativeOutletType>;
+export interface Outlet<OutletType extends OutletTypeDataType>
+  extends ExoticComponent<PropsFromOutletType<OutletType>> {
+  readonly props: PropsFromOutletType<OutletType>;
   /**
    * @internal
    * Internal property to store the base type of the outlet.
    */
-  [_outletTypeSymbol]: BaseOutletType | AlternativeOutletType;
+  [_outletTypeSymbol]: OutletType;
   /**
    * @internal
    * Internal property to store the status of the outlet,
@@ -64,10 +67,7 @@ export interface Outlet<
    */
   [_outletRendererSymbol]:
     | ((
-        element: ReactElement<
-          PropsFromOutletType<BaseOutletType | AlternativeOutletType>,
-          BaseOutletType | AlternativeOutletType
-        >
+        element: ReactElement<PropsFromOutletType<OutletType>, OutletType>
       ) => ReactNode)
     | undefined;
 }
@@ -76,7 +76,7 @@ export interface Outlet<
  * Infer props based on the outlet type.
  */
 type PropsFromOutletType<OutletType extends OutletTypeDataType> =
-  OutletType extends keyof IntrinsicElements
+  OutletType extends keyof IntrinsicPlugs
     ? PropsWithRef<JSX.IntrinsicElements[OutletType]>
     : OutletType extends JSXElementConstructor<infer P>
     ? P

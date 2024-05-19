@@ -5,7 +5,7 @@ import type {
   ReactNode,
 } from "react";
 import type { OutletStatus, _plugRefSymbol } from "../constants";
-import type { IntrinsicElements } from "./helper.types";
+import type { IntrinsicOptionalPlugs, IntrinsicPlugs } from "./helper.types";
 
 /**
  * @public
@@ -36,8 +36,12 @@ export type ObjectDataType = Record<string, unknown>;
  * > _The Suffix "DataType" will denote the building block types that will serve as "primitive" to all other types._
  */
 export type OutletTypeDataType =
-  | keyof IntrinsicElements
+  | keyof IntrinsicPlugs
   | JSXElementConstructor<ObjectDataType>;
+
+export type PlugTypeDataType =
+  | OutletTypeDataType
+  | keyof IntrinsicOptionalPlugs;
 
 /**
  * @public

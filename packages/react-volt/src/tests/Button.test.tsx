@@ -3,9 +3,9 @@ import { test, assertType } from "vitest";
 import { OutletStatus, isPlugProps, outlet, plug, union } from "../index";
 import type { Plug, PlugProps, LockedIn, PlugRefElement } from "../index";
 import type { DistributiveOmit } from "../types/helper.types";
-import type { Primary } from "../types/plug.types";
+import type { Adapter, Primary } from "../types/plug.types";
 
-type IconPlugProps = PlugProps<"span", "div"> & {
+type IconPlugProps = PlugProps<"span?" | "div"> & {
   /**
    * The position on which the icon will be, relative to children
    *
@@ -14,12 +14,12 @@ type IconPlugProps = PlugProps<"span", "div"> & {
   position?: "before" | "after";
 };
 
-type ButtonProps = Primary<Plug<"button", "a" | "div">> & {
+type ButtonProps = DistributiveOmit<
+  Primary<Plug<"button?" | "a" | "div">>,
+  "content"
+> & {
   icon?: Plug<IconPlugProps>;
-  content?: LockedIn<Plug<"div">>;
-  onIconSwitch?: React.EventHandler<
-    React.MouseEvent<PlugRefElement<ButtonProps>>
-  >;
+  content?: LockedIn<Plug<"div?">>;
 };
 
 const Button = React.forwardRef<PlugRefElement<ButtonProps>, ButtonProps>(
@@ -36,7 +36,7 @@ const Button = React.forwardRef<PlugRefElement<ButtonProps>, ButtonProps>(
     const iconPosition =
       (isPlugProps<IconPlugProps>(icon) && icon.position) || "before";
 
-    const Root = outlet.lockedIn<"button", "a" | "div">("button", {
+    const Root = outlet.lockedIn<"button" | "a" | "div">("button", {
       ...rest,
       ref: union.ensureRefType(ref),
       onClick: (event: React.MouseEvent<PlugRefElement<ButtonProps>>) => {
@@ -50,7 +50,7 @@ const Button = React.forwardRef<PlugRefElement<ButtonProps>, ButtonProps>(
       element
     ) => null;
 
-    const Icon = outlet<"span", "div">(
+    const Icon = outlet<"span" | "div">(
       "span",
       plug.adapt(icon, ({ position, ...rest }) => ({
         ...rest,
@@ -58,7 +58,7 @@ const Button = React.forwardRef<PlugRefElement<ButtonProps>, ButtonProps>(
       }))
     );
 
-    const Content = outlet.lockedIn<"div">("div", content);
+    const Content = outlet.lockedIn("div", content);
 
     return (
       <Root>
@@ -73,7 +73,6 @@ const Button = React.forwardRef<PlugRefElement<ButtonProps>, ButtonProps>(
 test("Button", () => {
   assertType(
     <Button
-      onIconSwitch={(ev) => ev.preventDefault()}
       onClick={(ev) => ev.preventDefault()}
       icon={{
         children: <i>this is</i>,

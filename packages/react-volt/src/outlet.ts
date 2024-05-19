@@ -6,13 +6,15 @@ import {
 } from "./constants";
 import { isSlot, isOutletStatus } from "./guards";
 import { resolve as resolvePlug } from "./plug";
-import type { OutletTypePlug } from "./types/plug.types";
+import type { OutletTypePlug, PlugTypePlug } from "./types/plug.types";
 import type { Outlet, LockedIn } from "./types/outlet.types";
 import type {
   PlugPropsDataType,
   SlotDataType,
   OutletTypeDataType,
+  PlugTypeDataType,
 } from "./types/datatype.types";
+import type { IntrinsicPlugs } from "./types/helper.types";
 
 const emptyPropsObject: PlugPropsDataType = {};
 
@@ -28,20 +30,18 @@ const emptyPropsObject: PlugPropsDataType = {};
  *
  * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
-export function outlet<
-  const BaseOutletType extends OutletTypeDataType,
-  const AlternativeOutletType extends OutletTypeDataType = never
->(
-  outletType: BaseOutletType,
-  plug: NoInfer<OutletTypePlug<BaseOutletType, AlternativeOutletType>>
-): Outlet<BaseOutletType, AlternativeOutletType> {
+export function outlet<const OutletType extends OutletTypeDataType>(
+  outletTypes: OutletType,
+  plug: NoInfer<OutletTypePlug<OutletType>>
+): Outlet<OutletType> {
+  const outletType = Array.isArray(outletTypes) ? outletTypes[0] : outletTypes;
   const props = resolvePlug(plug) ?? emptyPropsObject;
   const instance = {
     [_outletTypeSymbol]: outletType,
     [_outletStatusSymbol]: OutletStatus.PluggedIn,
     [_outletRendererSymbol]: undefined,
     props,
-  } as Outlet<BaseOutletType, AlternativeOutletType>;
+  } as Outlet<OutletType>;
 
   if (plug === undefined) {
     return instance;
@@ -62,9 +62,7 @@ export function outlet<
   }
   if (props.as !== undefined && typeof outletType === "string") {
     // FIXME: figure out what is wrong with props.as
-    instance[_outletTypeSymbol] = props.as as
-      | BaseOutletType
-      | AlternativeOutletType;
+    instance[_outletTypeSymbol] = props.as as OutletType;
     delete props.as;
   }
   if (typeof props?.dangerouslyRenderOutlet === "function") {
@@ -87,10 +85,7 @@ export function outlet<
  *
  * > **Note:** _In the context of electrical systems a Lock-in outlet is an outlet with a lock mechanism to avoid it from being accidentally unplugged._
  */
-outlet.lockedIn = outlet as <
-  const BaseOutletType extends OutletTypeDataType,
-  const AlternativeOutletType extends OutletTypeDataType = never
->(
-  outletType: BaseOutletType,
-  plug: NoInfer<LockedIn<OutletTypePlug<BaseOutletType, AlternativeOutletType>>>
-) => Outlet<BaseOutletType, AlternativeOutletType>;
+outlet.lockedIn = outlet as <const OutletType extends OutletTypeDataType>(
+  outletTypes: OutletType,
+  plug: NoInfer<LockedIn<OutletTypePlug<OutletType>>>
+) => Outlet<OutletType>;
