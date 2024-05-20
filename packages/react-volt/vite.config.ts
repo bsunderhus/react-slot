@@ -28,7 +28,7 @@ export default defineConfig({
     lib: {
       entry: "./src/index.ts",
       fileName: "react-volt",
-      formats: ["es", "cjs"],
+      formats: ["es"],
     },
     rollupOptions: {
       external: Object.keys(pkgJSON.dependencies),

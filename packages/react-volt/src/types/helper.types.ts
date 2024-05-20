@@ -102,7 +102,7 @@ export type UnionToIntersection<U> = (
  * Helper type that is equivalent to `never`
  * but it's more descriptive.
  */
-export type Error<Msg extends string> = never;
+export type Never<Msg extends string> = never;
 
 type DetailedPlugProps<
   Attributes extends HTMLAttributes<Element>,

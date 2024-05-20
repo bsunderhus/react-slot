@@ -1,5 +1,5 @@
-import { OutletStatus, _pluggedInSymbol } from "./constants";
-import { isSlot, isOutletStatus, isPlugProps } from "./guards";
+import type { PlugStatus } from "./constants";
+import { isSlot, isPlugStatus, isPlugProps } from "./guards";
 import type {
   PlugDataType,
   PlugPropsDataType,
@@ -42,7 +42,7 @@ export function adapt<
  *
  * * If the plug is {@link PlugPropsDataType | PlugProps}, it will be returned as is.
  * * If the plug is a {@link SlotDataType | Slot}, it will be resolved to `{children: plug}`.
- * * If the plug is {@link OutletStatus}, it will be resolved to `undefined`.
+ * * If the plug is {@link PlugStatus}, it will be resolved to `undefined`.
  *
  * This is useful when you want to access a plug's properties before providing it to a outlet.
  *
@@ -50,9 +50,9 @@ export function adapt<
  * @param plug - The plug that will be resolved.
  */
 export function resolve<Props extends PlugPropsDataType>(
-  plug: Props | SlotDataType | OutletStatus
+  plug: Props | SlotDataType | PlugStatus
 ): Props | undefined {
-  if (isOutletStatus(plug)) {
+  if (isPlugStatus(plug)) {
     return undefined;
   }
   if (isSlot(plug)) {

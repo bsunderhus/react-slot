@@ -14,11 +14,6 @@ export const _outletTypeSymbol = Symbol();
 export const _outletElementType = Symbol();
 
 /**
- * @internal internal reference for the outlet status of an outlet
- */
-export const _outletStatusSymbol = Symbol();
-
-/**
  * Internal symbol used to declare that the plug is plugged in the outlet
  * and the outlet is ready to be rendered.
  *
@@ -43,16 +38,16 @@ export const _unPluggedSymbol = Symbol();
  *
  * > **Note:** _in the context of electrical systems plugged in and unplugged are terms used to describe the connection between a plug and an outlet_
  */
-export type OutletStatus = OutletStatus.PluggedIn | OutletStatus.UnPlugged;
+export type PlugStatus = PlugStatus.PluggedIn | PlugStatus.UnPlugged;
 
 /** @public */
-export const OutletStatus = {
+export const PlugStatus = {
   PluggedIn: _pluggedInSymbol,
   UnPlugged: _unPluggedSymbol,
 } as const;
 
 /** @public */
-export namespace OutletStatus {
-  export type PluggedIn = typeof OutletStatus.PluggedIn;
-  export type UnPlugged = typeof OutletStatus.UnPlugged;
+export namespace PlugStatus {
+  export type PluggedIn = typeof PlugStatus.PluggedIn;
+  export type UnPlugged = typeof PlugStatus.UnPlugged;
 }

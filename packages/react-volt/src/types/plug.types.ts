@@ -6,7 +6,7 @@ import type {
   ReactElement,
   ElementRef,
 } from "react";
-import type { OutletStatus } from "../constants";
+import type { PlugStatus } from "../constants";
 import type {
   PlugPropsDataType,
   OutletTypeDataType,
@@ -18,62 +18,11 @@ import type {
 import type {
   IntrinsicPlugs,
   UnionToIntersection,
-  Error,
+  Never,
   IntrinsicOptionalPlugs,
 } from "./helper.types";
 import type { Slot } from "./outlet.types";
 import { outlet } from "../outlet";
-
-/**
- * @public
- *
- * Helper type that ensures that the `as` property is present in the plug properties.
- * This is the case for outlet types where the `as` property is required.
- */
-export type Required<Plug extends PlugDataType> =
-  /**
-   * Props extends any takes advantage of the distributive property of conditional types,
-   * to ensure that the conditional type is distributed over the union of types, creating a union of the conditional types.
-   *
-   * see {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types} for more information
-   *
-   * @example
-   * ```ts
-   * type ToArray<T> = T[]
-   * // ToArray<1|2|3> is 1|2|3[]
-   *
-   * type DistributiveToArray<T> = T extends any ? T[] : never
-   * // DistributiveToArray<1|2|3> is 1[]|2[]|3[]
-   * ```
-   */
-  Plug extends PlugPropsDataType
-    ? Plug & { as: NonNullable<Plug["as"]> }
-    : never;
-
-/**
- * @public
- *
- * Helper type that ensures that the `as` property is optional in the plug properties.
- */
-export type Optional<Plug extends PlugDataType> =
-  /**
-   * Props extends any takes advantage of the distributive property of conditional types,
-   * to ensure that the conditional type is distributed over the union of types, creating a union of the conditional types.
-   *
-   * see {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types} for more information
-   *
-   * @example
-   * ```ts
-   * type ToArray<T> = T[]
-   * // ToArray<1|2|3> is 1|2|3[]
-   *
-   * type DistributiveToArray<T> = T extends any ? T[] : never
-   * // DistributiveToArray<1|2|3> is 1[]|2[]|3[]
-   * ```
-   */
-  Plug extends PlugPropsDataType
-    ? Omit<Plug, "as"> & { as?: Plug["as"] }
-    : Plug;
 
 /**
  * @public
@@ -171,7 +120,7 @@ export type PlugProps<PlugType extends PlugTypeDataType> =
     : // Case for typeof Button | React.FC<ButtonProps> | ...
     PlugType extends JSXElementConstructor<infer Props extends ObjectDataType>
     ? PluggableProps<PlugType, Props>
-    : Error<"BasePlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
+    : Never<"BasePlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
 
 /**
  * @public
@@ -186,7 +135,7 @@ export type PlugProps<PlugType extends PlugTypeDataType> =
  *
  * 1. {@link PlugPropsDataType | PlugProps}
  * 2. {@link SlotDataType | Slot}
- * 3. {@link OutletStatus}
+ * 3. {@link PlugStatus}
  *
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
  */
@@ -196,7 +145,7 @@ export type Plug<
   ? PlugTypePlug<PlugTypeOrPlugProps>
   : PlugTypeOrPlugProps extends PlugPropsDataType
   ? PropsPlug<PlugTypeOrPlugProps>
-  : Error<"PlugTypeOrPlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
+  : Never<"PlugTypeOrPlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
 
 /**
  * @public
@@ -215,7 +164,7 @@ export type Plug<
  *   | {as: "a"} & IntrinsicElementProps<"a">
  *   | {as: "div"} & IntrinsicElementProps<"div">
  *   | Slot // Slot -> ReactNode in this case
- *   | OutletStatus
+ *   | PlugStatus
  * ```
  *
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
@@ -241,14 +190,14 @@ export type PlugTypePlug<PlugType extends PlugTypeDataType> = PropsPlug<
  *   | {as: "a"} & IntrinsicElementProps<"a">
  *   | {as: "div"} & IntrinsicElementProps<"div">
  *   | Slot // Slot -> ReactNode in this case
- *   | OutletStatus
+ *   | PlugStatus
  * ```
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
  */
 export type PropsPlug<Props extends PlugPropsDataType> =
   | Props
   | Slot<Props>
-  | OutletStatus;
+  | PlugStatus;
 
 /**
  * @public
@@ -261,7 +210,7 @@ export type PropsPlug<Props extends PlugPropsDataType> =
  * > **Note:** _There is no such thing as a primary plug in the context of electrical systems. This is a borrowed analogy from ignition systems and database systems. In ignition systems the "Primary Circuit" is the main circuit that powers the ignition system. In relational database systems a "Primary Key" is the main unique identifier for records._
  */
 export type Primary<Plug extends PlugDataType> = Plug extends PlugPropsDataType
-  ? Omit<Plug, "dangerouslyRenderOutlet" | "ref">
+  ? Omit<Plug, "dangerouslyRenderOutlet">
   : never;
 
 /**
@@ -330,3 +279,13 @@ export type OutletTypePlug<OutletType extends OutletTypeDataType> = PropsPlug<
 type OptionalPlugTypes = {
   [K in keyof IntrinsicPlugs]: `${K}?`;
 };
+
+/**
+ * @public
+ *
+ * Helper type that removes Unplugged as a valid value.
+ * This removes the possibility of opting-out of an outlet.
+ *
+ * > **Note:** _In the context of electrical systems a Lock-in plug is a plug with a lock mechanism to avoid it from being accidentally unplugged._
+ */
+export type LockedIn<T> = Exclude<T, PlugStatus.UnPlugged>;

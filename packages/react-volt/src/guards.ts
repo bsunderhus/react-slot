@@ -1,10 +1,6 @@
 import { isValidElement } from "react";
 import { isPortal, isValidElementType } from "react-is";
-import {
-  _outletStatusSymbol,
-  _outletTypeSymbol,
-  OutletStatus,
-} from "./constants";
+import { _outletElementType, _outletTypeSymbol, PlugStatus } from "./constants";
 import type {
   PlugDataType,
   PlugPropsDataType,
@@ -36,39 +32,8 @@ export const isOutlet = <OutletType extends OutletTypeDataType>(
 ): value is OutletComponent<OutletType> =>
   typeof value === "object" &&
   value !== null &&
-  _outletTypeSymbol in value &&
-  _outletStatusSymbol in value;
-
-/**
- * @public
- *
- * Type guard for checking if a value is an outlet status.
- * @param value - value to check
- */
-export const isOutletStatus = <S extends OutletStatus>(
-  value: unknown
-): value is S =>
-  value === OutletStatus.PluggedIn || value === OutletStatus.UnPlugged;
-
-/**
- * @public
- *
- * Type guard for checking if an outlet is plugged in.
- * @param outlet - outlet to check
- */
-export const isPluggedIn = <S extends OutletComponent<any>>(
-  outlet: S
-): boolean => outlet[_outletStatusSymbol] === OutletStatus.PluggedIn;
-
-/**
- * @public
- *
- * Type guard for checking if an outlet is unplugged.
- * @param outlet - outlet to check
- */
-export const isUnplugged = <S extends OutletComponent<any>>(
-  outlet: S
-): boolean => outlet[_outletStatusSymbol] === OutletStatus.UnPlugged;
+  "$$typeof" in value &&
+  value.$$typeof === _outletElementType;
 
 /**
  * @internal
@@ -107,5 +72,15 @@ export const isPlugProps = <P extends PlugDataType>(
  */
 export const isPlug = <Plug extends PlugDataType>(
   value: unknown
-): value is Plug =>
-  isPlugProps(value) || isSlot(value) || isOutletStatus(value);
+): value is Plug => isPlugProps(value) || isSlot(value) || isPlugStatus(value);
+
+/**
+ * @public
+ *
+ * Type guard for checking if a value is an outlet status.
+ * @param value - value to check
+ */
+export const isPlugStatus = <S extends PlugStatus>(
+  value: unknown
+): value is S =>
+  value === PlugStatus.PluggedIn || value === PlugStatus.UnPlugged;

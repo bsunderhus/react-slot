@@ -8,9 +8,8 @@ import type {
 import type {
   _outletElementType,
   _outletRendererSymbol,
-  _outletStatusSymbol,
   _outletTypeSymbol,
-  OutletStatus,
+  PlugStatus,
 } from "../constants";
 import type {
   SlotDataType,
@@ -50,8 +49,9 @@ export interface OutletComponent<OutletType extends OutletTypeDataType> {
   (props: PropsFromOutletType<OutletType>): ReactNode;
   readonly props: PropsFromOutletType<OutletType>;
   /**
-   * @internal
-   * Internal property to store the element type of the outlet.
+   * @internal internal reference for outlet element type
+   * This is used internally by our custom pragma to determine that this is an outlet component.
+   * This is the same strategy used by React to determine if a component is a Fragment, Memo, Portal, etc,.
    */
   readonly $$typeof: typeof _outletElementType;
   /**
@@ -59,12 +59,6 @@ export interface OutletComponent<OutletType extends OutletTypeDataType> {
    * Internal property to store the base type of the outlet.
    */
   [_outletTypeSymbol]: OutletType;
-  /**
-   * @internal
-   * Internal property to store the status of the outlet,
-   * this will be used to determine if the plug should be rendered or not.
-   */
-  [_outletStatusSymbol]: OutletStatus;
   /**
    * @internal
    * Internal property to store the render function that
@@ -82,16 +76,6 @@ type PropsFromOutletType<OutletType extends OutletTypeDataType> =
     : OutletType extends JSXElementConstructor<infer P>
     ? P
     : never;
-
-/**
- * @public
- *
- * Helper type that removes Unplugged as a valid value.
- * This removes the possibility of opting-out of an outlet.
- *
- * > **Note:** _In the context of electrical systems a Lock-in outlet is an outlet with a lock mechanism to avoid it from being accidentally unplugged._
- */
-export type LockedIn<T> = Exclude<T, OutletStatus.UnPlugged>;
 
 /**
  * @public

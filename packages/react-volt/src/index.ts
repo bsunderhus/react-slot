@@ -11,17 +11,14 @@ export {
   isPlug,
   isSlot,
   isOutlet,
-  isPluggedIn,
-  isUnplugged,
   isPlugProps,
-  isOutletStatus,
+  isPlugStatus,
   isOutletType,
 } from "./guards";
 
 export { outlet } from "./outlet";
 export type {
   Slot,
-  LockedIn,
   OutletRenderer,
   OutletComponent,
 } from "./types/outlet.types";
@@ -52,8 +49,7 @@ export type {
   PlugRef,
   Adapter,
   Primary,
-  Optional,
-  Required,
+  LockedIn,
   PropsPlug,
   PlugProps,
   PlugTypePlug,
@@ -64,11 +60,10 @@ export type {
 } from "./types/plug.types";
 
 export {
-  OutletStatus,
+  PlugStatus,
   _unPluggedSymbol,
   _pluggedInSymbol,
   _outletTypeSymbol,
   _outletElementType,
-  _outletStatusSymbol,
   _outletRendererSymbol,
 } from "./constants";
