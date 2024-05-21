@@ -50,6 +50,22 @@ import type {
   VideoHTMLAttributes,
   WebViewHTMLAttributes,
   SlotHTMLAttributes,
+  SyntheticEvent,
+  ClipboardEvent,
+  CompositionEvent,
+  DragEvent,
+  FocusEvent,
+  FormEvent,
+  ChangeEvent,
+  KeyboardEvent,
+  MouseEvent,
+  TouchEvent,
+  PointerEvent,
+  UIEvent,
+  WheelEvent,
+  AnimationEvent,
+  TransitionEvent,
+  EventHandler,
 } from "react";
 import type {
   IntrinsicPlugAttributes,
@@ -102,7 +118,7 @@ export type UnionToIntersection<U> = (
  * Helper type that is equivalent to `never`
  * but it's more descriptive.
  */
-export type Never<Msg extends string> = never;
+export type Never<Msg extends string> = Msg & never;
 
 type DetailedPlugProps<
   Attributes extends HTMLAttributes<Element>,
@@ -115,6 +131,127 @@ type DetailedOptionalPlugProps<
   Element extends HTMLElement,
   Key extends keyof IntrinsicPlugs
 > = IntrinsicOptionalPlugAttributes<Element, Key> & Attributes;
+
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type ReactEventHandler<T = Element> = EventHandler<
+  T extends any ? SyntheticEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type ClipboardEventHandler<T = Element> = EventHandler<
+  T extends any ? ClipboardEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type CompositionEventHandler<T = Element> = EventHandler<
+  T extends any ? CompositionEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type DragEventHandler<T = Element> = EventHandler<
+  T extends any ? DragEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type FocusEventHandler<T = Element> = EventHandler<
+  T extends any ? FocusEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type FormEventHandler<T = Element> = EventHandler<
+  T extends any ? FormEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type ChangeEventHandler<T = Element> = EventHandler<
+  T extends any ? ChangeEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type KeyboardEventHandler<T = Element> = EventHandler<
+  T extends any ? KeyboardEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type MouseEventHandler<T = Element> = EventHandler<
+  T extends any ? MouseEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type TouchEventHandler<T = Element> = EventHandler<
+  T extends any ? TouchEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type PointerEventHandler<T = Element> = EventHandler<
+  T extends any ? PointerEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type UIEventHandler<T = Element> = EventHandler<
+  T extends any ? UIEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type WheelEventHandler<T = Element> = EventHandler<
+  T extends any ? WheelEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type AnimationEventHandler<T = Element> = EventHandler<
+  T extends any ? AnimationEvent<T> : never
+>;
+/**
+ * @public
+ *
+ * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+ */
+export type TransitionEventHandler<T = Element> = EventHandler<
+  T extends any ? TransitionEvent<T> : never
+>;
 
 export interface IntrinsicPlugs {
   a: DetailedPlugProps<

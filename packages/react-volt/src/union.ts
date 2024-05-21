@@ -2,112 +2,10 @@ import type {
   Ref,
   RefObject,
   RefCallback,
-  UIEventHandler,
-  FormEventHandler,
-  DragEventHandler,
-  WheelEventHandler,
-  FocusEventHandler,
-  MouseEventHandler,
-  ReactEventHandler,
-  TouchEventHandler,
-  ChangeEventHandler,
-  PointerEventHandler,
-  KeyboardEventHandler,
-  AnimationEventHandler,
-  ClipboardEventHandler,
-  TransitionEventHandler,
-  CompositionEventHandler,
   SyntheticEvent,
+  EventHandler,
 } from "react";
 import type { UnionToIntersection } from "./types/helper.types";
-
-interface EnsureEventHandlerType {
-  <H extends TransitionEventHandler | undefined>(handler: H):
-    | TransitionEventHandler<
-        H extends TransitionEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends AnimationEventHandler | undefined>(handler: H):
-    | AnimationEventHandler<
-        H extends AnimationEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends WheelEventHandler | undefined>(handler: H):
-    | WheelEventHandler<
-        H extends WheelEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends PointerEventHandler | undefined>(handler: H):
-    | PointerEventHandler<
-        H extends PointerEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends TouchEventHandler | undefined>(handler: H):
-    | TouchEventHandler<
-        H extends TouchEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends DragEventHandler | undefined>(handler: H):
-    | DragEventHandler<
-        H extends DragEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends MouseEventHandler | undefined>(handler: H):
-    | MouseEventHandler<
-        H extends MouseEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends KeyboardEventHandler | undefined>(handler: H):
-    | KeyboardEventHandler<
-        H extends KeyboardEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends ChangeEventHandler | undefined>(handler: H):
-    | ChangeEventHandler<
-        H extends ChangeEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends FormEventHandler | undefined>(handler: H):
-    | FormEventHandler<
-        H extends FormEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends FocusEventHandler | undefined>(handler: H):
-    | FocusEventHandler<
-        H extends FocusEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends CompositionEventHandler | undefined>(handler: H):
-    | CompositionEventHandler<
-        H extends CompositionEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends ClipboardEventHandler | undefined>(handler: H):
-    | ClipboardEventHandler<
-        H extends ClipboardEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-  <H extends UIEventHandler | undefined>(handler: H):
-    | UIEventHandler<H extends UIEventHandler<infer Element> ? Element : never>
-    | Extract<H, undefined>;
-  <H extends ReactEventHandler | undefined>(handler: H):
-    | ReactEventHandler<
-        H extends ReactEventHandler<infer Element> ? Element : never
-      >
-    | Extract<H, undefined>;
-}
-
-interface EnsureRefType {
-  <R extends RefObject<any>>(ref: R): RefObject<
-    UnionToIntersection<R extends RefObject<infer T> ? T : never>
-  >;
-  <R extends RefCallback<unknown>>(ref: R): RefCallback<
-    R extends RefCallback<infer T> ? T : never
-  >;
-  <R extends Ref<any>, T>(ref: R): Ref<
-    UnionToIntersection<R extends RefCallback<infer T> ? T : never>
-  >;
-}
 
 /**
  * @internal
@@ -125,7 +23,11 @@ const id = <T>(value: T): T => value;
  * the event handler type is inferred as a single handler that receives the union of all possible
  * event types (this is a {@link https://web.archive.org/web/20220823104433/https://www.stephanboyer.com/post/132/what-are-covariance-and-contravariance | _contravariant_} type that is compatible with all unions).
  */
-export const ensureEventHandlerType: EnsureEventHandlerType = id;
+export const ensureEventHandlerType = id as <
+  H extends EventHandler<any> | undefined
+>(
+  handler: H
+) => UnionToIntersection<H> | Extract<H, undefined>;
 
 /**
  * @public
@@ -161,7 +63,17 @@ export const ensureEventHandlerType: EnsureEventHandlerType = id;
  * }
  * ```
  */
-export const ensureRefType: EnsureRefType = id;
+export const ensureRefType: {
+  <R extends RefObject<any>>(ref: R): RefObject<
+    UnionToIntersection<R extends RefObject<infer T> ? T : never>
+  >;
+  <R extends RefCallback<unknown>>(ref: R): RefCallback<
+    R extends RefCallback<infer T> ? T : never
+  >;
+  <R extends Ref<any>>(ref: R): Ref<
+    UnionToIntersection<R extends RefCallback<infer T> ? T : never>
+  >;
+} = id;
 
 /**
  * @public
@@ -172,13 +84,18 @@ export const ensureRefType: EnsureRefType = id;
  * > **Note:** This function is a no-op at runtime and is only used to help the TypeScript compiler, ideally it should be used with a `@__PURE__` annotation to ensure that it is removed by the minifier.
  *
  */
-export function assertEventType<Element, Event>(
-  ev: SyntheticEvent<Element, Event>
-): asserts ev is typeof ev &
-  SyntheticEvent<UnionToIntersection<Element>, Event>;
-/** @public */
-export function assertEventType<SE extends SyntheticEvent>(
-  ev: SE
-): asserts ev is UnionToIntersection<SE> & SE;
-/** @public */
-export function assertEventType(value: unknown): void {}
+export function assertEventType<E extends SyntheticEvent>(
+  event: E
+): asserts event is UnionToIntersection<E> & E {}
+
+/**
+ * @public
+ *
+ * Ensures that the event type of a synthetic event is inferred
+ * as the intersection of all possible event types.
+ *
+ * This is equivalent to {@link assertEventType} but as an identity function.
+ */
+export const ensureEventType = id as <E extends SyntheticEvent>(
+  event: E
+) => UnionToIntersection<E>;

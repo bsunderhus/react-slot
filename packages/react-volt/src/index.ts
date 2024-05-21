@@ -7,6 +7,24 @@ export type {
   OutletRendererDataType,
 } from "./types/datatype.types";
 
+export type {
+  DragEventHandler,
+  AnimationEventHandler,
+  ChangeEventHandler,
+  ClipboardEventHandler,
+  CompositionEventHandler,
+  FocusEventHandler,
+  FormEventHandler,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  PointerEventHandler,
+  ReactEventHandler,
+  TouchEventHandler,
+  TransitionEventHandler,
+  UIEventHandler,
+  WheelEventHandler,
+} from "./types/helper.types";
+
 export {
   isPlug,
   isSlot,
@@ -17,11 +35,7 @@ export {
 } from "./guards";
 
 export { outlet } from "./outlet";
-export type {
-  Slot,
-  OutletRenderer,
-  OutletComponent,
-} from "./types/outlet.types";
+export type { Slot, OutletRenderer, Outlet } from "./types/outlet.types";
 
 import * as plug from "./plug";
 import * as union from "./union";
@@ -60,9 +74,6 @@ export type {
 } from "./types/plug.types";
 
 export {
-  PlugStatus,
-  _unPluggedSymbol,
-  _pluggedInSymbol,
   _outletTypeSymbol,
   _outletElementType,
   _outletRendererSymbol,

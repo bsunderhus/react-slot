@@ -6,7 +6,6 @@ import type {
   ReactElement,
   ElementRef,
 } from "react";
-import type { PlugStatus } from "../constants";
 import type {
   PlugPropsDataType,
   OutletTypeDataType,
@@ -23,6 +22,7 @@ import type {
 } from "./helper.types";
 import type { Slot } from "./outlet.types";
 import { outlet } from "../outlet";
+import type { pluggedIn, unplugged } from "../constants";
 
 /**
  * @public
@@ -145,7 +145,7 @@ export type Plug<
   ? PlugTypePlug<PlugTypeOrPlugProps>
   : PlugTypeOrPlugProps extends PlugPropsDataType
   ? PropsPlug<PlugTypeOrPlugProps>
-  : Never<"PlugTypeOrPlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
+  : Never<"PlugTypeOrPlugProps expects to be a native element (e.g: 'button', 'a', 'div', etc,.), a custom element (e.g: typeof Button, React.FC<ButtonProps>) or even a props definition of a plug (e.g: PlugProps<'button'>)">;
 
 /**
  * @public
@@ -227,7 +227,6 @@ export type Adapter<
   in out InputProps extends PlugPropsDataType,
   in out OutputProps extends PlugPropsDataType
 > = (inputProps: InputProps) => OutputProps;
-
 /**
  * @public
  *
@@ -288,4 +287,17 @@ type OptionalPlugTypes = {
  *
  * > **Note:** _In the context of electrical systems a Lock-in plug is a plug with a lock mechanism to avoid it from being accidentally unplugged._
  */
-export type LockedIn<T> = Exclude<T, PlugStatus.UnPlugged>;
+export type LockedIn<T> = Exclude<T, Unplugged>;
+
+/**
+ * @public
+ * A plug status refers to the presence of a plug.
+ *
+ * If a plug is plugged in the outlet it means that it'll be rendered
+ * while an unplugged plug will not be rendered.
+ *
+ * > **Note:** _in the context of electrical systems plugged in and unplugged are terms used to describe the connection between a plug and an outlet_
+ */
+export type PlugStatus = PluggedIn | Unplugged;
+export type PluggedIn = typeof pluggedIn;
+export type Unplugged = typeof unplugged;

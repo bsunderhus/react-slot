@@ -1,13 +1,19 @@
 import { isValidElement } from "react";
 import { isPortal, isValidElementType } from "react-is";
-import { _outletElementType, _outletTypeSymbol, PlugStatus } from "./constants";
+import {
+  _outletElementType,
+  _outletTypeSymbol,
+  pluggedIn,
+  unplugged,
+} from "./constants";
 import type {
   PlugDataType,
   PlugPropsDataType,
   SlotDataType,
   OutletTypeDataType,
 } from "./types/datatype.types";
-import type { OutletComponent } from "./types/outlet.types";
+import type { Outlet } from "./types/outlet.types";
+import type { PlugStatus } from "./types/plug.types";
 
 /**
  * @public
@@ -29,7 +35,7 @@ export const isOutletType = isValidElementType as <
  */
 export const isOutlet = <OutletType extends OutletTypeDataType>(
   value: unknown
-): value is OutletComponent<OutletType> =>
+): value is Outlet<OutletType> =>
   typeof value === "object" &&
   value !== null &&
   "$$typeof" in value &&
@@ -61,10 +67,9 @@ export const isSlot = <Slot extends SlotDataType>(
  * @public
  * Type guard for checking if a value is a valid outlet props object.
  */
-export const isPlugProps = <P extends PlugDataType>(
+export const isPlugProps = <P extends PlugPropsDataType>(
   value: unknown
-): value is Extract<P, PlugPropsDataType> =>
-  typeof value === "object" && value !== null && !isSlot(value);
+): value is P => typeof value === "object" && value !== null && !isSlot(value);
 
 /**
  * @public
@@ -77,10 +82,9 @@ export const isPlug = <Plug extends PlugDataType>(
 /**
  * @public
  *
- * Type guard for checking if a value is an outlet status.
+ * Type guard for checking if a value is a plug status.
  * @param value - value to check
  */
-export const isPlugStatus = <S extends PlugStatus>(
+export const isPlugStatus = <Status extends PlugStatus>(
   value: unknown
-): value is S =>
-  value === PlugStatus.PluggedIn || value === PlugStatus.UnPlugged;
+): value is Status => value === pluggedIn || value === unplugged;

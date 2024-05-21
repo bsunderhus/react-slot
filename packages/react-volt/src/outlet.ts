@@ -2,19 +2,18 @@ import {
   _outletElementType,
   _outletRendererSymbol,
   _outletTypeSymbol,
-  PlugStatus,
+  pluggedIn,
+  unplugged,
 } from "./constants";
 import { isSlot } from "./guards";
 import { resolve as resolvePlug } from "./plug";
 import type { OutletTypePlug, LockedIn } from "./types/plug.types";
-import type { OutletComponent } from "./types/outlet.types";
+import type { Outlet } from "./types/outlet.types";
 import type {
   PlugPropsDataType,
   SlotDataType,
   OutletTypeDataType,
 } from "./types/datatype.types";
-
-const emptyPropsObject: PlugPropsDataType = {};
 
 /**
  * @public
@@ -31,20 +30,20 @@ const emptyPropsObject: PlugPropsDataType = {};
 export function outlet<const OutletType extends OutletTypeDataType>(
   outletTypes: OutletType,
   plug: NoInfer<OutletTypePlug<OutletType>>
-): OutletComponent<OutletType> | undefined {
+): Outlet<OutletType> | undefined {
+  if (plug === unplugged) {
+    return undefined;
+  }
   const outletType = Array.isArray(outletTypes) ? outletTypes[0] : outletTypes;
-  const props = resolvePlug(plug) ?? emptyPropsObject;
+  const props = resolvePlug(plug) ?? ({} as PlugPropsDataType);
   const component = {
     props,
     $$typeof: _outletElementType,
     [_outletTypeSymbol]: outletType,
     [_outletRendererSymbol]: undefined,
-  } as OutletComponent<OutletType>;
+  } as Outlet<OutletType>;
 
-  if (plug === PlugStatus.UnPlugged) {
-    return undefined;
-  }
-  if (isSlot(plug) || plug === PlugStatus.PluggedIn) {
+  if (plug === pluggedIn || isSlot(plug)) {
     return component;
   }
   if (process.env.NODE_ENV !== "production" && typeof plug !== "object") {
@@ -54,14 +53,16 @@ export function outlet<const OutletType extends OutletTypeDataType>(
       A valid value for a plug is a slot, outlet properties or PlugStatus.
     `);
   }
-  if (props.as !== undefined && typeof outletType === "string") {
-    // FIXME: figure out what is wrong with props.as
-    component[_outletTypeSymbol] = props.as as OutletType;
-    delete props.as;
-  }
-  if (typeof props?.dangerouslyRenderOutlet === "function") {
-    component[_outletRendererSymbol] = props.dangerouslyRenderOutlet;
-    delete props.dangerouslyRenderOutlet;
+  if (typeof outletType === "string") {
+    if (props.as) {
+      // FIXME: figure out what is wrong with props.as
+      component[_outletTypeSymbol] = props.as as OutletType;
+      delete props.as;
+    }
+    if (typeof props?.dangerouslyRenderOutlet === "function") {
+      component[_outletRendererSymbol] = props.dangerouslyRenderOutlet;
+      delete props.dangerouslyRenderOutlet;
+    }
   }
   return component;
 }
@@ -82,4 +83,4 @@ export function outlet<const OutletType extends OutletTypeDataType>(
 outlet.lockedIn = outlet as <const OutletType extends OutletTypeDataType>(
   outletTypes: OutletType,
   plug: NoInfer<LockedIn<OutletTypePlug<OutletType>>>
-) => OutletComponent<OutletType>;
+) => Outlet<OutletType>;

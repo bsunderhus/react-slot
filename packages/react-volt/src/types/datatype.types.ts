@@ -5,7 +5,7 @@ import type {
   ReactNode,
 } from "react";
 import type { IntrinsicOptionalPlugs, IntrinsicPlugs } from "./helper.types";
-import type { PlugStatus } from "../constants";
+import type { PlugStatus } from "./plug.types";
 
 /**
  * @public
