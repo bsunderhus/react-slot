@@ -1,10 +1,4 @@
-import type {
-  ExoticComponent,
-  JSXElementConstructor,
-  PropsWithRef,
-  ReactElement,
-  ReactNode,
-} from "react";
+import type * as ReactTS from "react";
 import type {
   _outletElementType,
   _outletRendererSymbol,
@@ -33,8 +27,8 @@ export type OutletType<PlugType extends PlugTypeDataType> =
  * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
 export type OutletRenderer<in out OutletType extends OutletTypeDataType> = (
-  element: ReactElement<PropsFromOutletType<OutletType>, OutletType>
-) => ReactNode;
+  element: ReactTS.ReactElement<PropsFromOutletType<OutletType>, OutletType>
+) => ReactTS.ReactNode;
 
 /**
  * @public
@@ -45,7 +39,7 @@ export type OutletRenderer<in out OutletType extends OutletTypeDataType> = (
  * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
 export interface Outlet<in out OutletType extends OutletTypeDataType> {
-  (props: PropsFromOutletType<OutletType>): ReactNode;
+  (props: PropsFromOutletType<OutletType>): ReactTS.ReactNode;
   readonly props: PropsFromOutletType<OutletType>;
   /**
    * @internal internal reference for outlet element type
@@ -71,8 +65,8 @@ export interface Outlet<in out OutletType extends OutletTypeDataType> {
  */
 type PropsFromOutletType<OutletType extends OutletTypeDataType> =
   OutletType extends keyof IntrinsicPlugs
-    ? PropsWithRef<JSX.IntrinsicElements[OutletType]>
-    : OutletType extends JSXElementConstructor<infer P>
+    ? ReactTS.PropsWithRef<JSX.IntrinsicElements[OutletType]>
+    : OutletType extends ReactTS.JSXElementConstructor<infer P>
     ? P
     : never;
 

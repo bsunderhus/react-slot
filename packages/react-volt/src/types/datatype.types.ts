@@ -1,9 +1,4 @@
-import type {
-  ReactElement,
-  ReactPortal,
-  JSXElementConstructor,
-  ReactNode,
-} from "react";
+import type * as ReactTS from "react";
 import type { IntrinsicOptionalPlugs, IntrinsicPlugs } from "./helper.types";
 import type { Unplugged } from "./plug.types";
 
@@ -37,7 +32,7 @@ export type ObjectDataType = Record<string, unknown>;
  */
 export type OutletTypeDataType =
   | keyof IntrinsicPlugs
-  | JSXElementConstructor<ObjectDataType>;
+  | ReactTS.JSXElementConstructor<ObjectDataType>;
 
 /**
  * @public
@@ -92,8 +87,8 @@ export interface PlugPropsDataType {
  * > _The Suffix "DataType" will denote the building block types that will serve as "primitive" to all other types._
  */
 export type OutletRendererDataType = (
-  element: ReactElement<any, any>
-) => ReactNode;
+  element: ReactTS.ReactElement<any, any>
+) => ReactTS.ReactNode;
 
 /**
  * @public
@@ -108,11 +103,11 @@ export type OutletRendererDataType = (
  * > _The Suffix "DataType" will denote the building block types that will serve as "primitive" to all other types._
  */
 export type SlotDataType =
-  | ReactElement
+  | ReactTS.ReactElement
   | string
   | number
   | Iterable<SlotDataType>
-  | ReactPortal
+  | ReactTS.ReactPortal
   | boolean;
 
 /**

@@ -2,12 +2,11 @@ import {
   _outletElementType,
   _outletRendererSymbol,
   _outletTypeSymbol,
-  unplugged,
 } from "./constants";
 import { isSlot } from "./guards";
 import { resolve as resolvePlug } from "./plug";
-import type { OutletTypePlug, LockedIn } from "./types/plug.types";
-import type { Outlet, OutletRenderer } from "./types/outlet.types";
+import type { OutletTypePlug, LockedIn, Unplugged } from "./types/plug.types";
+import type { Outlet } from "./types/outlet.types";
 import type {
   PlugPropsDataType,
   SlotDataType,
@@ -21,15 +20,15 @@ import type {
  *
  * @param outletType - the base element type of the outlet
  * @param plug - the plug that is connected to the outlet, a plug can be:
- * {@link PlugPropsDataType | PlugProps}, {@link SlotDataType | Slot} or {@link PlugStatus}.
+ * {@link PlugPropsDataType | PlugProps}, {@link SlotDataType | Slot} or {@link Unplugged}.
  * @param defaultProps - similar to a React component declaration, you can provide an outlet default properties to be merged with the plug provided.
  *
  * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
-export function outlet<const OutletType extends OutletTypeDataType>(
+export const outlet = <const OutletType extends OutletTypeDataType>(
   outletType: OutletType,
   plug: NoInfer<OutletTypePlug<OutletType>>
-): Outlet<OutletType> | undefined {
+): Outlet<OutletType> | undefined => {
   const props = resolvePlug(plug);
   if (props === undefined) return props;
   /**
@@ -62,7 +61,7 @@ export function outlet<const OutletType extends OutletTypeDataType>(
   delete props.dangerouslyRenderOutlet;
 
   return component;
-}
+};
 
 /**
  * @public

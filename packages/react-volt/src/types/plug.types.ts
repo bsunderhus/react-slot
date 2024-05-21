@@ -1,11 +1,4 @@
-import type {
-  Ref,
-  RefAttributes,
-  JSXElementConstructor,
-  ReactNode,
-  ReactElement,
-  ElementRef,
-} from "react";
+import type * as ReactTS from "react";
 import type {
   PlugPropsDataType,
   OutletTypeDataType,
@@ -33,7 +26,7 @@ import type { unplugged } from "../constants";
 export interface IntrinsicOptionalPlugAttributes<
   E extends Element,
   Key extends keyof IntrinsicPlugs
-> extends RefAttributes<E> {
+> extends ReactTS.RefAttributes<E> {
   as?: Key;
   /**
    * A render function that can be used to completely override the markup of the outlet.
@@ -43,8 +36,8 @@ export interface IntrinsicOptionalPlugAttributes<
    * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
    */
   dangerouslyRenderOutlet?: (
-    element: ReactElement<JSX.IntrinsicElements[Key], Key>
-  ) => ReactNode;
+    element: ReactTS.ReactElement<JSX.IntrinsicElements[Key], Key>
+  ) => ReactTS.ReactNode;
 }
 
 /**
@@ -56,7 +49,7 @@ export interface IntrinsicOptionalPlugAttributes<
 export interface IntrinsicPlugAttributes<
   E extends Element,
   Key extends keyof IntrinsicPlugs
-> extends RefAttributes<E> {
+> extends ReactTS.RefAttributes<E> {
   as: Key;
   /**
    * A render function that can be used to completely override the markup of the outlet.
@@ -66,12 +59,12 @@ export interface IntrinsicPlugAttributes<
    * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
    */
   dangerouslyRenderOutlet?: (
-    element: ReactElement<JSX.IntrinsicElements[Key], Key>
-  ) => ReactNode;
+    element: ReactTS.ReactElement<JSX.IntrinsicElements[Key], Key>
+  ) => ReactTS.ReactNode;
 }
 
 type PluggableProps<
-  OutletType extends JSXElementConstructor<Props>,
+  OutletType extends ReactTS.JSXElementConstructor<Props>,
   Props extends ObjectDataType
 > = Props & {
   as?: OutletType;
@@ -83,8 +76,8 @@ type PluggableProps<
    * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
    */
   dangerouslyRenderOutlet?: (
-    element: ReactElement<Props, OutletType>
-  ) => ReactNode;
+    element: ReactTS.ReactElement<Props, OutletType>
+  ) => ReactTS.ReactNode;
 };
 
 /**
@@ -95,7 +88,7 @@ type PluggableProps<
  * @typeParam PlugType - the type of the plug, it can be either:
  * 1. native HTML element string (like `"div"` or `"button"`)
  * 2. optional native HTML element string (like `"div?"` or `"button?"`)
- * 3. a custom element type (like `typeof Button` or `JSXElementConstructor<ButtonProps>`)
+ * 3. a custom element type (like `typeof Button` or `ReactTS.JSXElementConstructor<ButtonProps>`)
  *
  * @example
  * Here's an example where the base type is `"button"` and alternative types are `"a" | "div"`
@@ -117,10 +110,12 @@ export type PlugProps<PlugType extends PlugTypeDataType> =
     : PlugType extends keyof IntrinsicOptionalPlugs
     ? // Case for 'button?' | 'div?' | 'input?'
       IntrinsicOptionalPlugs[PlugType]
-    : // Case for typeof Button | React.FC<ButtonProps> | ...
-    PlugType extends JSXElementConstructor<infer Props extends ObjectDataType>
+    : // Case for typeof Button | ReactTS.FC<ButtonProps> | ...
+    PlugType extends ReactTS.JSXElementConstructor<
+        infer Props extends ObjectDataType
+      >
     ? PluggableProps<PlugType, Props>
-    : Never<"BasePlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, React.FC<ButtonProps>)">;
+    : Never<"BasePlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, ReactTS.FC<ButtonProps>)">;
 
 /**
  * @public
@@ -145,7 +140,7 @@ export type Plug<
   ? PlugTypePlug<PlugTypeOrPlugProps>
   : PlugTypeOrPlugProps extends PlugPropsDataType
   ? PropsPlug<PlugTypeOrPlugProps>
-  : Never<"PlugTypeOrPlugProps expects to be a native element (e.g: 'button', 'a', 'div', etc,.), a custom element (e.g: typeof Button, React.FC<ButtonProps>) or even a props definition of a plug (e.g: PlugProps<'button'>)">;
+  : Never<"PlugTypeOrPlugProps expects to be a native element (e.g: 'button', 'a', 'div', etc,.), a custom element (e.g: typeof Button, ReactTS.FC<ButtonProps>) or even a props definition of a plug (e.g: PlugProps<'button'>)">;
 
 /**
  * @public
@@ -163,7 +158,7 @@ export type Plug<
  *   | {as?: "button"} & IntrinsicElementProps<"button">
  *   | {as: "a"} & IntrinsicElementProps<"a">
  *   | {as: "div"} & IntrinsicElementProps<"div">
- *   | Slot // Slot -> ReactNode in this case
+ *   | Slot // Slot -> ReactTS.ReactNode in this case
  *   | Unplugged
  * ```
  *
@@ -189,7 +184,7 @@ export type PlugTypePlug<PlugType extends PlugTypeDataType> = PropsPlug<
  *   | {as?: "button"} & IntrinsicElementProps<"button">
  *   | {as: "a"} & IntrinsicElementProps<"a">
  *   | {as: "div"} & IntrinsicElementProps<"div">
- *   | Slot // Slot -> ReactNode in this case
+ *   | Slot // Slot -> ReactTS.ReactNode in this case
  *   | Unplugged
  * ```
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
@@ -242,7 +237,9 @@ export type Adapter<
  * > **Note:** _In the context of electrical systems a plug is what allows a device to connect to an outlet. It is the sending end of the connection, while the outlet is the receiving end._
  */
 export type PlugRefElement<Plug extends PlugDataType> =
-  Plug extends PlugPropsDataType ? ElementRef<NonNullable<Plug["as"]>> : never;
+  Plug extends PlugPropsDataType
+    ? ReactTS.ElementRef<NonNullable<Plug["as"]>>
+    : never;
 
 /**
  * @public
@@ -253,7 +250,7 @@ export type PlugRefElement<Plug extends PlugDataType> =
  *
  * > **Note:** _In the context of electrical systems a plug is what allows a device to connect to an outlet. It is the sending end of the connection, while the outlet is the receiving end._
  */
-export type PlugRef<Plug extends PlugDataType> = Ref<
+export type PlugRef<Plug extends PlugDataType> = ReactTS.Ref<
   UnionToIntersection<PlugRefElement<Plug>>
 >;
 

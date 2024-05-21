@@ -1,72 +1,4 @@
-import type {
-  AnchorHTMLAttributes,
-  AreaHTMLAttributes,
-  AudioHTMLAttributes,
-  BaseHTMLAttributes,
-  BlockquoteHTMLAttributes,
-  ButtonHTMLAttributes,
-  CanvasHTMLAttributes,
-  ColHTMLAttributes,
-  ColgroupHTMLAttributes,
-  DataHTMLAttributes,
-  DelHTMLAttributes,
-  DetailsHTMLAttributes,
-  DialogHTMLAttributes,
-  HTMLAttributes,
-  EmbedHTMLAttributes,
-  FieldsetHTMLAttributes,
-  FormHTMLAttributes,
-  HtmlHTMLAttributes,
-  IframeHTMLAttributes,
-  ImgHTMLAttributes,
-  InputHTMLAttributes,
-  InsHTMLAttributes,
-  KeygenHTMLAttributes,
-  LabelHTMLAttributes,
-  LiHTMLAttributes,
-  LinkHTMLAttributes,
-  MapHTMLAttributes,
-  MenuHTMLAttributes,
-  MetaHTMLAttributes,
-  MeterHTMLAttributes,
-  ObjectHTMLAttributes,
-  OlHTMLAttributes,
-  OptgroupHTMLAttributes,
-  OptionHTMLAttributes,
-  OutputHTMLAttributes,
-  ParamHTMLAttributes,
-  ProgressHTMLAttributes,
-  QuoteHTMLAttributes,
-  ScriptHTMLAttributes,
-  SelectHTMLAttributes,
-  SourceHTMLAttributes,
-  StyleHTMLAttributes,
-  TableHTMLAttributes,
-  TdHTMLAttributes,
-  TextareaHTMLAttributes,
-  ThHTMLAttributes,
-  TimeHTMLAttributes,
-  TrackHTMLAttributes,
-  VideoHTMLAttributes,
-  WebViewHTMLAttributes,
-  SlotHTMLAttributes,
-  SyntheticEvent,
-  ClipboardEvent,
-  CompositionEvent,
-  DragEvent,
-  FocusEvent,
-  FormEvent,
-  ChangeEvent,
-  KeyboardEvent,
-  MouseEvent,
-  TouchEvent,
-  PointerEvent,
-  UIEvent,
-  WheelEvent,
-  AnimationEvent,
-  TransitionEvent,
-  EventHandler,
-} from "react";
+import type * as ReactTS from "react";
 import type {
   IntrinsicPlugAttributes,
   IntrinsicOptionalPlugAttributes,
@@ -121,13 +53,13 @@ export type UnionToIntersection<U> = (
 export type Never<Msg extends string> = Msg & never;
 
 type DetailedPlugProps<
-  Attributes extends HTMLAttributes<Element>,
+  Attributes extends ReactTS.HTMLAttributes<Element>,
   Element extends HTMLElement,
   Key extends keyof IntrinsicPlugs
 > = IntrinsicPlugAttributes<Element, Key> & Attributes;
 
 type DetailedOptionalPlugProps<
-  Attributes extends HTMLAttributes<Element>,
+  Attributes extends ReactTS.HTMLAttributes<Element>,
   Element extends HTMLElement,
   Key extends keyof IntrinsicPlugs
 > = IntrinsicOptionalPlugAttributes<Element, Key> & Attributes;
@@ -137,579 +69,703 @@ type DetailedOptionalPlugProps<
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type ReactEventHandler<T = Element> = EventHandler<
-  T extends any ? SyntheticEvent<T> : never
+export type ReactEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.SyntheticEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type ClipboardEventHandler<T = Element> = EventHandler<
-  T extends any ? ClipboardEvent<T> : never
+export type ClipboardEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.ClipboardEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type CompositionEventHandler<T = Element> = EventHandler<
-  T extends any ? CompositionEvent<T> : never
+export type CompositionEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.CompositionEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type DragEventHandler<T = Element> = EventHandler<
-  T extends any ? DragEvent<T> : never
+export type DragEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.DragEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type FocusEventHandler<T = Element> = EventHandler<
-  T extends any ? FocusEvent<T> : never
+export type FocusEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.FocusEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type FormEventHandler<T = Element> = EventHandler<
-  T extends any ? FormEvent<T> : never
+export type FormEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.FormEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type ChangeEventHandler<T = Element> = EventHandler<
-  T extends any ? ChangeEvent<T> : never
+export type ChangeEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.ChangeEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type KeyboardEventHandler<T = Element> = EventHandler<
-  T extends any ? KeyboardEvent<T> : never
+export type KeyboardEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.KeyboardEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type MouseEventHandler<T = Element> = EventHandler<
-  T extends any ? MouseEvent<T> : never
+export type MouseEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.MouseEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type TouchEventHandler<T = Element> = EventHandler<
-  T extends any ? TouchEvent<T> : never
+export type TouchEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.TouchEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type PointerEventHandler<T = Element> = EventHandler<
-  T extends any ? PointerEvent<T> : never
+export type PointerEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.PointerEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type UIEventHandler<T = Element> = EventHandler<
-  T extends any ? UIEvent<T> : never
+export type UIEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.UIEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type WheelEventHandler<T = Element> = EventHandler<
-  T extends any ? WheelEvent<T> : never
+export type WheelEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.WheelEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type AnimationEventHandler<T = Element> = EventHandler<
-  T extends any ? AnimationEvent<T> : never
+export type AnimationEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.AnimationEvent<T> : never
 >;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-export type TransitionEventHandler<T = Element> = EventHandler<
-  T extends any ? TransitionEvent<T> : never
+export type TransitionEventHandler<T = Element> = ReactTS.EventHandler<
+  T extends any ? ReactTS.TransitionEvent<T> : never
 >;
 
 export interface IntrinsicPlugs {
   a: DetailedPlugProps<
-    AnchorHTMLAttributes<HTMLAnchorElement>,
+    ReactTS.AnchorHTMLAttributes<HTMLAnchorElement>,
     HTMLAnchorElement,
     "a"
   >;
-  abbr: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "abbr">;
+  abbr: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "abbr"
+  >;
   address: DetailedPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "address"
   >;
   area: PropsWithoutChildren<
     DetailedPlugProps<
-      AreaHTMLAttributes<HTMLAreaElement>,
+      ReactTS.AreaHTMLAttributes<HTMLAreaElement>,
       HTMLAreaElement,
       "area"
     >
   >;
   article: DetailedPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "article"
   >;
-  aside: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "aside">;
+  aside: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "aside"
+  >;
   audio: DetailedPlugProps<
-    AudioHTMLAttributes<HTMLAudioElement>,
+    ReactTS.AudioHTMLAttributes<HTMLAudioElement>,
     HTMLAudioElement,
     "audio"
   >;
-  b: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "b">;
+  b: DetailedPlugProps<ReactTS.HTMLAttributes<HTMLElement>, HTMLElement, "b">;
   base: PropsWithoutChildren<
     DetailedPlugProps<
-      BaseHTMLAttributes<HTMLBaseElement>,
+      ReactTS.BaseHTMLAttributes<HTMLBaseElement>,
       HTMLBaseElement,
       "base"
     >
   >;
-  bdi: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "bdi">;
-  bdo: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "bdo">;
-  big: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "big">;
+  bdi: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "bdi"
+  >;
+  bdo: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "bdo"
+  >;
+  big: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "big"
+  >;
   blockquote: DetailedPlugProps<
-    BlockquoteHTMLAttributes<HTMLQuoteElement>,
+    ReactTS.BlockquoteHTMLAttributes<HTMLQuoteElement>,
     HTMLQuoteElement,
     "blockquote"
   >;
   body: DetailedPlugProps<
-    HTMLAttributes<HTMLBodyElement>,
+    ReactTS.HTMLAttributes<HTMLBodyElement>,
     HTMLBodyElement,
     "body"
   >;
   br: PropsWithoutChildren<
-    DetailedPlugProps<HTMLAttributes<HTMLBRElement>, HTMLBRElement, "br">
+    DetailedPlugProps<
+      ReactTS.HTMLAttributes<HTMLBRElement>,
+      HTMLBRElement,
+      "br"
+    >
   >;
   button: DetailedPlugProps<
-    ButtonHTMLAttributes<HTMLButtonElement>,
+    ReactTS.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement,
     "button"
   >;
   canvas: DetailedPlugProps<
-    CanvasHTMLAttributes<HTMLCanvasElement>,
+    ReactTS.CanvasHTMLAttributes<HTMLCanvasElement>,
     HTMLCanvasElement,
     "canvas"
   >;
   caption: DetailedPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "caption"
   >;
-  center: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "center">;
-  cite: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "cite">;
-  code: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "code">;
+  center: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "center"
+  >;
+  cite: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "cite"
+  >;
+  code: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "code"
+  >;
   col: PropsWithoutChildren<
     DetailedPlugProps<
-      ColHTMLAttributes<HTMLTableColElement>,
+      ReactTS.ColHTMLAttributes<HTMLTableColElement>,
       HTMLTableColElement,
       "col"
     >
   >;
   colgroup: DetailedPlugProps<
-    ColgroupHTMLAttributes<HTMLTableColElement>,
+    ReactTS.ColgroupHTMLAttributes<HTMLTableColElement>,
     HTMLTableColElement,
     "colgroup"
   >;
   data: DetailedPlugProps<
-    DataHTMLAttributes<HTMLDataElement>,
+    ReactTS.DataHTMLAttributes<HTMLDataElement>,
     HTMLDataElement,
     "data"
   >;
   datalist: DetailedPlugProps<
-    HTMLAttributes<HTMLDataListElement>,
+    ReactTS.HTMLAttributes<HTMLDataListElement>,
     HTMLDataListElement,
     "datalist"
   >;
-  dd: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "dd">;
+  dd: DetailedPlugProps<ReactTS.HTMLAttributes<HTMLElement>, HTMLElement, "dd">;
   del: DetailedPlugProps<
-    DelHTMLAttributes<HTMLModElement>,
+    ReactTS.DelHTMLAttributes<HTMLModElement>,
     HTMLModElement,
     "del"
   >;
   details: DetailedPlugProps<
-    DetailsHTMLAttributes<HTMLDetailsElement>,
+    ReactTS.DetailsHTMLAttributes<HTMLDetailsElement>,
     HTMLDetailsElement,
     "details"
   >;
-  dfn: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "dfn">;
+  dfn: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "dfn"
+  >;
   dialog: DetailedPlugProps<
-    DialogHTMLAttributes<HTMLDialogElement>,
+    ReactTS.DialogHTMLAttributes<HTMLDialogElement>,
     HTMLDialogElement,
     "dialog"
   >;
-  div: DetailedPlugProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement, "div">;
+  div: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement,
+    "div"
+  >;
   dl: DetailedPlugProps<
-    HTMLAttributes<HTMLDListElement>,
+    ReactTS.HTMLAttributes<HTMLDListElement>,
     HTMLDListElement,
     "dl"
   >;
-  dt: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "dt">;
-  em: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "em">;
+  dt: DetailedPlugProps<ReactTS.HTMLAttributes<HTMLElement>, HTMLElement, "dt">;
+  em: DetailedPlugProps<ReactTS.HTMLAttributes<HTMLElement>, HTMLElement, "em">;
   embed: PropsWithoutChildren<
     DetailedPlugProps<
-      EmbedHTMLAttributes<HTMLEmbedElement>,
+      ReactTS.EmbedHTMLAttributes<HTMLEmbedElement>,
       HTMLEmbedElement,
       "embed"
     >
   >;
   fieldset: DetailedPlugProps<
-    FieldsetHTMLAttributes<HTMLFieldSetElement>,
+    ReactTS.FieldsetHTMLAttributes<HTMLFieldSetElement>,
     HTMLFieldSetElement,
     "fieldset"
   >;
   figcaption: DetailedPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "figcaption"
   >;
-  figure: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "figure">;
-  footer: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "footer">;
+  figure: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "figure"
+  >;
+  footer: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "footer"
+  >;
   form: DetailedPlugProps<
-    FormHTMLAttributes<HTMLFormElement>,
+    ReactTS.FormHTMLAttributes<HTMLFormElement>,
     HTMLFormElement,
     "form"
   >;
   h1: DetailedPlugProps<
-    HTMLAttributes<HTMLHeadingElement>,
+    ReactTS.HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h1"
   >;
   h2: DetailedPlugProps<
-    HTMLAttributes<HTMLHeadingElement>,
+    ReactTS.HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h2"
   >;
   h3: DetailedPlugProps<
-    HTMLAttributes<HTMLHeadingElement>,
+    ReactTS.HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h3"
   >;
   h4: DetailedPlugProps<
-    HTMLAttributes<HTMLHeadingElement>,
+    ReactTS.HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h4"
   >;
   h5: DetailedPlugProps<
-    HTMLAttributes<HTMLHeadingElement>,
+    ReactTS.HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h5"
   >;
   h6: DetailedPlugProps<
-    HTMLAttributes<HTMLHeadingElement>,
+    ReactTS.HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h6"
   >;
   head: DetailedPlugProps<
-    HTMLAttributes<HTMLHeadElement>,
+    ReactTS.HTMLAttributes<HTMLHeadElement>,
     HTMLHeadElement,
     "head"
   >;
-  header: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "header">;
-  hgroup: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "hgroup">;
+  header: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "header"
+  >;
+  hgroup: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "hgroup"
+  >;
   hr: PropsWithoutChildren<
-    DetailedPlugProps<HTMLAttributes<HTMLHRElement>, HTMLHRElement, "hr">
+    DetailedPlugProps<
+      ReactTS.HTMLAttributes<HTMLHRElement>,
+      HTMLHRElement,
+      "hr"
+    >
   >;
   html: DetailedPlugProps<
-    HtmlHTMLAttributes<HTMLHtmlElement>,
+    ReactTS.HtmlHTMLAttributes<HTMLHtmlElement>,
     HTMLHtmlElement,
     "html"
   >;
-  i: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "i">;
+  i: DetailedPlugProps<ReactTS.HTMLAttributes<HTMLElement>, HTMLElement, "i">;
   iframe: DetailedPlugProps<
-    IframeHTMLAttributes<HTMLIFrameElement>,
+    ReactTS.IframeHTMLAttributes<HTMLIFrameElement>,
     HTMLIFrameElement,
     "iframe"
   >;
   img: PropsWithoutChildren<
     DetailedPlugProps<
-      ImgHTMLAttributes<HTMLImageElement>,
+      ReactTS.ImgHTMLAttributes<HTMLImageElement>,
       HTMLImageElement,
       "img"
     >
   >;
   input: PropsWithoutChildren<
     DetailedPlugProps<
-      InputHTMLAttributes<HTMLInputElement>,
+      ReactTS.InputHTMLAttributes<HTMLInputElement>,
       HTMLInputElement,
       "input"
     >
   >;
   ins: DetailedPlugProps<
-    InsHTMLAttributes<HTMLModElement>,
+    ReactTS.InsHTMLAttributes<HTMLModElement>,
     HTMLModElement,
     "ins"
   >;
-  kbd: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "kbd">;
+  kbd: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "kbd"
+  >;
   keygen: DetailedPlugProps<
-    KeygenHTMLAttributes<HTMLElement>,
+    ReactTS.KeygenHTMLAttributes<HTMLElement>,
     HTMLElement,
     "keygen"
   >;
   label: DetailedPlugProps<
-    LabelHTMLAttributes<HTMLLabelElement>,
+    ReactTS.LabelHTMLAttributes<HTMLLabelElement>,
     HTMLLabelElement,
     "label"
   >;
   legend: DetailedPlugProps<
-    HTMLAttributes<HTMLLegendElement>,
+    ReactTS.HTMLAttributes<HTMLLegendElement>,
     HTMLLegendElement,
     "legend"
   >;
-  li: DetailedPlugProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement, "li">;
+  li: DetailedPlugProps<
+    ReactTS.LiHTMLAttributes<HTMLLIElement>,
+    HTMLLIElement,
+    "li"
+  >;
   link: PropsWithoutChildren<
     DetailedPlugProps<
-      LinkHTMLAttributes<HTMLLinkElement>,
+      ReactTS.LinkHTMLAttributes<HTMLLinkElement>,
       HTMLLinkElement,
       "link"
     >
   >;
-  main: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "main">;
+  main: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "main"
+  >;
   map: DetailedPlugProps<
-    MapHTMLAttributes<HTMLMapElement>,
+    ReactTS.MapHTMLAttributes<HTMLMapElement>,
     HTMLMapElement,
     "map"
   >;
-  mark: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "mark">;
-  menu: DetailedPlugProps<MenuHTMLAttributes<HTMLElement>, HTMLElement, "menu">;
+  mark: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "mark"
+  >;
+  menu: DetailedPlugProps<
+    ReactTS.MenuHTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "menu"
+  >;
   menuitem: DetailedPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "menuitem"
   >;
   meta: PropsWithoutChildren<
     DetailedPlugProps<
-      MetaHTMLAttributes<HTMLMetaElement>,
+      ReactTS.MetaHTMLAttributes<HTMLMetaElement>,
       HTMLMetaElement,
       "meta"
     >
   >;
   meter: DetailedPlugProps<
-    MeterHTMLAttributes<HTMLMeterElement>,
+    ReactTS.MeterHTMLAttributes<HTMLMeterElement>,
     HTMLMeterElement,
     "meter"
   >;
-  nav: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "nav">;
+  nav: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "nav"
+  >;
   noindex: DetailedPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "noindex"
   >;
   noscript: DetailedPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "noscript"
   >;
   object: DetailedPlugProps<
-    ObjectHTMLAttributes<HTMLObjectElement>,
+    ReactTS.ObjectHTMLAttributes<HTMLObjectElement>,
     HTMLObjectElement,
     "object"
   >;
   ol: DetailedPlugProps<
-    OlHTMLAttributes<HTMLOListElement>,
+    ReactTS.OlHTMLAttributes<HTMLOListElement>,
     HTMLOListElement,
     "ol"
   >;
   optgroup: DetailedPlugProps<
-    OptgroupHTMLAttributes<HTMLOptGroupElement>,
+    ReactTS.OptgroupHTMLAttributes<HTMLOptGroupElement>,
     HTMLOptGroupElement,
     "optgroup"
   >;
   option: DetailedPlugProps<
-    OptionHTMLAttributes<HTMLOptionElement>,
+    ReactTS.OptionHTMLAttributes<HTMLOptionElement>,
     HTMLOptionElement,
     "option"
   >;
   output: DetailedPlugProps<
-    OutputHTMLAttributes<HTMLOutputElement>,
+    ReactTS.OutputHTMLAttributes<HTMLOutputElement>,
     HTMLOutputElement,
     "output"
   >;
   p: DetailedPlugProps<
-    HTMLAttributes<HTMLParagraphElement>,
+    ReactTS.HTMLAttributes<HTMLParagraphElement>,
     HTMLParagraphElement,
     "p"
   >;
   param: PropsWithoutChildren<
     DetailedPlugProps<
-      ParamHTMLAttributes<HTMLParamElement>,
+      ReactTS.ParamHTMLAttributes<HTMLParamElement>,
       HTMLParamElement,
       "param"
     >
   >;
   picture: DetailedPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "picture"
   >;
-  pre: DetailedPlugProps<HTMLAttributes<HTMLPreElement>, HTMLPreElement, "pre">;
+  pre: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLPreElement>,
+    HTMLPreElement,
+    "pre"
+  >;
   progress: DetailedPlugProps<
-    ProgressHTMLAttributes<HTMLProgressElement>,
+    ReactTS.ProgressHTMLAttributes<HTMLProgressElement>,
     HTMLProgressElement,
     "progress"
   >;
   q: DetailedPlugProps<
-    QuoteHTMLAttributes<HTMLQuoteElement>,
+    ReactTS.QuoteHTMLAttributes<HTMLQuoteElement>,
     HTMLQuoteElement,
     "q"
   >;
-  rp: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "rp">;
-  rt: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "rt">;
-  ruby: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "ruby">;
-  s: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "s">;
-  samp: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "samp">;
-  search: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "search">;
+  rp: DetailedPlugProps<ReactTS.HTMLAttributes<HTMLElement>, HTMLElement, "rp">;
+  rt: DetailedPlugProps<ReactTS.HTMLAttributes<HTMLElement>, HTMLElement, "rt">;
+  ruby: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "ruby"
+  >;
+  s: DetailedPlugProps<ReactTS.HTMLAttributes<HTMLElement>, HTMLElement, "s">;
+  samp: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "samp"
+  >;
+  search: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "search"
+  >;
   slot: DetailedPlugProps<
-    SlotHTMLAttributes<HTMLSlotElement>,
+    ReactTS.SlotHTMLAttributes<HTMLSlotElement>,
     HTMLSlotElement,
     "slot"
   >;
   script: DetailedPlugProps<
-    ScriptHTMLAttributes<HTMLScriptElement>,
+    ReactTS.ScriptHTMLAttributes<HTMLScriptElement>,
     HTMLScriptElement,
     "script"
   >;
   section: DetailedPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "section"
   >;
   select: DetailedPlugProps<
-    SelectHTMLAttributes<HTMLSelectElement>,
+    ReactTS.SelectHTMLAttributes<HTMLSelectElement>,
     HTMLSelectElement,
     "select"
   >;
-  small: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "small">;
+  small: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "small"
+  >;
   source: PropsWithoutChildren<
     DetailedPlugProps<
-      SourceHTMLAttributes<HTMLSourceElement>,
+      ReactTS.SourceHTMLAttributes<HTMLSourceElement>,
       HTMLSourceElement,
       "source"
     >
   >;
   span: DetailedPlugProps<
-    HTMLAttributes<HTMLSpanElement>,
+    ReactTS.HTMLAttributes<HTMLSpanElement>,
     HTMLSpanElement,
     "span"
   >;
-  strong: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "strong">;
+  strong: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "strong"
+  >;
   style: DetailedPlugProps<
-    StyleHTMLAttributes<HTMLStyleElement>,
+    ReactTS.StyleHTMLAttributes<HTMLStyleElement>,
     HTMLStyleElement,
     "style"
   >;
-  sub: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "sub">;
+  sub: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "sub"
+  >;
   summary: DetailedPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "summary"
   >;
-  sup: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "sup">;
+  sup: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "sup"
+  >;
   table: DetailedPlugProps<
-    TableHTMLAttributes<HTMLTableElement>,
+    ReactTS.TableHTMLAttributes<HTMLTableElement>,
     HTMLTableElement,
     "table"
   >;
   template: DetailedPlugProps<
-    HTMLAttributes<HTMLTemplateElement>,
+    ReactTS.HTMLAttributes<HTMLTemplateElement>,
     HTMLTemplateElement,
     "template"
   >;
   tbody: DetailedPlugProps<
-    HTMLAttributes<HTMLTableSectionElement>,
+    ReactTS.HTMLAttributes<HTMLTableSectionElement>,
     HTMLTableSectionElement,
     "tbody"
   >;
   td: DetailedPlugProps<
-    TdHTMLAttributes<HTMLTableDataCellElement>,
+    ReactTS.TdHTMLAttributes<HTMLTableDataCellElement>,
     HTMLTableDataCellElement,
     "td"
   >;
   textarea: DetailedPlugProps<
-    TextareaHTMLAttributes<HTMLTextAreaElement>,
+    ReactTS.TextareaHTMLAttributes<HTMLTextAreaElement>,
     HTMLTextAreaElement,
     "textarea"
   >;
   tfoot: DetailedPlugProps<
-    HTMLAttributes<HTMLTableSectionElement>,
+    ReactTS.HTMLAttributes<HTMLTableSectionElement>,
     HTMLTableSectionElement,
     "tfoot"
   >;
   th: DetailedPlugProps<
-    ThHTMLAttributes<HTMLTableHeaderCellElement>,
+    ReactTS.ThHTMLAttributes<HTMLTableHeaderCellElement>,
     HTMLTableHeaderCellElement,
     "th"
   >;
   thead: DetailedPlugProps<
-    HTMLAttributes<HTMLTableSectionElement>,
+    ReactTS.HTMLAttributes<HTMLTableSectionElement>,
     HTMLTableSectionElement,
     "thead"
   >;
   time: DetailedPlugProps<
-    TimeHTMLAttributes<HTMLTimeElement>,
+    ReactTS.TimeHTMLAttributes<HTMLTimeElement>,
     HTMLTimeElement,
     "time"
   >;
   title: DetailedPlugProps<
-    HTMLAttributes<HTMLTitleElement>,
+    ReactTS.HTMLAttributes<HTMLTitleElement>,
     HTMLTitleElement,
     "title"
   >;
   tr: DetailedPlugProps<
-    HTMLAttributes<HTMLTableRowElement>,
+    ReactTS.HTMLAttributes<HTMLTableRowElement>,
     HTMLTableRowElement,
     "tr"
   >;
   track: PropsWithoutChildren<
     DetailedPlugProps<
-      TrackHTMLAttributes<HTMLTrackElement>,
+      ReactTS.TrackHTMLAttributes<HTMLTrackElement>,
       HTMLTrackElement,
       "track"
     >
   >;
-  u: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "u">;
+  u: DetailedPlugProps<ReactTS.HTMLAttributes<HTMLElement>, HTMLElement, "u">;
   ul: DetailedPlugProps<
-    HTMLAttributes<HTMLUListElement>,
+    ReactTS.HTMLAttributes<HTMLUListElement>,
     HTMLUListElement,
     "ul"
   >;
-  var: DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "var">;
+  var: DetailedPlugProps<
+    ReactTS.HTMLAttributes<HTMLElement>,
+    HTMLElement,
+    "var"
+  >;
   video: DetailedPlugProps<
-    VideoHTMLAttributes<HTMLVideoElement>,
+    ReactTS.VideoHTMLAttributes<HTMLVideoElement>,
     HTMLVideoElement,
     "video"
   >;
   wbr: PropsWithoutChildren<
-    DetailedPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "wbr">
+    DetailedPlugProps<ReactTS.HTMLAttributes<HTMLElement>, HTMLElement, "wbr">
   >;
   webview: DetailedPlugProps<
-    WebViewHTMLAttributes<HTMLWebViewElement>,
+    ReactTS.WebViewHTMLAttributes<HTMLWebViewElement>,
     HTMLWebViewElement,
     "webview"
   >;
@@ -717,621 +773,625 @@ export interface IntrinsicPlugs {
 
 export interface IntrinsicOptionalPlugs {
   "a?": DetailedOptionalPlugProps<
-    AnchorHTMLAttributes<HTMLAnchorElement>,
+    ReactTS.AnchorHTMLAttributes<HTMLAnchorElement>,
     HTMLAnchorElement,
     "a"
   >;
   "abbr?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "abbr"
   >;
   "address?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "address"
   >;
   "area?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      AreaHTMLAttributes<HTMLAreaElement>,
+      ReactTS.AreaHTMLAttributes<HTMLAreaElement>,
       HTMLAreaElement,
       "area"
     >
   >;
   "article?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "article"
   >;
   "aside?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "aside"
   >;
   "audio?": DetailedOptionalPlugProps<
-    AudioHTMLAttributes<HTMLAudioElement>,
+    ReactTS.AudioHTMLAttributes<HTMLAudioElement>,
     HTMLAudioElement,
     "audio"
   >;
   "b?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "b"
   >;
   "base?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      BaseHTMLAttributes<HTMLBaseElement>,
+      ReactTS.BaseHTMLAttributes<HTMLBaseElement>,
       HTMLBaseElement,
       "base"
     >
   >;
   "bdi?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "bdi"
   >;
   "bdo?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "bdo"
   >;
   "big?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "big"
   >;
   "blockquote?": DetailedOptionalPlugProps<
-    BlockquoteHTMLAttributes<HTMLQuoteElement>,
+    ReactTS.BlockquoteHTMLAttributes<HTMLQuoteElement>,
     HTMLQuoteElement,
     "blockquote"
   >;
   "body?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLBodyElement>,
+    ReactTS.HTMLAttributes<HTMLBodyElement>,
     HTMLBodyElement,
     "body"
   >;
   "br?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      HTMLAttributes<HTMLBRElement>,
+      ReactTS.HTMLAttributes<HTMLBRElement>,
       HTMLBRElement,
       "br"
     >
   >;
   "button?": DetailedOptionalPlugProps<
-    ButtonHTMLAttributes<HTMLButtonElement>,
+    ReactTS.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement,
     "button"
   >;
   "canvas?": DetailedOptionalPlugProps<
-    CanvasHTMLAttributes<HTMLCanvasElement>,
+    ReactTS.CanvasHTMLAttributes<HTMLCanvasElement>,
     HTMLCanvasElement,
     "canvas"
   >;
   "caption?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "caption"
   >;
   "center?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "center"
   >;
   "cite?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "cite"
   >;
   "code?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "code"
   >;
   "col?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      ColHTMLAttributes<HTMLTableColElement>,
+      ReactTS.ColHTMLAttributes<HTMLTableColElement>,
       HTMLTableColElement,
       "col"
     >
   >;
   "colgroup?": DetailedOptionalPlugProps<
-    ColgroupHTMLAttributes<HTMLTableColElement>,
+    ReactTS.ColgroupHTMLAttributes<HTMLTableColElement>,
     HTMLTableColElement,
     "colgroup"
   >;
   "data?": DetailedOptionalPlugProps<
-    DataHTMLAttributes<HTMLDataElement>,
+    ReactTS.DataHTMLAttributes<HTMLDataElement>,
     HTMLDataElement,
     "data"
   >;
   "datalist?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLDataListElement>,
+    ReactTS.HTMLAttributes<HTMLDataListElement>,
     HTMLDataListElement,
     "datalist"
   >;
   "dd?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "dd"
   >;
   "del?": DetailedOptionalPlugProps<
-    DelHTMLAttributes<HTMLModElement>,
+    ReactTS.DelHTMLAttributes<HTMLModElement>,
     HTMLModElement,
     "del"
   >;
   "details?": DetailedOptionalPlugProps<
-    DetailsHTMLAttributes<HTMLDetailsElement>,
+    ReactTS.DetailsHTMLAttributes<HTMLDetailsElement>,
     HTMLDetailsElement,
     "details"
   >;
   "dfn?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "dfn"
   >;
   "dialog?": DetailedOptionalPlugProps<
-    DialogHTMLAttributes<HTMLDialogElement>,
+    ReactTS.DialogHTMLAttributes<HTMLDialogElement>,
     HTMLDialogElement,
     "dialog"
   >;
   "div?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLDivElement>,
+    ReactTS.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement,
     "div"
   >;
   "dl?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLDListElement>,
+    ReactTS.HTMLAttributes<HTMLDListElement>,
     HTMLDListElement,
     "dl"
   >;
   "dt?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "dt"
   >;
   "em?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "em"
   >;
   "embed?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      EmbedHTMLAttributes<HTMLEmbedElement>,
+      ReactTS.EmbedHTMLAttributes<HTMLEmbedElement>,
       HTMLEmbedElement,
       "embed"
     >
   >;
   "fieldset?": DetailedOptionalPlugProps<
-    FieldsetHTMLAttributes<HTMLFieldSetElement>,
+    ReactTS.FieldsetHTMLAttributes<HTMLFieldSetElement>,
     HTMLFieldSetElement,
     "fieldset"
   >;
   "figcaption?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "figcaption"
   >;
   "figure?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "figure"
   >;
   "footer?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "footer"
   >;
   "form?": DetailedOptionalPlugProps<
-    FormHTMLAttributes<HTMLFormElement>,
+    ReactTS.FormHTMLAttributes<HTMLFormElement>,
     HTMLFormElement,
     "form"
   >;
   "h1?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLHeadingElement>,
+    ReactTS.HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h1"
   >;
   "h2?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLHeadingElement>,
+    ReactTS.HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h2"
   >;
   "h3?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLHeadingElement>,
+    ReactTS.HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h3"
   >;
   "h4?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLHeadingElement>,
+    ReactTS.HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h4"
   >;
   "h5?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLHeadingElement>,
+    ReactTS.HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h5"
   >;
   "h6?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLHeadingElement>,
+    ReactTS.HTMLAttributes<HTMLHeadingElement>,
     HTMLHeadingElement,
     "h6"
   >;
   "head?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLHeadElement>,
+    ReactTS.HTMLAttributes<HTMLHeadElement>,
     HTMLHeadElement,
     "head"
   >;
   "header?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "header"
   >;
   "hgroup?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "hgroup"
   >;
   "hr?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      HTMLAttributes<HTMLHRElement>,
+      ReactTS.HTMLAttributes<HTMLHRElement>,
       HTMLHRElement,
       "hr"
     >
   >;
   "html?": DetailedOptionalPlugProps<
-    HtmlHTMLAttributes<HTMLHtmlElement>,
+    ReactTS.HtmlHTMLAttributes<HTMLHtmlElement>,
     HTMLHtmlElement,
     "html"
   >;
   "i?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "i"
   >;
   "iframe?": DetailedOptionalPlugProps<
-    IframeHTMLAttributes<HTMLIFrameElement>,
+    ReactTS.IframeHTMLAttributes<HTMLIFrameElement>,
     HTMLIFrameElement,
     "iframe"
   >;
   "img?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      ImgHTMLAttributes<HTMLImageElement>,
+      ReactTS.ImgHTMLAttributes<HTMLImageElement>,
       HTMLImageElement,
       "img"
     >
   >;
   "input?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      InputHTMLAttributes<HTMLInputElement>,
+      ReactTS.InputHTMLAttributes<HTMLInputElement>,
       HTMLInputElement,
       "input"
     >
   >;
   "ins?": DetailedOptionalPlugProps<
-    InsHTMLAttributes<HTMLModElement>,
+    ReactTS.InsHTMLAttributes<HTMLModElement>,
     HTMLModElement,
     "ins"
   >;
   "kbd?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "kbd"
   >;
   "keygen?": DetailedOptionalPlugProps<
-    KeygenHTMLAttributes<HTMLElement>,
+    ReactTS.KeygenHTMLAttributes<HTMLElement>,
     HTMLElement,
     "keygen"
   >;
   "label?": DetailedOptionalPlugProps<
-    LabelHTMLAttributes<HTMLLabelElement>,
+    ReactTS.LabelHTMLAttributes<HTMLLabelElement>,
     HTMLLabelElement,
     "label"
   >;
   "legend?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLLegendElement>,
+    ReactTS.HTMLAttributes<HTMLLegendElement>,
     HTMLLegendElement,
     "legend"
   >;
   "li?": DetailedOptionalPlugProps<
-    LiHTMLAttributes<HTMLLIElement>,
+    ReactTS.LiHTMLAttributes<HTMLLIElement>,
     HTMLLIElement,
     "li"
   >;
   "link?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      LinkHTMLAttributes<HTMLLinkElement>,
+      ReactTS.LinkHTMLAttributes<HTMLLinkElement>,
       HTMLLinkElement,
       "link"
     >
   >;
   "main?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "main"
   >;
   "map?": DetailedOptionalPlugProps<
-    MapHTMLAttributes<HTMLMapElement>,
+    ReactTS.MapHTMLAttributes<HTMLMapElement>,
     HTMLMapElement,
     "map"
   >;
   "mark?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "mark"
   >;
   "menu?": DetailedOptionalPlugProps<
-    MenuHTMLAttributes<HTMLElement>,
+    ReactTS.MenuHTMLAttributes<HTMLElement>,
     HTMLElement,
     "menu"
   >;
   "menuitem?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "menuitem"
   >;
   "meta?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      MetaHTMLAttributes<HTMLMetaElement>,
+      ReactTS.MetaHTMLAttributes<HTMLMetaElement>,
       HTMLMetaElement,
       "meta"
     >
   >;
   "meter?": DetailedOptionalPlugProps<
-    MeterHTMLAttributes<HTMLMeterElement>,
+    ReactTS.MeterHTMLAttributes<HTMLMeterElement>,
     HTMLMeterElement,
     "meter"
   >;
   "nav?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "nav"
   >;
   "noindex?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "noindex"
   >;
   "noscript?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "noscript"
   >;
   "object?": DetailedOptionalPlugProps<
-    ObjectHTMLAttributes<HTMLObjectElement>,
+    ReactTS.ObjectHTMLAttributes<HTMLObjectElement>,
     HTMLObjectElement,
     "object"
   >;
   "ol?": DetailedOptionalPlugProps<
-    OlHTMLAttributes<HTMLOListElement>,
+    ReactTS.OlHTMLAttributes<HTMLOListElement>,
     HTMLOListElement,
     "ol"
   >;
   "optgroup?": DetailedOptionalPlugProps<
-    OptgroupHTMLAttributes<HTMLOptGroupElement>,
+    ReactTS.OptgroupHTMLAttributes<HTMLOptGroupElement>,
     HTMLOptGroupElement,
     "optgroup"
   >;
   "option?": DetailedOptionalPlugProps<
-    OptionHTMLAttributes<HTMLOptionElement>,
+    ReactTS.OptionHTMLAttributes<HTMLOptionElement>,
     HTMLOptionElement,
     "option"
   >;
   "output?": DetailedOptionalPlugProps<
-    OutputHTMLAttributes<HTMLOutputElement>,
+    ReactTS.OutputHTMLAttributes<HTMLOutputElement>,
     HTMLOutputElement,
     "output"
   >;
   "p?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLParagraphElement>,
+    ReactTS.HTMLAttributes<HTMLParagraphElement>,
     HTMLParagraphElement,
     "p"
   >;
   "param?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      ParamHTMLAttributes<HTMLParamElement>,
+      ReactTS.ParamHTMLAttributes<HTMLParamElement>,
       HTMLParamElement,
       "param"
     >
   >;
   "picture?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "picture"
   >;
   "pre?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLPreElement>,
+    ReactTS.HTMLAttributes<HTMLPreElement>,
     HTMLPreElement,
     "pre"
   >;
   "progress?": DetailedOptionalPlugProps<
-    ProgressHTMLAttributes<HTMLProgressElement>,
+    ReactTS.ProgressHTMLAttributes<HTMLProgressElement>,
     HTMLProgressElement,
     "progress"
   >;
   "q?": DetailedOptionalPlugProps<
-    QuoteHTMLAttributes<HTMLQuoteElement>,
+    ReactTS.QuoteHTMLAttributes<HTMLQuoteElement>,
     HTMLQuoteElement,
     "q"
   >;
   "rp?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "rp"
   >;
   "rt?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "rt"
   >;
   "ruby?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "ruby"
   >;
   "s?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "s"
   >;
   "samp?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "samp"
   >;
   "search?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "search"
   >;
   "slot?": DetailedOptionalPlugProps<
-    SlotHTMLAttributes<HTMLSlotElement>,
+    ReactTS.SlotHTMLAttributes<HTMLSlotElement>,
     HTMLSlotElement,
     "slot"
   >;
   "script?": DetailedOptionalPlugProps<
-    ScriptHTMLAttributes<HTMLScriptElement>,
+    ReactTS.ScriptHTMLAttributes<HTMLScriptElement>,
     HTMLScriptElement,
     "script"
   >;
   "section?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "section"
   >;
   "select?": DetailedOptionalPlugProps<
-    SelectHTMLAttributes<HTMLSelectElement>,
+    ReactTS.SelectHTMLAttributes<HTMLSelectElement>,
     HTMLSelectElement,
     "select"
   >;
   "small?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "small"
   >;
   "source?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      SourceHTMLAttributes<HTMLSourceElement>,
+      ReactTS.SourceHTMLAttributes<HTMLSourceElement>,
       HTMLSourceElement,
       "source"
     >
   >;
   "span?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLSpanElement>,
+    ReactTS.HTMLAttributes<HTMLSpanElement>,
     HTMLSpanElement,
     "span"
   >;
   "strong?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "strong"
   >;
   "style?": DetailedOptionalPlugProps<
-    StyleHTMLAttributes<HTMLStyleElement>,
+    ReactTS.StyleHTMLAttributes<HTMLStyleElement>,
     HTMLStyleElement,
     "style"
   >;
   "sub?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "sub"
   >;
   "summary?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "summary"
   >;
   "sup?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "sup"
   >;
   "table?": DetailedOptionalPlugProps<
-    TableHTMLAttributes<HTMLTableElement>,
+    ReactTS.TableHTMLAttributes<HTMLTableElement>,
     HTMLTableElement,
     "table"
   >;
   "template?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLTemplateElement>,
+    ReactTS.HTMLAttributes<HTMLTemplateElement>,
     HTMLTemplateElement,
     "template"
   >;
   "tbody?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLTableSectionElement>,
+    ReactTS.HTMLAttributes<HTMLTableSectionElement>,
     HTMLTableSectionElement,
     "tbody"
   >;
   "td?": DetailedOptionalPlugProps<
-    TdHTMLAttributes<HTMLTableDataCellElement>,
+    ReactTS.TdHTMLAttributes<HTMLTableDataCellElement>,
     HTMLTableDataCellElement,
     "td"
   >;
   "textarea?": DetailedOptionalPlugProps<
-    TextareaHTMLAttributes<HTMLTextAreaElement>,
+    ReactTS.TextareaHTMLAttributes<HTMLTextAreaElement>,
     HTMLTextAreaElement,
     "textarea"
   >;
   "tfoot?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLTableSectionElement>,
+    ReactTS.HTMLAttributes<HTMLTableSectionElement>,
     HTMLTableSectionElement,
     "tfoot"
   >;
   "th?": DetailedOptionalPlugProps<
-    ThHTMLAttributes<HTMLTableHeaderCellElement>,
+    ReactTS.ThHTMLAttributes<HTMLTableHeaderCellElement>,
     HTMLTableHeaderCellElement,
     "th"
   >;
   "thead?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLTableSectionElement>,
+    ReactTS.HTMLAttributes<HTMLTableSectionElement>,
     HTMLTableSectionElement,
     "thead"
   >;
   "time?": DetailedOptionalPlugProps<
-    TimeHTMLAttributes<HTMLTimeElement>,
+    ReactTS.TimeHTMLAttributes<HTMLTimeElement>,
     HTMLTimeElement,
     "time"
   >;
   "title?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLTitleElement>,
+    ReactTS.HTMLAttributes<HTMLTitleElement>,
     HTMLTitleElement,
     "title"
   >;
   "tr?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLTableRowElement>,
+    ReactTS.HTMLAttributes<HTMLTableRowElement>,
     HTMLTableRowElement,
     "tr"
   >;
   "track?": PropsWithoutChildren<
     DetailedOptionalPlugProps<
-      TrackHTMLAttributes<HTMLTrackElement>,
+      ReactTS.TrackHTMLAttributes<HTMLTrackElement>,
       HTMLTrackElement,
       "track"
     >
   >;
   "u?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "u"
   >;
   "ul?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLUListElement>,
+    ReactTS.HTMLAttributes<HTMLUListElement>,
     HTMLUListElement,
     "ul"
   >;
   "var?": DetailedOptionalPlugProps<
-    HTMLAttributes<HTMLElement>,
+    ReactTS.HTMLAttributes<HTMLElement>,
     HTMLElement,
     "var"
   >;
   "video?": DetailedOptionalPlugProps<
-    VideoHTMLAttributes<HTMLVideoElement>,
+    ReactTS.VideoHTMLAttributes<HTMLVideoElement>,
     HTMLVideoElement,
     "video"
   >;
   "wbr?": PropsWithoutChildren<
-    DetailedOptionalPlugProps<HTMLAttributes<HTMLElement>, HTMLElement, "wbr">
+    DetailedOptionalPlugProps<
+      ReactTS.HTMLAttributes<HTMLElement>,
+      HTMLElement,
+      "wbr"
+    >
   >;
   "webview?": DetailedOptionalPlugProps<
-    WebViewHTMLAttributes<HTMLWebViewElement>,
+    ReactTS.WebViewHTMLAttributes<HTMLWebViewElement>,
     HTMLWebViewElement,
     "webview"
   >;

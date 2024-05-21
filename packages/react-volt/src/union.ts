@@ -1,10 +1,4 @@
-import type {
-  Ref,
-  RefObject,
-  RefCallback,
-  SyntheticEvent,
-  EventHandler,
-} from "react";
+import type * as ReactTS from "react";
 import type { UnionToIntersection } from "./types/helper.types";
 
 /**
@@ -24,7 +18,7 @@ const id = <T>(value: T): T => value;
  * event types (this is a {@link https://web.archive.org/web/20220823104433/https://www.stephanboyer.com/post/132/what-are-covariance-and-contravariance | _contravariant_} type that is compatible with all unions).
  */
 export const ensureEventHandlerType = id as <
-  H extends EventHandler<any> | undefined
+  H extends ReactTS.EventHandler<any> | undefined
 >(
   handler: H
 ) => UnionToIntersection<H> | Extract<H, undefined>;
@@ -64,14 +58,14 @@ export const ensureEventHandlerType = id as <
  * ```
  */
 export const ensureRefType: {
-  <R extends RefObject<any>>(ref: R): RefObject<
-    UnionToIntersection<R extends RefObject<infer T> ? T : never>
+  <R extends ReactTS.RefObject<any>>(ref: R): ReactTS.RefObject<
+    UnionToIntersection<R extends ReactTS.RefObject<infer T> ? T : never>
   >;
-  <R extends RefCallback<unknown>>(ref: R): RefCallback<
-    R extends RefCallback<infer T> ? T : never
+  <R extends ReactTS.RefCallback<unknown>>(ref: R): ReactTS.RefCallback<
+    R extends ReactTS.RefCallback<infer T> ? T : never
   >;
-  <R extends Ref<any>>(ref: R): Ref<
-    UnionToIntersection<R extends RefCallback<infer T> ? T : never>
+  <R extends ReactTS.Ref<any>>(ref: R): ReactTS.Ref<
+    UnionToIntersection<R extends ReactTS.RefCallback<infer T> ? T : never>
   >;
 } = id;
 
@@ -84,9 +78,11 @@ export const ensureRefType: {
  * > **Note:** This function is a no-op at runtime and is only used to help the TypeScript compiler, ideally it should be used with a `@__PURE__` annotation to ensure that it is removed by the minifier.
  *
  */
-export function assertEventType<E extends SyntheticEvent>(
-  event: E
-): asserts event is UnionToIntersection<E> & E {}
+export const assertEventType: {
+  <E extends ReactTS.SyntheticEvent>(
+    event: E
+  ): asserts event is UnionToIntersection<E> & E;
+} = id;
 
 /**
  * @public
@@ -96,6 +92,6 @@ export function assertEventType<E extends SyntheticEvent>(
  *
  * This is equivalent to {@link assertEventType} but as an identity function.
  */
-export const ensureEventType = id as <E extends SyntheticEvent>(
+export const ensureEventType = id as <E extends ReactTS.SyntheticEvent>(
   event: E
 ) => UnionToIntersection<E>;

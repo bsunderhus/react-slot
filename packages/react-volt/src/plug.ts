@@ -22,80 +22,70 @@ import type { Adapter, Unplugged } from "./types/plug.types";
  *
  * > **Note:** _In the context of electrical systems a plug adapter is a device that allows a plug to connect to a outlet that has a different shape or configuration._
  */
-export function adapt<A extends PlugDataType>(input: A): A;
-/** @public */
-export function adapt<A extends PlugDataType, B extends PlugPropsDataType>(
-  input: A,
-  adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>
-): B | Exclude<A, PlugPropsDataType>;
-/** @public */
-export function adapt<
-  A extends PlugDataType,
-  B extends PlugPropsDataType,
-  C extends PlugPropsDataType
->(
-  input: A,
-  adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>,
-  adapterBC: Adapter<B, C>
-): C | Exclude<A, PlugPropsDataType>;
-/** @public */
-export function adapt<
-  A extends PlugDataType,
-  B extends PlugPropsDataType,
-  C extends PlugPropsDataType,
-  D extends PlugPropsDataType
->(
-  input: A,
-  adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>,
-  adapterBC: Adapter<B, C>,
-  adapterCD: Adapter<C, D>
-): D | Exclude<A, PlugPropsDataType>;
-/** @public */
-export function adapt<
-  A extends PlugDataType,
-  B extends PlugPropsDataType,
-  C extends PlugPropsDataType,
-  D extends PlugPropsDataType,
-  E extends PlugPropsDataType
->(
-  input: A,
-  adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>,
-  adapterBC: Adapter<B, C>,
-  adapterCD: Adapter<C, D>,
-  adapterDE: Adapter<D, E>
-): E | Exclude<A, PlugPropsDataType>;
-/** @public */
-export function adapt<
-  A extends PlugDataType,
-  B extends PlugPropsDataType,
-  C extends PlugPropsDataType,
-  D extends PlugPropsDataType,
-  E extends PlugPropsDataType,
-  F extends PlugPropsDataType
->(
-  input: A,
-  adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>,
-  adapterBC: Adapter<B, C>,
-  adapterCD: Adapter<C, D>,
-  adapterDE: Adapter<D, E>,
-  adapterEF: Adapter<E, F>
-): F | Exclude<A, PlugPropsDataType>;
-/** @public */
-export function adapt<
-  Input extends PlugDataType,
-  OutputProps extends PlugPropsDataType
->(
+export const adapt: {
+  <A extends PlugDataType>(input: A): A;
+  <A extends PlugDataType, B extends PlugPropsDataType>(
+    input: A,
+    adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>
+  ): B | Exclude<A, PlugPropsDataType>;
+  <
+    A extends PlugDataType,
+    B extends PlugPropsDataType,
+    C extends PlugPropsDataType
+  >(
+    input: A,
+    adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>,
+    adapterBC: Adapter<B, C>
+  ): C | Exclude<A, PlugPropsDataType>;
+  <
+    A extends PlugDataType,
+    B extends PlugPropsDataType,
+    C extends PlugPropsDataType,
+    D extends PlugPropsDataType
+  >(
+    input: A,
+    adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>,
+    adapterBC: Adapter<B, C>,
+    adapterCD: Adapter<C, D>
+  ): D | Exclude<A, PlugPropsDataType>;
+  <
+    A extends PlugDataType,
+    B extends PlugPropsDataType,
+    C extends PlugPropsDataType,
+    D extends PlugPropsDataType,
+    E extends PlugPropsDataType
+  >(
+    input: A,
+    adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>,
+    adapterBC: Adapter<B, C>,
+    adapterCD: Adapter<C, D>,
+    adapterDE: Adapter<D, E>
+  ): E | Exclude<A, PlugPropsDataType>;
+  <
+    A extends PlugDataType,
+    B extends PlugPropsDataType,
+    C extends PlugPropsDataType,
+    D extends PlugPropsDataType,
+    E extends PlugPropsDataType,
+    F extends PlugPropsDataType
+  >(
+    input: A,
+    adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>,
+    adapterBC: Adapter<B, C>,
+    adapterCD: Adapter<C, D>,
+    adapterDE: Adapter<D, E>,
+    adapterEF: Adapter<E, F>
+  ): F | Exclude<A, PlugPropsDataType>;
+} = <Input extends PlugDataType, OutputProps extends PlugPropsDataType>(
   inputPlug: Input,
   ...adapters: Adapter<PlugPropsDataType, PlugPropsDataType>[]
-): NoInfer<OutputProps | Exclude<Input, PlugPropsDataType>> {
-  if (isPlugProps<Extract<Input, PlugPropsDataType>>(inputPlug)) {
-    return adapters.reduce<PlugPropsDataType>(
-      (acc, adapter) => adapter(acc),
-      inputPlug
-    ) as OutputProps;
-  }
-  return inputPlug as Exclude<Input, PlugPropsDataType>;
-}
+): NoInfer<OutputProps | Exclude<Input, PlugPropsDataType>> =>
+  isPlugProps<Extract<Input, PlugPropsDataType>>(inputPlug)
+    ? (adapters.reduce<PlugPropsDataType>(
+        (acc, adapter) => adapter(acc),
+        inputPlug
+      ) as OutputProps)
+    : (inputPlug as Exclude<Input, PlugPropsDataType>);
 
 /**
  * @public
@@ -111,11 +101,11 @@ export function adapt<
  * @typeParam Props - The type of the plug props that will be resolved.
  * @param plug - The plug that will be resolved.
  */
-export function resolve<Plug extends PlugDataType>(
+export const resolve = <Plug extends PlugDataType>(
   plug: Plug
 ):
   | Extract<Plug, PlugPropsDataType>
-  | (Plug extends Unplugged ? undefined : never) {
+  | (Plug extends Unplugged ? undefined : never) => {
   if (plug === unplugged) {
     return undefined as Plug extends Unplugged ? undefined : never;
   }
@@ -140,6 +130,6 @@ export function resolve<Plug extends PlugDataType>(
     A plug got an invalid value "${String(plug)}" (${typeof plug}).
     A valid value for a plug is a slot, outlet properties or Unplugged.
   `);
-}
+};
 
 export { unplugged } from "./constants";
