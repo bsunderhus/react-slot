@@ -22,7 +22,7 @@ import type {
 } from "./helper.types";
 import type { Slot } from "./outlet.types";
 import { outlet } from "../outlet";
-import type { pluggedIn, unplugged } from "../constants";
+import type { unplugged } from "../constants";
 
 /**
  * @public
@@ -135,7 +135,7 @@ export type PlugProps<PlugType extends PlugTypeDataType> =
  *
  * 1. {@link PlugPropsDataType | PlugProps}
  * 2. {@link SlotDataType | Slot}
- * 3. {@link PlugStatus}
+ * 3. {@link Unplugged}
  *
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
  */
@@ -164,7 +164,7 @@ export type Plug<
  *   | {as: "a"} & IntrinsicElementProps<"a">
  *   | {as: "div"} & IntrinsicElementProps<"div">
  *   | Slot // Slot -> ReactNode in this case
- *   | PlugStatus
+ *   | Unplugged
  * ```
  *
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
@@ -190,14 +190,14 @@ export type PlugTypePlug<PlugType extends PlugTypeDataType> = PropsPlug<
  *   | {as: "a"} & IntrinsicElementProps<"a">
  *   | {as: "div"} & IntrinsicElementProps<"div">
  *   | Slot // Slot -> ReactNode in this case
- *   | PlugStatus
+ *   | Unplugged
  * ```
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
  */
 export type PropsPlug<Props extends PlugPropsDataType> =
   | Props
   | Slot<Props>
-  | PlugStatus;
+  | Unplugged;
 
 /**
  * @public
@@ -291,13 +291,11 @@ export type LockedIn<T> = Exclude<T, Unplugged>;
 
 /**
  * @public
- * A plug status refers to the presence of a plug.
  *
- * If a plug is plugged in the outlet it means that it'll be rendered
- * while an unplugged plug will not be rendered.
+ * An unplugged plug is a plug that is not connected to an outlet.
+ * It is equivalent to an abort signal in a promise.
+ * If an outlet receives an unplugged plug, it will not render.
  *
  * > **Note:** _in the context of electrical systems plugged in and unplugged are terms used to describe the connection between a plug and an outlet_
  */
-export type PlugStatus = PluggedIn | Unplugged;
-export type PluggedIn = typeof pluggedIn;
 export type Unplugged = typeof unplugged;

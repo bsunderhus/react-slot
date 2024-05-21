@@ -44,7 +44,7 @@ export type OutletRenderer<in out OutletType extends OutletTypeDataType> = (
  *
  * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
-export interface Outlet<OutletType extends OutletTypeDataType> {
+export interface Outlet<in out OutletType extends OutletTypeDataType> {
   (props: PropsFromOutletType<OutletType>): ReactNode;
   readonly props: PropsFromOutletType<OutletType>;
   /**

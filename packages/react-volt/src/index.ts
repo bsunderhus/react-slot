@@ -25,14 +25,7 @@ export type {
   WheelEventHandler,
 } from "./types/helper.types";
 
-export {
-  isPlug,
-  isSlot,
-  isOutlet,
-  isPlugProps,
-  isPlugStatus,
-  isOutletType,
-} from "./guards";
+export { isPlug, isSlot, isOutlet, isPlugProps } from "./guards";
 
 export { outlet } from "./outlet";
 export type { Slot, OutletRenderer, Outlet } from "./types/outlet.types";
@@ -64,6 +57,7 @@ export type {
   Adapter,
   Primary,
   LockedIn,
+  Unplugged,
   PropsPlug,
   PlugProps,
   PlugTypePlug,

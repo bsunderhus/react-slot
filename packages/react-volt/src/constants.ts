@@ -4,7 +4,7 @@
 export const _outletRendererSymbol = Symbol();
 
 /**
- * @internal internal reference for the outlet type of an outlet
+ * @internal internal reference for the type of an outlet
  */
 export const _outletTypeSymbol = Symbol();
 
@@ -12,14 +12,6 @@ export const _outletTypeSymbol = Symbol();
  * @internal internal reference for the element type of an outlet
  */
 export const _outletElementType = Symbol();
-
-/**
- * @public
- *
- * Symbol used to declare that the plug is plugged in the outlet
- * and the outlet is ready to be rendered.
- */
-export const pluggedIn = Symbol();
 
 /**
  * @public

@@ -1,11 +1,12 @@
-import { isSlot, isPlugStatus, isPlugProps } from "./guards";
+import { unplugged } from "./constants";
+import { isSlot, isPlugProps } from "./guards";
 import type {
   PlugDataType,
   PlugPropsDataType,
   SlotDataType,
 } from "./types/datatype.types";
 import type { Slot } from "./types/outlet.types";
-import type { Adapter, PlugStatus } from "./types/plug.types";
+import type { Adapter, Unplugged } from "./types/plug.types";
 
 /**
  * @public
@@ -112,9 +113,11 @@ export function adapt<
  */
 export function resolve<Plug extends PlugDataType>(
   plug: Plug
-): Extract<Plug, PlugPropsDataType> | undefined {
-  if (isPlugStatus(plug)) {
-    return undefined;
+):
+  | Extract<Plug, PlugPropsDataType>
+  | (Plug extends Unplugged ? undefined : never) {
+  if (plug === unplugged) {
+    return undefined as Plug extends Unplugged ? undefined : never;
   }
   if (isSlot(plug)) {
     /**
@@ -135,8 +138,8 @@ export function resolve<Plug extends PlugDataType>(
   throw new TypeError(/** #__DE-INDENT__ */ `
     [react-volt - plug.resolve(plugValue)]:
     A plug got an invalid value "${String(plug)}" (${typeof plug}).
-    A valid value for a plug is a slot, outlet properties or PlugStatus.
+    A valid value for a plug is a slot, outlet properties or Unplugged.
   `);
 }
 
-export { pluggedIn, unplugged } from "./constants";
+export { unplugged } from "./constants";

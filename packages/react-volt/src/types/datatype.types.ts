@@ -5,7 +5,7 @@ import type {
   ReactNode,
 } from "react";
 import type { IntrinsicOptionalPlugs, IntrinsicPlugs } from "./helper.types";
-import type { PlugStatus } from "./plug.types";
+import type { Unplugged } from "./plug.types";
 
 /**
  * @public
@@ -128,4 +128,4 @@ export type SlotDataType =
  *
  * > _The Suffix "DataType" will denote the building block types that will serve as "primitive" to all other types._
  */
-export type PlugDataType = PlugPropsDataType | SlotDataType | PlugStatus;
+export type PlugDataType = PlugPropsDataType | SlotDataType | Unplugged;
