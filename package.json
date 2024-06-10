@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "build:types": "turbo build:types",
     "prepack": "turbo prepack",
     "clean": "turbo clean"
   },

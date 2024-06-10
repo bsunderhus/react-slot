@@ -1,50 +1,56 @@
 import * as React from "react";
-import type { PlugProps, PlugRefElement } from "../types/plug.types";
+import type {
+  PlugProps,
+  KeyboardEventHandler,
+  MouseEventHandler,
+} from "../index";
 
-type ARIAButtonOptionalType = "a" | "div";
+export type AriaButtonPlugProps<Prong extends "a" | "div"> = PlugProps<
+  "button?" | Prong
+> & {
+  disabled?: boolean;
+  /**
+   * When set, allows the button to be focusable even when it has been disabled.
+   * This is used in scenarios where it is important to keep a consistent tab order
+   * for screen reader and keyboard users. The primary example of this
+   * pattern is when the disabled button is in a menu or a commandbar and is seldom used for standalone buttons.
+   *
+   * @default false
+   */
+  disabledFocusable?: boolean;
+};
 
-export type ARIAButtonPlugProps<PlugType extends ARIAButtonOptionalType> =
-  PlugProps<"button?" | PlugType> & {
-    disabled?: boolean;
-    /**
-     * When set, allows the button to be focusable even when it has been disabled.
-     * This is used in scenarios where it is important to keep a consistent tab order
-     * for screen reader and keyboard users. The primary example of this
-     * pattern is when the disabled button is in a menu or a commandbar and is seldom used for standalone buttons.
-     *
-     * @default false
-     */
-    disabledFocusable?: boolean;
-  };
-
-export const useAriaButtonAdapter = <PlugType extends ARIAButtonOptionalType>(
-  props: ARIAButtonPlugProps<PlugType>
-): PlugProps<"button?" | PlugType> => {
+export const useAriaButtonAdapter = <Prong extends "a" | "div">(
+  props: AriaButtonPlugProps<Prong>
+): PlugProps<"button?" | Prong> => {
   const {
     disabled,
     disabledFocusable = false,
     ["aria-disabled"]: ariaDisabled,
-    ...rest
   } = props;
-  const onClick = rest.onClick as
-    | React.MouseEventHandler<PlugRefElement<ARIAButtonPlugProps<PlugType>>>
-    | undefined;
-  const onKeyDown = rest.onKeyDown as
-    | React.KeyboardEventHandler<PlugRefElement<ARIAButtonPlugProps<PlugType>>>
-    | undefined;
-  const onKeyUp = rest.onKeyUp as
-    | React.KeyboardEventHandler<PlugRefElement<ARIAButtonPlugProps<PlugType>>>
-    | undefined;
+  const onClick:
+    | MouseEventHandler<HTMLButtonElement | HTMLAnchorElement | HTMLDivElement>
+    | undefined = props.onClick;
+  const onKeyDown:
+    | KeyboardEventHandler<
+        HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
+      >
+    | undefined = props.onKeyDown;
+  const onKeyUp:
+    | KeyboardEventHandler<
+        HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
+      >
+    | undefined = props.onKeyUp;
 
-  const normalizedARIADisabled =
+  const normalizedAriaDisabled =
     typeof ariaDisabled === "string" ? ariaDisabled === "true" : ariaDisabled;
 
-  const isDisabled = disabled || disabledFocusable || normalizedARIADisabled;
+  const isDisabled = disabled || disabledFocusable || normalizedAriaDisabled;
 
-  const handleClick = React.useCallback(
-    (
-      event: React.MouseEvent<PlugRefElement<ARIAButtonPlugProps<PlugType>>>
-    ) => {
+  const handleClick: MouseEventHandler<
+    HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
+  > = React.useCallback(
+    (event) => {
       if (isDisabled) {
         event.preventDefault();
         event.stopPropagation();
@@ -55,10 +61,10 @@ export const useAriaButtonAdapter = <PlugType extends ARIAButtonOptionalType>(
     [onClick, isDisabled]
   );
 
-  const handleKeyDown = React.useCallback(
-    (
-      event: React.KeyboardEvent<PlugRefElement<ARIAButtonPlugProps<PlugType>>>
-    ) => {
+  const handleKeyDown: KeyboardEventHandler<
+    HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
+  > = React.useCallback(
+    (event) => {
       onKeyDown?.(event);
 
       if (event.isDefaultPrevented()) {
@@ -84,10 +90,10 @@ export const useAriaButtonAdapter = <PlugType extends ARIAButtonOptionalType>(
     [onKeyDown, isDisabled]
   );
 
-  const handleKeyUp = React.useCallback(
-    (
-      event: React.KeyboardEvent<PlugRefElement<ARIAButtonPlugProps<PlugType>>>
-    ) => {
+  const handleKeyUp: KeyboardEventHandler<
+    HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
+  > = React.useCallback(
+    (event) => {
       onKeyUp?.(event);
       if (event.isDefaultPrevented()) {
         return;
@@ -110,7 +116,7 @@ export const useAriaButtonAdapter = <PlugType extends ARIAButtonOptionalType>(
     return {
       ...props,
       disabled: disabled && !disabledFocusable,
-      "aria-disabled": disabledFocusable ? true : normalizedARIADisabled,
+      "aria-disabled": disabledFocusable ? true : normalizedAriaDisabled,
       // onclick should still use internal handler to ensure prevention if disabled
       // if disabledFocusable then there's no requirement for handlers as those events should not be propagated
       onClick: disabledFocusable ? undefined : handleClick,

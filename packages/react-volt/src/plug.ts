@@ -1,12 +1,12 @@
-import { unplugged } from "./constants";
-import { isSlot, isPlugProps } from "./guards";
+import { _$unplugged } from "./constants";
+import { isOmniPlug, isPlugProps } from "./guards";
 import type {
+  OmniPlugDataType,
   PlugDataType,
   PlugPropsDataType,
-  SlotDataType,
 } from "./types/datatype.types";
-import type { Slot } from "./types/outlet.types";
-import type { Adapter, Unplugged } from "./types/plug.types";
+import type { Adapter, LockedIn } from "./types/plug.types";
+import { id } from "./utils/id";
 
 /**
  * @public
@@ -93,7 +93,7 @@ export const adapt: {
  * Resolves a plug to its props.
  *
  * * If the plug is {@link PlugPropsDataType | PlugProps}, it will be returned as is.
- * * If the plug is a {@link SlotDataType | Slot}, it will be resolved to `{children: plug}`.
+ * * If the plug is a {@link OmniPlugDataType | Slot}, it will be resolved to `{children: plug}`.
  * * If the plug is {@link PlugStatus}, it will be resolved to `undefined`.
  *
  * This is useful when you want to access a plug's properties before providing it to a outlet.
@@ -101,35 +101,63 @@ export const adapt: {
  * @typeParam Props - The type of the plug props that will be resolved.
  * @param plug - The plug that will be resolved.
  */
-export const resolve = <Plug extends PlugDataType>(
-  plug: Plug
-):
-  | Extract<Plug, PlugPropsDataType>
-  | (Plug extends Unplugged ? undefined : never) => {
-  if (plug === unplugged) {
-    return undefined as Plug extends Unplugged ? undefined : never;
+export const resolve: {
+  <Plug extends PlugDataType>(plug: LockedIn<Plug>): Extract<
+    Plug,
+    PlugPropsDataType
+  >;
+  <Plug extends PlugDataType>(plug: Plug):
+    | Extract<Plug, PlugPropsDataType>
+    | undefined;
+} = (plug) => {
+  if (plug === _$unplugged) {
+    return undefined;
   }
-  if (isSlot(plug)) {
+  if (isOmniPlug(plug)) {
     /**
      * casting here as in this case we have conflict between
      * void elements (elements without children) and non-void elements
      * if the user is properly using typescript this condition can't be reached on void elements
      *
-     * if the user is not using typescript and is using a void element as a slot,
+     * if the user is not using typescript and is using a void element as a plug,
      * then React will console.error so we don't need to worry about this case
      */
-    return { children: plug } as Extract<Plug, PlugPropsDataType> & {
-      children?: Slot<Extract<Plug, PlugPropsDataType>>;
-    };
+    return { children: plug };
   }
-  if (isPlugProps<Extract<Plug, PlugPropsDataType>>(plug)) {
+  if (isPlugProps(plug)) {
     return plug;
   }
   throw new TypeError(/** #__DE-INDENT__ */ `
     [react-volt - plug.resolve(plugValue)]:
     A plug got an invalid value "${String(plug)}" (${typeof plug}).
-    A valid value for a plug is a slot, outlet properties or Unplugged.
+    A valid value for a plug is a React node, plug properties or 'plug.unplugged()'.
   `);
 };
 
-export { unplugged } from "./constants";
+/**
+ * @public
+ *
+ * `unplugged` returns a symbol that can be used to
+ * indicate that a plug is not connected to an outlet.
+ *
+ * When an outlet receives a plug with the value of `unplugged`,
+ * it will not render the plug.
+ *
+ * > **Note:** _In the context of electrical systems a plug that is not connected to an outlet is considered unplugged._
+ */
+export const unplugged = (): typeof _$unplugged => _$unplugged;
+
+/**
+ * @public
+ *
+ * `pluggedIn` is a utility that can be used to create a plug with default props,
+ * it would be equivalent to to passing plug props, this is a helper method that does nothing
+ * but return the props that are passed to it, its only usage is to ensure type safety.
+ *
+ * > **Note:** _In the context of electrical systems a plug that is connected to an outlet is considered plugged in._
+ */
+export const pluggedIn = id as {
+  <Plug extends PlugDataType | undefined>(
+    defaultProps: NoInfer<Extract<Plug, PlugPropsDataType>>
+  ): Extract<Plug, PlugPropsDataType>;
+};

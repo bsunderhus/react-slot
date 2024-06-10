@@ -1,84 +1,27 @@
-import type * as ReactTS from "react";
+import type * as ReactTypes from "react";
 import type {
-  PlugPropsDataType,
-  OutletTypeDataType,
-  ObjectDataType,
   PlugDataType,
-  SlotDataType,
+  OmniPlugDataType,
   PlugTypeDataType,
+  PlugPropsDataType,
+  IntrinsicSlotPropsDataType,
+  ComponentSlotPropsDataType,
+  ContactDataType,
+  IntrinsicProngPropsDataType,
+  ComponentProngPropsDataType,
 } from "./datatype.types";
 import type {
-  IntrinsicPlugs,
-  UnionToIntersection,
   Never,
-  IntrinsicOptionalPlugs,
+  IntrinsicProngs,
+  UnionToIntersection,
+  IntrinsicSlots,
+  FunctionComponentProng,
+  ComponentSlotAttributes,
+  ComponentProngAttributes,
+  FunctionComponentSlot,
+  FunctionComponent,
 } from "./helper.types";
-import type { Slot } from "./outlet.types";
-import { outlet } from "../outlet";
-import type { unplugged } from "../constants";
-
-/**
- * @public
- *
- * Substitutes React's ClassAttributes, it removes LegacyRef
- * and adds plug related props with `as` optional.
- */
-export interface IntrinsicOptionalPlugAttributes<
-  E extends Element,
-  Key extends keyof IntrinsicPlugs
-> extends ReactTS.RefAttributes<E> {
-  as?: Key;
-  /**
-   * A render function that can be used to completely override the markup of the outlet.
-   *
-   * This is a dangerous feature and should be used with caution.
-   *
-   * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
-   */
-  dangerouslyRenderOutlet?: (
-    element: ReactTS.ReactElement<JSX.IntrinsicElements[Key], Key>
-  ) => ReactTS.ReactNode;
-}
-
-/**
- * @public
- *
- * Substitutes React's ClassAttributes, it removes LegacyRef
- * and adds plug related props.
- */
-export interface IntrinsicPlugAttributes<
-  E extends Element,
-  Key extends keyof IntrinsicPlugs
-> extends ReactTS.RefAttributes<E> {
-  as: Key;
-  /**
-   * A render function that can be used to completely override the markup of the outlet.
-   *
-   * This is a dangerous feature and should be used with caution.
-   *
-   * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
-   */
-  dangerouslyRenderOutlet?: (
-    element: ReactTS.ReactElement<JSX.IntrinsicElements[Key], Key>
-  ) => ReactTS.ReactNode;
-}
-
-type PluggableProps<
-  OutletType extends ReactTS.JSXElementConstructor<Props>,
-  Props extends ObjectDataType
-> = Props & {
-  as?: OutletType;
-  /**
-   * A render function that can be used to completely override the markup of the outlet.
-   *
-   * This is a dangerous feature and should be used with caution.
-   *
-   * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
-   */
-  dangerouslyRenderOutlet?: (
-    element: ReactTS.ReactElement<Props, OutletType>
-  ) => ReactTS.ReactNode;
-};
+import type { _$isSlot, _$unplugged } from "../constants";
 
 /**
  * @public
@@ -86,127 +29,83 @@ type PluggableProps<
  * Plug properties is a set of properties that can be used to define a plug, relative to its outlet.
  *
  * @typeParam PlugType - the type of the plug, it can be either:
- * 1. native HTML element string (like `"div"` or `"button"`)
- * 2. optional native HTML element string (like `"div?"` or `"button?"`)
- * 3. a custom element type (like `typeof Button` or `ReactTS.JSXElementConstructor<ButtonProps>`)
+ *
+ * 1. plug properties itself (like `{as: "button"}`, {@link PlugPropsDataType}). It will be used as is.
+ * 2. native HTML element string (like `"div"` or `"button"`, {@link IntrinsicProngs}).Its props will be used, adding `as` property equivalent to the element tagname.
+ * 3. native HTML element string with a question mark suffix (like `"div?"` or `"button?"`, {@link IntrinsicSlots}). Its native element props will be used, adding an optional `as` property equivalent to the element tagname.
+ * 4. a custom element type (like `typeof Button` or `React.FC<ButtonProps>`). Its props will be used.
  *
  * @example
- * Here's an example where the base type is `"button"` and alternative types are `"a" | "div"`
+ * Here's an example where we have a plug property defined by a native button by default,
+ * but that it could also be an anchor or a div tag.
+ *
  * ```ts
  * type PlugProps = PlugProps<"button?" | "a" | "div">
  * // slightly equivalent to the following:
  * type PlugProps =
- *   | {as?: "button"} & IntrinsicElementProps<"button">
- *   | {as: "a"} & IntrinsicElementProps<"a">
- *   | {as: "div"} & IntrinsicElementProps<"div">
+ *   | ({as?: "button"} & React.PropsWithRef<JSX.IntrinsicElements["button"]>)
+ *   | ({as: "a"} & React.PropsWithRef<JSX.IntrinsicElements["a"]>)
+ *   | ({as: "div"} & React.PropsWithRef<JSX.IntrinsicElements["div"]>)
  * ```
  *
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
  */
 export type PlugProps<PlugType extends PlugTypeDataType> =
-  PlugType extends keyof IntrinsicPlugs
-    ? // Case for 'button' | 'div' | 'input'
-      IntrinsicPlugs[PlugType]
-    : PlugType extends keyof IntrinsicOptionalPlugs
-    ? // Case for 'button?' | 'div?' | 'input?'
-      IntrinsicOptionalPlugs[PlugType]
-    : // Case for typeof Button | ReactTS.FC<ButtonProps> | ...
-    PlugType extends ReactTS.JSXElementConstructor<
-        infer Props extends ObjectDataType
-      >
-    ? PluggableProps<PlugType, Props>
-    : Never<"BasePlugProps expects to be a native element ('button', 'a', 'div', etc,.) or a custom element (typeof Button, ReactTS.FC<ButtonProps>)">;
+  PlugType extends PlugPropsDataType
+    ? PlugType
+    : PlugType extends keyof IntrinsicProngs
+    ? IntrinsicProngs[PlugType]
+    : PlugType extends keyof IntrinsicSlots
+    ? IntrinsicSlots[PlugType]
+    : PlugType extends FunctionComponent<infer P>
+    ? P extends any
+      ? typeof _$isSlot extends keyof PlugType
+        ? ComponentSlotAttributes<P, PlugType>
+        : ComponentProngAttributes<P, PlugType>
+      : never
+    : Never<`
+    PlugType expects to be:
+    1. native element (e.g: 'button', 'a', 'div', etc,.)
+    2. optional native element (e.g: 'button?', 'a?', 'div?', etc,.)
+    3. props definition of a plug (e.g: PlugProps<'button'>)
+    4. a custom element type (e.g: typeof Button | React.FC<ButtonProps>)
+  `>;
 
 /**
  * @public
  *
- * There are 4 ways of declaring a plug:
- * 1. {@link PropsPlug} is a plug built from custom properties.
- * 2. {@link PlugTypePlug} is a plug built from the type of the outlet it connects to.
- * 3. {@link PrimaryPlug} is a plug built from the properties of a component that declares outlets internally, this is a special type of plug that is defined exclusively by the props.
- * 4. {@link OutletTypePlug} is a plug built from the type of the outlet it connects to.
+ * In exception to the {@link Primary} plug, a plug will consist of a union of 3 types:
  *
- * In exception to the {@link PrimaryPlug} plug, a plug will consist of a union of 3 types:
+ * 1. {@link PlugPropsDataType | PlugProps} - the properties that defined a plug.
+ * 2. {@link OmniPlugDataType | Slot} - the shorthand value that can be used to define a plug with only children.
+ * 3. {@link UnpluggedPlug} - a special value that can be used to opt-out of an outlet.
  *
- * 1. {@link PlugPropsDataType | PlugProps}
- * 2. {@link SlotDataType | Slot}
- * 3. {@link Unplugged}
+ * @typeParam PlugType - the type of the plug, it can be either:
+ *
+ * 1. plug properties itself (like `{as: "button"}`, {@link PlugPropsDataType}). It will be used as is.
+ * 2. native HTML element string (like `"div"` or `"button"`, {@link IntrinsicProngs}).Its props will be used, adding `as` property equivalent to the element tagname.
+ * 3. native HTML element string with a question mark suffix (like `"div?"` or `"button?"`, {@link IntrinsicSlots}). Its native element props will be used, adding an optional `as` property equivalent to the element tagname.
+ * 4. a custom element type (like `typeof Button` or `React.FC<ButtonProps>`). Its props will be used.
  *
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
  */
-export type Plug<
-  PlugTypeOrPlugProps extends PlugTypeDataType | PlugPropsDataType
-> = PlugTypeOrPlugProps extends PlugTypeDataType
-  ? PlugTypePlug<PlugTypeOrPlugProps>
-  : PlugTypeOrPlugProps extends PlugPropsDataType
-  ? PropsPlug<PlugTypeOrPlugProps>
-  : Never<"PlugTypeOrPlugProps expects to be a native element (e.g: 'button', 'a', 'div', etc,.), a custom element (e.g: typeof Button, ReactTS.FC<ButtonProps>) or even a props definition of a plug (e.g: PlugProps<'button'>)">;
+export type Plug<PlugType extends PlugTypeDataType> =
+  | PlugProps<PlugType>
+  | OmniPlug<PlugType>
+  | UnpluggedPlug;
 
 /**
  * @public
  *
- * The PlugTypePlug type declares a plug based on the type of the plug.
- *
- * @typeParam PlugType - The type of the plug (see {@link PlugTypeDataType} for how to properly define plug types)
- *
- * @example
- * Here's an example where the base type is `"button"` and alternative types are `"a" | "div"`
- * ```ts
- * type ButtonPlug = PlugTypePlug<"button?" | "a" | "div">
- * // slightly equivalent to the following:
- * type ButtonPlug =
- *   | {as?: "button"} & IntrinsicElementProps<"button">
- *   | {as: "a"} & IntrinsicElementProps<"a">
- *   | {as: "div"} & IntrinsicElementProps<"div">
- *   | Slot // Slot -> ReactTS.ReactNode in this case
- *   | Unplugged
- * ```
- *
- * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
- */
-export type PlugTypePlug<PlugType extends PlugTypeDataType> = PropsPlug<
-  PlugProps<PlugType>
->;
-
-/**
- * @public
- *
- * The PropsPlug type declares a plug based on the properties of the plug.
- *
- * @typeParam Props - The plug properties that defines the plug (see {@link PlugProps} for how to properly define plug properties)
- *
- * @example
- * Here's an example where the base type is `"button"` and alternative types are `"a" | "div"`
- * ```ts
- * type ButtonPlugProps = PropsPlug<PlugProps<"button?" | "a" | "div">>
- * // slightly equivalent to the following:
- * type ButtonPlug =
- *   | {as?: "button"} & IntrinsicElementProps<"button">
- *   | {as: "a"} & IntrinsicElementProps<"a">
- *   | {as: "div"} & IntrinsicElementProps<"div">
- *   | Slot // Slot -> ReactTS.ReactNode in this case
- *   | Unplugged
- * ```
- * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
- */
-export type PropsPlug<Props extends PlugPropsDataType> =
-  | Props
-  | Slot<Props>
-  | Unplugged;
-
-/**
- * @public
- *
- * The Primary plug is a special type of Lock-in plug that is used to define the properties
+ * The main plug is a special type of Lock-in plug that is used to define the properties
  * of a component that will be using outlets internally.
  *
- * Unlike other plugs, the primary plug is defined exclusively by its props ({@link PlugPropsDataType | PlugProps}, omitting `ref` and `dangerouslyRenderOutlet`).
+ * Unlike other plugs, the main plug is defined exclusively by its props ({@link PlugPropsDataType | PlugProps}, omitting `ref`).
  *
- * > **Note:** _There is no such thing as a primary plug in the context of electrical systems. This is a borrowed analogy from ignition systems and database systems. In ignition systems the "Primary Circuit" is the main circuit that powers the ignition system. In relational database systems a "Primary Key" is the main unique identifier for records._
+ * > **Note:** _In the context of electrical systems there's no such thing as a main plug, but a main power switch is the switch that controls the flow of electricity to the entire system. It is a good analogy for a plug that controls the flow of props to the entire system._
  */
-export type Primary<Plug extends PlugDataType> = Plug extends PlugPropsDataType
-  ? Omit<Plug, "dangerouslyRenderOutlet">
-  : never;
+export type MainPlug<PlugType extends PlugTypeDataType> =
+  ReactTypes.PropsWithoutRef<PlugProps<PlugType>>;
 
 /**
  * @public
@@ -236,10 +135,13 @@ export type Adapter<
  *
  * > **Note:** _In the context of electrical systems a plug is what allows a device to connect to an outlet. It is the sending end of the connection, while the outlet is the receiving end._
  */
-export type PlugRefElement<Plug extends PlugDataType> =
-  Plug extends PlugPropsDataType
-    ? ReactTS.ElementRef<NonNullable<Plug["as"]>>
-    : never;
+export type PlugRefElement<Plug extends PlugDataType> = ReactTypes.ElementRef<
+  Plug extends IntrinsicProngPropsDataType | IntrinsicSlotPropsDataType
+    ? NonNullable<Plug["as"]>
+    : Plug extends ComponentProngPropsDataType | ComponentSlotPropsDataType
+    ? NonNullable<Plug["Component"]>
+    : never
+>;
 
 /**
  * @public
@@ -250,41 +152,19 @@ export type PlugRefElement<Plug extends PlugDataType> =
  *
  * > **Note:** _In the context of electrical systems a plug is what allows a device to connect to an outlet. It is the sending end of the connection, while the outlet is the receiving end._
  */
-export type PlugRef<Plug extends PlugDataType> = ReactTS.Ref<
+export type PlugRef<Plug extends PlugDataType> = ReactTypes.Ref<
   UnionToIntersection<PlugRefElement<Plug>>
 >;
 
 /**
  * @public
  *
- * A helper type that declares a plug based on the type of the outlet it connects to.
- * This is used internally by {@link outlet} method to declare the type of the plug the outlet will receive.
- *
- * @typeParam OutletType - The type of the outlet the plug connects to.
- *
- * > **Note:** _In the context of electrical systems a plug is what allows a device to connect to an outlet. It is the sending end of the connection, while the outlet is the receiving end._
- */
-export type OutletTypePlug<OutletType extends OutletTypeDataType> = PropsPlug<
-  PlugProps<
-    OutletType extends keyof IntrinsicPlugs
-      ? OptionalPlugTypes[OutletType]
-      : OutletType
-  >
->;
-
-type OptionalPlugTypes = {
-  [K in keyof IntrinsicPlugs]: `${K}?`;
-};
-
-/**
- * @public
- *
- * Helper type that removes Unplugged as a valid value.
+ * Helper type that removes UnpluggedPlug as a valid value for a plug.
  * This removes the possibility of opting-out of an outlet.
  *
  * > **Note:** _In the context of electrical systems a Lock-in plug is a plug with a lock mechanism to avoid it from being accidentally unplugged._
  */
-export type LockedIn<T> = Exclude<T, Unplugged>;
+export type LockedIn<T> = Exclude<T, UnpluggedPlug>;
 
 /**
  * @public
@@ -295,4 +175,58 @@ export type LockedIn<T> = Exclude<T, Unplugged>;
  *
  * > **Note:** _in the context of electrical systems plugged in and unplugged are terms used to describe the connection between a plug and an outlet_
  */
-export type Unplugged = typeof unplugged;
+export type UnpluggedPlug = typeof _$unplugged;
+
+/**
+ * @public
+ *
+ * A OmniPlug is a simplified version of a plug props,
+ * it is equivalent to `{children: someValue}`.
+ *
+ * @typeParam Props - The plug properties that would be used to define the omni plug.
+ *
+ * > **Note:** _The prefix "Omni" means "all" or "universal", in the context of electrical systems there's no such thing as an universal plug, but an universal adapter is a device that allows a plug to connect to an outlet, even if the plug and outlet are not compatible._
+ */
+export type OmniPlug<PlugType extends PlugTypeDataType> =
+  PlugType extends keyof IntrinsicProngs // 'button' 'div' 'span' etc
+    ? IntrinsicProngs[PlugType] extends { children?: infer C }
+      ? Extract<OmniPlugDataType, C>
+      : never
+    : PlugType extends keyof IntrinsicSlots // 'button?' 'div?' 'span?' etc
+    ? IntrinsicSlots[PlugType] extends { children?: infer C }
+      ? Extract<OmniPlugDataType, C>
+      : never
+    : PlugType extends PlugPropsDataType // PlugProps<'button?' | 'a' | 'div' | typeof Button>
+    ? "children" extends keyof PlugType
+      ? Extract<OmniPlugDataType, PlugType["children"]>
+      : never
+    : PlugType extends FunctionComponentProng<infer P> // typeof Button | React.FC<Primary<PlugProps<'button?' | 'a' | 'div'>>>
+    ? "children" extends keyof P
+      ? Extract<OmniPlugDataType, P["children"]>
+      : never
+    : never;
+
+export type Optional<Prong extends ContactDataType> =
+  Prong extends keyof IntrinsicProngs
+    ? `${Prong}?`
+    : Prong extends FunctionComponent<infer P>
+    ? FunctionComponentSlot<P>
+    : Prong;
+
+export type Required<Slot extends ContactDataType> =
+  Slot extends `${infer Key extends keyof IntrinsicProngs}?`
+    ? Key
+    : Slot extends FunctionComponent<infer P>
+    ? FunctionComponentProng<P>
+    : Slot;
+
+export type Swap<Contact extends ContactDataType> =
+  Contact extends keyof IntrinsicProngs
+    ? `${Contact}?`
+    : Contact extends `${infer Key extends keyof IntrinsicProngs}?`
+    ? Key
+    : Contact extends FunctionComponent<infer P>
+    ? typeof _$isSlot extends keyof Contact
+      ? FunctionComponentProng<P>
+      : FunctionComponentSlot<P>
+    : never;

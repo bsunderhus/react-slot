@@ -1,12 +1,9 @@
-import type * as ReactTS from "react";
+import type * as ReactTypes from "react";
+import { forwardRef as _forwardRef } from "react";
 import type { UnionToIntersection } from "./types/helper.types";
-
-/**
- * @internal
- *
- * Identity function that returns the value passed to it.
- */
-const id = <T>(value: T): T => value;
+import type { PlugPropsDataType } from "./types/datatype.types";
+import type { PlugRefElement } from "./types/plug.types";
+import { id } from "./utils/id";
 
 /**
  * @public
@@ -18,7 +15,7 @@ const id = <T>(value: T): T => value;
  * event types (this is a {@link https://web.archive.org/web/20220823104433/https://www.stephanboyer.com/post/132/what-are-covariance-and-contravariance | _contravariant_} type that is compatible with all unions).
  */
 export const ensureEventHandlerType = id as <
-  H extends ReactTS.EventHandler<any> | undefined
+  H extends ReactTypes.EventHandler<any> | undefined
 >(
   handler: H
 ) => UnionToIntersection<H> | Extract<H, undefined>;
@@ -58,14 +55,14 @@ export const ensureEventHandlerType = id as <
  * ```
  */
 export const ensureRefType: {
-  <R extends ReactTS.RefObject<any>>(ref: R): ReactTS.RefObject<
-    UnionToIntersection<R extends ReactTS.RefObject<infer T> ? T : never>
+  <R extends ReactTypes.RefObject<any>>(ref: R): ReactTypes.RefObject<
+    UnionToIntersection<R extends ReactTypes.RefObject<infer T> ? T : never>
   >;
-  <R extends ReactTS.RefCallback<unknown>>(ref: R): ReactTS.RefCallback<
-    R extends ReactTS.RefCallback<infer T> ? T : never
+  <R extends ReactTypes.RefCallback<unknown>>(ref: R): ReactTypes.RefCallback<
+    R extends ReactTypes.RefCallback<infer T> ? T : never
   >;
-  <R extends ReactTS.Ref<any>>(ref: R): ReactTS.Ref<
-    UnionToIntersection<R extends ReactTS.RefCallback<infer T> ? T : never>
+  <R extends ReactTypes.Ref<any>>(ref: R): ReactTypes.Ref<
+    UnionToIntersection<R extends ReactTypes.RefCallback<infer T> ? T : never>
   >;
 } = id;
 
@@ -79,7 +76,7 @@ export const ensureRefType: {
  *
  */
 export const assertEventType: {
-  <E extends ReactTS.SyntheticEvent>(
+  <E extends ReactTypes.SyntheticEvent>(
     event: E
   ): asserts event is UnionToIntersection<E> & E;
 } = id;
@@ -92,6 +89,23 @@ export const assertEventType: {
  *
  * This is equivalent to {@link assertEventType} but as an identity function.
  */
-export const ensureEventType = id as <E extends ReactTS.SyntheticEvent>(
+export const ensureEventType = id as <E extends ReactTypes.SyntheticEvent>(
   event: E
 ) => UnionToIntersection<E>;
+
+/**
+ * @public
+ *
+ * Equivalent to React's `forwardRef` but with a more accurate type inference for plug components.
+ * This is useful when you want to forward a ref to a plug component that is described by an union of types.
+ *
+ * The problem with React's `forwardRef` is that it doesn't infer the correct type for the ref when the component is a union of types.
+ * The specific type of the ref is inferred as the union of all possible types, which is not accurate.
+ */
+export const forwardRef = _forwardRef as <Props extends PlugPropsDataType>(
+  fn: ReactTypes.ForwardRefRenderFunction<PlugRefElement<Props>, Props>
+) => ReactTypes.ForwardRefExoticComponent<
+  Props extends any
+    ? Props & { ref?: ReactTypes.Ref<PlugRefElement<Props>> }
+    : never
+>;

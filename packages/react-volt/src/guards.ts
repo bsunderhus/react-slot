@@ -1,10 +1,10 @@
 import { isValidElement } from "react";
-import { _outletElementType, _outletTypeSymbol, unplugged } from "./constants";
+import { _$outletElementType, _$unplugged } from "./constants";
 import type {
   PlugDataType,
+  OmniPlugDataType,
+  ContactDataType,
   PlugPropsDataType,
-  SlotDataType,
-  OutletTypeDataType,
 } from "./types/datatype.types";
 import type { Outlet } from "./types/outlet.types";
 
@@ -14,26 +14,25 @@ import type { Outlet } from "./types/outlet.types";
  * Type guard for checking if a value is an outlet component.
  * @param value - value to check
  */
-export const isOutlet = <OutletType extends OutletTypeDataType>(
+export const isOutlet = <Contact extends ContactDataType>(
   value: unknown
-): value is Outlet<OutletType> =>
+): value is Outlet<Contact> =>
   typeof value === "object" &&
   value !== null &&
   "$$typeof" in value &&
-  value.$$typeof === _outletElementType;
+  value.$$typeof === _$outletElementType;
 
 /**
  * @public
- * Type guard for checking if a value is a slot.
+ * Type guard for checking if a value is an omni-plug.
  * @param value - plug to check
  */
-export const isSlot = <Slot extends SlotDataType>(
+export const isOmniPlug = <Plug extends OmniPlugDataType>(
   value: unknown
-): value is Slot =>
+): value is Plug =>
   typeof value === "string" ||
   typeof value === "number" ||
   typeof value === "boolean" ||
-  // isIterable
   (typeof value === "object" && value !== null && Symbol.iterator in value) ||
   isValidElement(value);
 
@@ -43,7 +42,11 @@ export const isSlot = <Slot extends SlotDataType>(
  */
 export const isPlugProps = <P extends PlugPropsDataType>(
   value: unknown
-): value is P => typeof value === "object" && value !== null && !isSlot(value);
+): value is P =>
+  typeof value === "object" &&
+  value !== null &&
+  !isValidElement(value) &&
+  !(Symbol.iterator in value);
 
 /**
  * @public
@@ -51,4 +54,5 @@ export const isPlugProps = <P extends PlugPropsDataType>(
  */
 export const isPlug = <Plug extends PlugDataType>(
   value: unknown
-): value is Plug => isPlugProps(value) || isSlot(value) || value === unplugged;
+): value is Plug =>
+  isPlugProps(value) || isOmniPlug(value) || value === _$unplugged;

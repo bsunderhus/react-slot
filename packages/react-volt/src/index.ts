@@ -1,10 +1,15 @@
 export type {
   PlugDataType,
+  OmniPlugDataType,
+  ProngDataType,
   SlotDataType,
   PlugTypeDataType,
   PlugPropsDataType,
-  OutletTypeDataType,
-  OutletRendererDataType,
+  ContactDataType,
+  ComponentProngPropsDataType,
+  IntrinsicProngPropsDataType,
+  IntrinsicSlotPropsDataType,
+  ComponentSlotPropsDataType,
 } from "./types/datatype.types";
 
 export type {
@@ -23,12 +28,20 @@ export type {
   TransitionEventHandler,
   UIEventHandler,
   WheelEventHandler,
+  IntrinsicProngs,
+  IntrinsicSlots,
+  IntrinsicSlotAttributes,
+  IntrinsicProngAttributes,
+  FunctionComponentSlot,
+  ComponentSlotAttributes,
+  FunctionComponentProng,
+  ComponentProngAttributes,
 } from "./types/helper.types";
 
-export { isPlug, isSlot, isOutlet, isPlugProps } from "./guards";
+export { isPlug, isOmniPlug, isOutlet, isPlugProps } from "./guards";
 
 export { outlet } from "./outlet";
-export type { Slot, OutletRenderer, Outlet } from "./types/outlet.types";
+export type { Outlet } from "./types/outlet.types";
 
 import * as plug from "./plug";
 import * as union from "./union";
@@ -52,23 +65,18 @@ export {
 };
 
 export type {
+  Swap,
   Plug,
   PlugRef,
   Adapter,
-  Primary,
+  OmniPlug,
+  MainPlug,
+  Optional,
   LockedIn,
-  Unplugged,
-  PropsPlug,
+  Required,
   PlugProps,
-  PlugTypePlug,
-  OutletTypePlug,
+  UnpluggedPlug,
   PlugRefElement,
-  IntrinsicPlugAttributes,
-  IntrinsicOptionalPlugAttributes,
 } from "./types/plug.types";
 
-export {
-  _outletTypeSymbol,
-  _outletElementType,
-  _outletRendererSymbol,
-} from "./constants";
+export { _$outletElementType, _$isSlot, _$unplugged } from "./constants";

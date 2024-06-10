@@ -1,9 +1,9 @@
 import * as React from "react";
-import { PlugRefElement, PlugStatus, outlet, plug, union } from "../index";
-import type { OutletComponent, Plug, PlugProps, Primary } from "../index";
+import { outlet, plug, union } from "../index";
+import type { Outlet, Plug, PlugProps, MainPlug } from "../index";
 import {
   useAriaButtonAdapter,
-  type ARIAButtonPlugProps,
+  type AriaButtonPlugProps,
 } from "./useARIAButtonAdapter";
 
 /**
@@ -20,7 +20,7 @@ export type ButtonIconPlugProps = PlugProps<"span?"> & {
   position?: "before" | "after";
 };
 
-export type ButtonProps = Primary<ARIAButtonPlugProps<"a">> & {
+export type ButtonProps = MainPlug<AriaButtonPlugProps<"a">> & {
   /**
    * Icon that renders either before or after the `children` as specified by the `iconPosition` prop.
    */
@@ -75,8 +75,8 @@ export type ButtonState = Required<
   >
 > & {
   iconPosition: NonNullable<ButtonIconPlugProps["position"]>;
-  root: OutletComponent<"button" | "a">;
-  icon?: OutletComponent<"span">;
+  main: Outlet<"button" | "a?">;
+  icon?: Outlet<"span">;
   /**
    * A button can contain only an icon.
    *
@@ -86,56 +86,44 @@ export type ButtonState = Required<
   children: React.ReactNode;
 };
 
-export const Button = React.forwardRef<
-  PlugRefElement<ButtonProps>,
-  React.PropsWithoutRef<ButtonProps>
->((props, ref) => {
-  const buttonState = useButton({ ...props, ref: union.ensureRefType(ref) });
-  return renderButton(buttonState);
-});
-
-/**
- * Renders a Button component by passing the state defined props to the appropriate slots.
- */
-export const renderButton = (state: ButtonState) => (
-  <state.root>
-    {state.iconPosition !== "after" && state.icon && <state.icon />}
-    {!state.iconOnly && state.children}
-    {state.iconPosition === "after" && state.icon && <state.icon />}
-  </state.root>
-);
-
-/**
- * Given user props, defines default props for the Button, calls useButtonState, and returns processed state.
- * @param props - User provided props to the Button component.
- * @param ref - User provided ref to be passed to the Button component.
- */
-export const useButton = (props: ButtonProps): ButtonState => {
+export const Button = union.forwardRef<ButtonProps>((props, ref) => {
   const {
-    appearance = "secondary",
-    disabled = false,
-    disabledFocusable = false,
-    icon = PlugStatus.UnPlugged,
-    shape = "rounded",
+    children,
     size = "medium",
+    disabled = false,
+    shape = "rounded",
+    icon = plug.unplugged(),
+    appearance = "secondary",
+    disabledFocusable = false,
+    ...rest
   } = props;
   const iconProps = plug.resolve(icon);
-  return {
-    children: props.children,
+  const state: ButtonState = {
+    children: children,
     appearance,
     disabled,
     disabledFocusable,
     iconPosition: iconProps?.position ?? "before",
     shape,
     size, // State calculated from a set of props
-    iconOnly: Boolean(iconProps?.children && !props.children), // Slots definition
+    iconOnly: Boolean(iconProps?.children && !children), // Slots definition
     icon: outlet(
       "span",
-      plug.adapt(icon, ({ position, ...rest }) => rest)
+      plug.adapt(icon, ({ position, ...iconProps }) => iconProps)
     ),
-    root: outlet.lockedIn<"button" | "a">(
+    main: outlet.lockedIn<"button" | "a?">(
       "button",
-      plug.adapt(props, useAriaButtonAdapter<"a">)
+      plug.adapt(
+        { ...rest, ref: union.ensureRefType(ref) },
+        useAriaButtonAdapter<"a">
+      )
     ),
   };
-};
+  return (
+    <state.main>
+      {state.iconPosition !== "after" && state.icon && <state.icon />}
+      {!state.iconOnly && state.children}
+      {state.iconPosition === "after" && state.icon && <state.icon />}
+    </state.main>
+  );
+});
