@@ -1,6 +1,6 @@
 import * as React from "react";
-import { outlet, plug, union } from "../index";
-import type { Outlet, Plug, PlugProps, MainPlug } from "../index";
+import { outlet, plug } from "../index";
+import type { Distributive, Outlet, Plug, PlugProps } from "../index";
 import {
   useAriaButtonAdapter,
   type AriaButtonPlugProps,
@@ -11,20 +11,25 @@ import {
  */
 export type ButtonSize = "small" | "medium" | "large";
 
-export type ButtonIconPlugProps = PlugProps<"span?"> & {
-  /**
-   * A button can format its icon to appear before or after its content.
-   *
-   * @default 'before'
-   */
-  position?: "before" | "after";
-};
+type IconPosition = "before" | "after";
 
-export type ButtonProps = MainPlug<AriaButtonPlugProps<"a">> & {
+export type ButtonProps = Extract<
+  AriaButtonPlugProps,
+  Partial<PlugProps.IntrinsicElements.Button | PlugProps.IntrinsicElements.A>
+> & {
   /**
    * Icon that renders either before or after the `children` as specified by the `iconPosition` prop.
    */
-  icon?: Plug<ButtonIconPlugProps>;
+  icon?: Plug<
+    Partial<PlugProps.IntrinsicElements.Span> & {
+      /**
+       * A button can format its icon to appear before or after its content.
+       *
+       * @default 'before'
+       */
+      position?: IconPosition;
+    }
+  >;
   /**
    * A button can have its content and borders styled for greater emphasis or to be subtle.
    * - 'secondary' (default): Gives emphasis to the button in such a way that it indicates a secondary action.
@@ -69,13 +74,13 @@ export type ButtonProps = MainPlug<AriaButtonPlugProps<"a">> & {
 };
 
 export type ButtonState = Required<
-  Pick<
+  Distributive.Pick<
     ButtonProps,
     "appearance" | "disabledFocusable" | "disabled" | "shape" | "size"
   >
 > & {
-  iconPosition: NonNullable<ButtonIconPlugProps["position"]>;
-  main: Outlet<"button" | "a?">;
+  iconPosition: IconPosition;
+  root: Outlet<"button" | "a">;
   icon?: Outlet<"span">;
   /**
    * A button can contain only an icon.
@@ -86,7 +91,7 @@ export type ButtonState = Required<
   children: React.ReactNode;
 };
 
-export const Button = union.forwardRef<ButtonProps>((props, ref) => {
+export const Button = plug.fc((props: ButtonProps) => {
   const {
     children,
     size = "medium",
@@ -97,6 +102,7 @@ export const Button = union.forwardRef<ButtonProps>((props, ref) => {
     disabledFocusable = false,
     ...rest
   } = props;
+  const ariaButtonAdapter = useAriaButtonAdapter();
   const iconProps = plug.resolve(icon);
   const state: ButtonState = {
     children: children,
@@ -111,19 +117,13 @@ export const Button = union.forwardRef<ButtonProps>((props, ref) => {
       "span",
       plug.adapt(icon, ({ position, ...iconProps }) => iconProps)
     ),
-    main: outlet.lockedIn<"button" | "a?">(
-      "button",
-      plug.adapt(
-        { ...rest, ref: union.ensureRefType(ref) },
-        useAriaButtonAdapter<"a">
-      )
-    ),
+    root: outlet.lockedIn("button", plug.adapt(rest, ariaButtonAdapter)),
   };
   return (
-    <state.main>
+    <state.root>
       {state.iconPosition !== "after" && state.icon && <state.icon />}
       {!state.iconOnly && state.children}
       {state.iconPosition === "after" && state.icon && <state.icon />}
-    </state.main>
+    </state.root>
   );
 });

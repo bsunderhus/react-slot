@@ -1,13 +1,16 @@
 import * as React from "react";
 import type {
   PlugProps,
-  KeyboardEventHandler,
   MouseEventHandler,
+  KeyboardEventHandler,
+  Distributive,
 } from "../index";
 
-export type AriaButtonPlugProps<Prong extends "a" | "div"> = PlugProps<
-  "button?" | Prong
-> & {
+export type AriaButtonPlugProps = (
+  | Partial<PlugProps.IntrinsicElements.Button>
+  | PlugProps.IntrinsicElements.A
+  | PlugProps.IntrinsicElements.Div
+) & {
   disabled?: boolean;
   /**
    * When set, allows the button to be focusable even when it has been disabled.
@@ -20,128 +23,135 @@ export type AriaButtonPlugProps<Prong extends "a" | "div"> = PlugProps<
   disabledFocusable?: boolean;
 };
 
-export const useAriaButtonAdapter = <Prong extends "a" | "div">(
-  props: AriaButtonPlugProps<Prong>
-): PlugProps<"button?" | Prong> => {
-  const {
-    disabled,
-    disabledFocusable = false,
-    ["aria-disabled"]: ariaDisabled,
-  } = props;
-  const onClick:
-    | MouseEventHandler<HTMLButtonElement | HTMLAnchorElement | HTMLDivElement>
-    | undefined = props.onClick;
-  const onKeyDown:
-    | KeyboardEventHandler<
-        HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
-      >
-    | undefined = props.onKeyDown;
-  const onKeyUp:
-    | KeyboardEventHandler<
-        HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
-      >
-    | undefined = props.onKeyUp;
+type IntrinsicAriaButtonPlugProps<Props extends AriaButtonPlugProps> =
+  | Distributive.Omit<Extract<Props, { as?: "button" }>, "disabledFocusable">
+  | Distributive.Omit<
+      Extract<Props, { as: "a" | "div" }>,
+      "disabled" | "disabledFocusable"
+    >;
 
-  const normalizedAriaDisabled =
-    typeof ariaDisabled === "string" ? ariaDisabled === "true" : ariaDisabled;
+type AriaButtonRefElement =
+  | HTMLButtonElement
+  | HTMLAnchorElement
+  | HTMLDivElement;
 
-  const isDisabled = disabled || disabledFocusable || normalizedAriaDisabled;
+// TODO: find a way to stop breaking rule of hooks
+export const useAriaButtonAdapter =
+  () =>
+  <Props extends AriaButtonPlugProps>(
+    props: Props
+  ): IntrinsicAriaButtonPlugProps<Props> => {
+    const { disabled, disabledFocusable = false, ..._ } = props;
 
-  const handleClick: MouseEventHandler<
-    HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
-  > = React.useCallback(
-    (event) => {
-      if (isDisabled) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
-      onClick?.(event);
-    },
-    [onClick, isDisabled]
-  );
+    const intrinsicProps = _ as IntrinsicAriaButtonPlugProps<Props>;
 
-  const handleKeyDown: KeyboardEventHandler<
-    HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
-  > = React.useCallback(
-    (event) => {
-      onKeyDown?.(event);
+    const onClick: MouseEventHandler<AriaButtonRefElement> | undefined =
+      props.onClick;
+    const onKeyDown: KeyboardEventHandler<AriaButtonRefElement> | undefined =
+      props.onKeyDown;
+    const onKeyUp: KeyboardEventHandler<AriaButtonRefElement> | undefined =
+      props.onKeyUp;
 
-      if (event.isDefaultPrevented()) {
-        return;
-      }
+    const normalizedAriaDisabled =
+      typeof props["aria-disabled"] === "string"
+        ? props["aria-disabled"] === "true"
+        : props["aria-disabled"];
 
-      if (isDisabled && (event.key === "Enter" || event.key === " ")) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
+    const isDisabled = disabled || disabledFocusable || normalizedAriaDisabled;
 
-      if (event.key === " ") {
-        event.preventDefault();
-        return;
-      }
-      // If enter is pressed, activate the button
-      if (event.key === "Enter") {
-        event.preventDefault();
-        event.currentTarget.click();
-      }
-    },
-    [onKeyDown, isDisabled]
-  );
+    const handleClick: MouseEventHandler<
+      HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
+    > = React.useCallback(
+      (event) => {
+        if (isDisabled) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+        onClick?.(event);
+      },
+      [onClick, isDisabled]
+    );
 
-  const handleKeyUp: KeyboardEventHandler<
-    HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
-  > = React.useCallback(
-    (event) => {
-      onKeyUp?.(event);
-      if (event.isDefaultPrevented()) {
-        return;
-      }
-      if (isDisabled && (event.key === "Enter" || event.key === " ")) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
-      if (event.key === " ") {
-        event.preventDefault();
-        event.currentTarget.click();
-      }
-    },
-    [onKeyUp, isDisabled]
-  );
+    const handleNotAButtonKeyDown: KeyboardEventHandler<
+      HTMLAnchorElement | HTMLDivElement
+    > = React.useCallback(
+      (event) => {
+        onKeyDown?.(event);
 
-  // If a <button> tag is to be rendered we just need to set disabled and aria-disabled correctly
-  if (props.as === "button" || props.as === undefined) {
-    return {
-      ...props,
-      disabled: disabled && !disabledFocusable,
-      "aria-disabled": disabledFocusable ? true : normalizedAriaDisabled,
-      // onclick should still use internal handler to ensure prevention if disabled
+        if (event.isDefaultPrevented()) {
+          return;
+        }
+
+        if (isDisabled && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+
+        if (event.key === " ") {
+          event.preventDefault();
+          return;
+        }
+        // If enter is pressed, activate the button
+        if (event.key === "Enter") {
+          event.preventDefault();
+          event.currentTarget.click();
+        }
+      },
+      [onKeyDown, isDisabled]
+    );
+
+    const handleNotAButtonKeyUp: KeyboardEventHandler<
+      HTMLAnchorElement | HTMLDivElement
+    > = React.useCallback(
+      (event) => {
+        onKeyUp?.(event);
+        if (event.isDefaultPrevented()) {
+          return;
+        }
+        if (isDisabled && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+        if (event.key === " ") {
+          event.preventDefault();
+          event.currentTarget.click();
+        }
+      },
+      [onKeyUp, isDisabled]
+    );
+
+    // If a <button> tag is to be rendered we need to set disabled, aria-disabled and provide the correct handlers
+    if (intrinsicProps.as === "button" || intrinsicProps.as === undefined) {
+      intrinsicProps.disabled = disabled && !disabledFocusable;
+      intrinsicProps["aria-disabled"] = normalizedAriaDisabled;
+      // onClick should still use internal handler to ensure prevention if disabled
       // if disabledFocusable then there's no requirement for handlers as those events should not be propagated
-      onClick: disabledFocusable ? undefined : handleClick,
-      onKeyUp: disabledFocusable ? undefined : onKeyUp,
-      onKeyDown: disabledFocusable ? undefined : onKeyDown,
-    };
-  }
-  // If an <a> or <div> tag is to be rendered we have to remove disabled and type,
-  // and set aria-disabled, role and tabIndex.
-  const resultProps = {
-    role: "button",
-    tabIndex: disabled && !disabledFocusable ? undefined : 0,
-    ...props,
-    // If it's not a <button> than listeners are required even with disabledFocusable
-    // Since you cannot assure the default behavior of the element
-    // E.g: <a> will redirect on click
-    onClick: handleClick,
-    onKeyUp: handleKeyUp,
-    onKeyDown: handleKeyDown,
-    "aria-disabled": isDisabled,
+      intrinsicProps.onClick = handleClick;
+      // if disabledFocusable then there's no requirement for handlers as those events should not be propagated
+      // and aria-disabled should be set to true
+      if (disabledFocusable) {
+        intrinsicProps["aria-disabled"] = true;
+        delete intrinsicProps.onClick;
+        delete intrinsicProps.onKeyUp;
+        delete intrinsicProps.onKeyDown;
+      }
+      return intrinsicProps;
+    }
+
+    // If an <a> or <div> we have to set aria-disabled, role, tabIndex and provide the correct handlers
+    intrinsicProps.role ??= "button";
+    intrinsicProps.tabIndex ??= disabled && !disabledFocusable ? undefined : 0;
+    intrinsicProps["aria-disabled"] = isDisabled;
+    intrinsicProps.onClick = handleClick;
+    intrinsicProps.onKeyUp = handleNotAButtonKeyUp;
+    intrinsicProps.onKeyDown = handleNotAButtonKeyDown;
+
+    if (intrinsicProps.as === "a" && isDisabled) {
+      delete intrinsicProps.href;
+    }
+
+    return intrinsicProps;
   };
-
-  if (resultProps.as === "a" && isDisabled) {
-    delete resultProps.href;
-  }
-
-  return resultProps;
-};

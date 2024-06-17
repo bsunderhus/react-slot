@@ -1,7 +1,6 @@
-import type * as ReactTypes from "react";
+import type * as ReactTypes from "./react.types";
 import type { _$outletElementType } from "../constants";
-import type { ContactDataType } from "./datatype.types";
-import type { FunctionComponentProng, IntrinsicProngs } from "./helper.types";
+import type { PlugProps } from "./plug.types";
 
 /**
  * @public
@@ -11,9 +10,9 @@ import type { FunctionComponentProng, IntrinsicProngs } from "./helper.types";
  *
  * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
-export interface Outlet<Contact extends ContactDataType>
-  extends ReactTypes.ExoticComponent<ContactProps<Contact>> {
-  readonly props: ContactProps<Contact>;
+export interface Outlet<OutletType extends PlugProps.Type>
+  extends ReactTypes.ExoticComponent<OutletProps<OutletType>> {
+  readonly props: OutletProps<OutletType>;
   /**
    * @internal internal reference for outlet element type
    * This is used internally by our custom pragma to determine that this is an outlet component.
@@ -30,11 +29,9 @@ export interface Outlet<Contact extends ContactDataType>
 /**
  * Infer props based on the outlet type.
  */
-type ContactProps<Contact extends ContactDataType> =
-  Contact extends keyof IntrinsicProngs
-    ? ReactTypes.PropsWithRef<JSX.IntrinsicElements[Contact]>
-    : Contact extends `${infer TagName extends keyof IntrinsicProngs}?`
-    ? ReactTypes.PropsWithRef<JSX.IntrinsicElements[TagName]>
-    : Contact extends FunctionComponentProng<infer P>
-    ? P
+type OutletProps<Type extends PlugProps.Type> =
+  Type extends keyof ReactTypes.JSX.IntrinsicElements
+    ? ReactTypes.PropsWithRef<ReactTypes.JSX.IntrinsicElements[Type]>
+    : Type extends ReactTypes.FC<infer Props>
+    ? Props
     : never;

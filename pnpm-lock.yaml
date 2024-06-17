@@ -30,8 +30,8 @@ importers:
         specifier: ^7.23.3
         version: 7.23.3(@babel/core@7.23.9)
       '@microsoft/api-extractor':
-        specifier: ^7.44.1
-        version: 7.44.1(@types/node@20.12.10)
+        specifier: ^7.47.0
+        version: 7.47.0(@types/node@20.12.10)
       '@types/babel__core':
         specifier: ^7.20.5
         version: 7.20.5
@@ -61,8 +61,8 @@ importers:
         version: 18.2.0(react@18.2.0)
     devDependencies:
       '@microsoft/api-extractor':
-        specifier: ^7.44.1
-        version: 7.44.1(@types/node@20.12.10)
+        specifier: ^7.47.0
+        version: 7.47.0(@types/node@20.12.10)
       '@rollup/plugin-swc':
         specifier: ^0.3.0
         version: 0.3.0(@swc/core@1.5.5)
@@ -562,27 +562,27 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@microsoft/api-extractor-model@7.28.19(@types/node@20.12.10):
-    resolution: {integrity: sha512-WZpzi/BWcKVTwr9owCpk8/JVdrkwSde9D9kmBzXv3KAyHWWcyo5Z32I1NfoDD1Yr1Vybk4xoeKcT3sn87kJ/0g==}
+  /@microsoft/api-extractor-model@7.29.2(@types/node@20.12.10):
+    resolution: {integrity: sha512-hAYajOjQan3uslhKJRwvvHIdLJ+ZByKqdSsJ/dgHFxPtEbdKpzMDO8zuW4K5gkSMYl5D0LbNwxkhxr51P2zsmw==}
     dependencies:
-      '@microsoft/tsdoc': 0.14.2
-      '@microsoft/tsdoc-config': 0.16.2
-      '@rushstack/node-core-library': 5.1.0(@types/node@20.12.10)
+      '@microsoft/tsdoc': 0.15.0
+      '@microsoft/tsdoc-config': 0.17.0
+      '@rushstack/node-core-library': 5.4.1(@types/node@20.12.10)
     transitivePeerDependencies:
       - '@types/node'
     dev: true
 
-  /@microsoft/api-extractor@7.44.1(@types/node@20.12.10):
-    resolution: {integrity: sha512-y070iI8RVBJrTgvjpVj2WMFlQNIJ529sbz/VQBjgKjkTCmbnn5n+o52W6cAFS8eAFt/NaHMyuvtgo6Fitecg/A==}
+  /@microsoft/api-extractor@7.47.0(@types/node@20.12.10):
+    resolution: {integrity: sha512-LT8yvcWNf76EpDC+8/ArTVSYePvuDQ+YbAUrsTcpg3ptiZ93HIcMCozP/JOxDt+rrsFfFHcpfoselKfPyRI0GQ==}
     hasBin: true
     dependencies:
-      '@microsoft/api-extractor-model': 7.28.19(@types/node@20.12.10)
-      '@microsoft/tsdoc': 0.14.2
-      '@microsoft/tsdoc-config': 0.16.2
-      '@rushstack/node-core-library': 5.1.0(@types/node@20.12.10)
+      '@microsoft/api-extractor-model': 7.29.2(@types/node@20.12.10)
+      '@microsoft/tsdoc': 0.15.0
+      '@microsoft/tsdoc-config': 0.17.0
+      '@rushstack/node-core-library': 5.4.1(@types/node@20.12.10)
       '@rushstack/rig-package': 0.5.2
-      '@rushstack/terminal': 0.12.0(@types/node@20.12.10)
-      '@rushstack/ts-command-line': 4.21.2(@types/node@20.12.10)
+      '@rushstack/terminal': 0.13.0(@types/node@20.12.10)
+      '@rushstack/ts-command-line': 4.22.0(@types/node@20.12.10)
       lodash: 4.17.21
       minimatch: 3.0.8
       resolve: 1.22.8
@@ -593,17 +593,17 @@ packages:
       - '@types/node'
     dev: true
 
-  /@microsoft/tsdoc-config@0.16.2:
-    resolution: {integrity: sha512-OGiIzzoBLgWWR0UdRJX98oYO+XKGf7tiK4Zk6tQ/E4IJqGCe7dvkTvgDZV5cFJUzLGDOjeAXrnZoA6QkVySuxw==}
+  /@microsoft/tsdoc-config@0.17.0:
+    resolution: {integrity: sha512-v/EYRXnCAIHxOHW+Plb6OWuUoMotxTN0GLatnpOb1xq0KuTNw/WI3pamJx/UbsoJP5k9MCw1QxvvhPcF9pH3Zg==}
     dependencies:
-      '@microsoft/tsdoc': 0.14.2
-      ajv: 6.12.6
+      '@microsoft/tsdoc': 0.15.0
+      ajv: 8.12.0
       jju: 1.4.0
-      resolve: 1.19.0
+      resolve: 1.22.8
     dev: true
 
-  /@microsoft/tsdoc@0.14.2:
-    resolution: {integrity: sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==}
+  /@microsoft/tsdoc@0.15.0:
+    resolution: {integrity: sha512-HZpPoABogPvjeJOdzCOSJsXeL/SMCBgBZMVC3X3d7YYp2gf31MfxhUoYUNwf1ERPJOnQc0wkFn9trqI6ZEdZuA==}
     dev: true
 
   /@pkgjs/parseargs@0.11.0:
@@ -770,8 +770,8 @@ packages:
     dev: true
     optional: true
 
-  /@rushstack/node-core-library@5.1.0(@types/node@20.12.10):
-    resolution: {integrity: sha512-SrBLOc4TkCAlDmO4bKxXCwaGL9LtD+azN5B9/8MH/db5/cJM3KX1bLzj4lZSldX7dhW7Rv5zPrX/N0UZo4JDNA==}
+  /@rushstack/node-core-library@5.4.1(@types/node@20.12.10):
+    resolution: {integrity: sha512-WNnwdS8r9NZ/2K3u29tNoSRldscFa7SxU0RT+82B6Dy2I4Hl2MeCSKm4EXLXPKeNzLGvJ1cqbUhTLviSF8E6iA==}
     peerDependencies:
       '@types/node': '*'
     peerDependenciesMeta:
@@ -796,23 +796,23 @@ packages:
       strip-json-comments: 3.1.1
     dev: true
 
-  /@rushstack/terminal@0.12.0(@types/node@20.12.10):
-    resolution: {integrity: sha512-29wKzh+iW42Q2+vPit+NvkD7bhz73Iigu/LjeKWMS/393IXKepX+XbaIbjwe2VK6BB3kBIgBJzDwtd8eZAuirw==}
+  /@rushstack/terminal@0.13.0(@types/node@20.12.10):
+    resolution: {integrity: sha512-Ou44Q2s81BqJu3dpYedAX54am9vn245F0HzqVrfJCMQk5pGgoKKOBOjkbfZC9QKcGNaECh6pwH2s5noJt7X6ew==}
     peerDependencies:
       '@types/node': '*'
     peerDependenciesMeta:
       '@types/node':
         optional: true
     dependencies:
-      '@rushstack/node-core-library': 5.1.0(@types/node@20.12.10)
+      '@rushstack/node-core-library': 5.4.1(@types/node@20.12.10)
       '@types/node': 20.12.10
       supports-color: 8.1.1
     dev: true
 
-  /@rushstack/ts-command-line@4.21.2(@types/node@20.12.10):
-    resolution: {integrity: sha512-paVZW7JvhFYek5Qf5aBmSpSsmcwU8pQlmhawJbfgGhApnGq2JO2S5Vzm/SMLo2HA/rNKz/ug+BxI8dqSQ7wiRg==}
+  /@rushstack/ts-command-line@4.22.0(@types/node@20.12.10):
+    resolution: {integrity: sha512-Qj28t6MO3HRgAZ72FDeFsrpdE6wBWxF3VENgvrXh7JF2qIT+CrXiOJIesW80VFZB9QwObSpkB1ilx794fGQg6g==}
     dependencies:
-      '@rushstack/terminal': 0.12.0(@types/node@20.12.10)
+      '@rushstack/terminal': 0.13.0(@types/node@20.12.10)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -1092,12 +1092,12 @@ packages:
       ajv: 8.13.0
     dev: true
 
-  /ajv@6.12.6:
-    resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
+  /ajv@8.12.0:
+    resolution: {integrity: sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==}
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-json-stable-stringify: 2.1.0
-      json-schema-traverse: 0.4.1
+      json-schema-traverse: 1.0.0
+      require-from-string: 2.0.2
       uri-js: 4.4.1
     dev: true
 
@@ -1371,10 +1371,6 @@ packages:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
     dev: true
 
-  /fast-json-stable-stringify@2.1.0:
-    resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
-    dev: true
-
   /foreground-child@3.1.1:
     resolution: {integrity: sha512-TMKDUnIte6bfb5nWv7V/caI169OHgvwjb7V4WkeUvbQQdjr5rWKqHFiKWb/fcOwB+CzBT+qbWjvj+DVwRskpIg==}
     engines: {node: '>=14'}
@@ -1510,10 +1506,6 @@ packages:
     resolution: {integrity: sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==}
     engines: {node: '>=4'}
     hasBin: true
-    dev: true
-
-  /json-schema-traverse@0.4.1:
-    resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
     dev: true
 
   /json-schema-traverse@1.0.0:
@@ -1751,13 +1743,6 @@ packages:
   /require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
-    dev: true
-
-  /resolve@1.19.0:
-    resolution: {integrity: sha512-rArEXAgsBG4UgRGcynxWIWKFvh/XZCcS8UJdHhwy91zwAvCZIbcs+vAbflgBnNjYMs/i/i+/Ux6IZhML1yPvxg==}
-    dependencies:
-      is-core-module: 2.13.1
-      path-parse: 1.0.7
     dev: true
 
   /resolve@1.22.8:

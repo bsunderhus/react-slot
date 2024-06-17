@@ -1,17 +1,8 @@
 import * as React from "react";
-import {
-  LockedIn,
-  MainPlug,
-  Outlet,
-  Plug,
-  PlugProps,
-  PlugRef,
-  outlet,
-  plug,
-} from "../index";
+import { Outlet, Plug, PlugProps, outlet, plug } from "../index";
 
 export type InputProps = Omit<
-  MainPlug<"input?">,
+  Partial<PlugProps.IntrinsicElements["input"]>,
   // `children` is unsupported. The rest of these native props have customized definitions.
   "children" | "defaultValue" | "onChange" | "size" | "type" | "value" | "ref"
 > & {
@@ -22,13 +13,19 @@ export type InputProps = Omit<
    * The root slot receives the `className` and `style` specified directly on the `<Input>`.
    * All other top-level native props will be applied to the primary slot, `input`.
    */
-  root?: LockedIn<Plug<"span?">>;
+  root?: Plug.LockedIn<Partial<PlugProps.IntrinsicElements["span"]>>;
 
   /** Element before the input text, within the input border */
-  contentBefore?: Plug<"span?" | "div">;
+  contentBefore?: Plug<
+    | Partial<PlugProps.IntrinsicElements["span"]>
+    | PlugProps.IntrinsicElements["div"]
+  >;
 
   /** Element after the input text, within the input border */
-  contentAfter?: Plug<"span?" | "div">;
+  contentAfter?: Plug<
+    | Partial<PlugProps.IntrinsicElements["span"]>
+    | PlugProps.IntrinsicElements["div"]
+  >;
 
   /**
    * Size of the input (changes the font size and spacing).
@@ -110,8 +107,8 @@ export type InputProps = Omit<
 export type InputState = Required<Pick<InputProps, "appearance" | "size">> & {
   root: Outlet<"span">;
   input: Outlet<"input">;
-  contentBefore?: Outlet<"span" | "div?">;
-  contentAfter?: Outlet<"span" | "div?">;
+  contentBefore?: Outlet<"span" | "div">;
+  contentAfter?: Outlet<"span" | "div">;
 };
 
 /**
@@ -131,10 +128,7 @@ export type InputOnChangeData = {
  * @param props - props from this instance of Input
  * @param ref - reference to `<input>` element of Input
  */
-export const useInput_unstable = (
-  props: InputProps,
-  ref: PlugRef<InputProps>
-): InputState => {
+export const useInput_unstable = (props: InputProps): InputState => {
   const {
     size = "medium",
     appearance = "outline",
@@ -169,11 +163,10 @@ export const useInput_unstable = (
         ...inputProps,
         value: controlledValue,
         onChange: handleChange,
-        ref,
       }))
     ),
-    contentAfter: outlet<"span" | "div?">("span", contentAfter),
-    contentBefore: outlet<"span" | "div?">("span", contentBefore),
+    contentAfter: outlet("span", contentAfter),
+    contentBefore: outlet("span", contentBefore),
     root: outlet.lockedIn(
       "span",
       plug.adapt(root, (rootProps) => ({

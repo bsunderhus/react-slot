@@ -1,12 +1,7 @@
 import { isValidElement } from "react";
 import { _$outletElementType, _$unplugged } from "./constants";
-import type {
-  PlugDataType,
-  OmniPlugDataType,
-  ContactDataType,
-  PlugPropsDataType,
-} from "./types/datatype.types";
 import type { Outlet } from "./types/outlet.types";
+import type { Plug, PlugProps } from "./types/plug.types";
 
 /**
  * @public
@@ -14,9 +9,9 @@ import type { Outlet } from "./types/outlet.types";
  * Type guard for checking if a value is an outlet component.
  * @param value - value to check
  */
-export const isOutlet = <Contact extends ContactDataType>(
+export const isOutlet = <Type extends PlugProps.Type>(
   value: unknown
-): value is Outlet<Contact> =>
+): value is Outlet<Type> =>
   typeof value === "object" &&
   value !== null &&
   "$$typeof" in value &&
@@ -27,9 +22,9 @@ export const isOutlet = <Contact extends ContactDataType>(
  * Type guard for checking if a value is an omni-plug.
  * @param value - plug to check
  */
-export const isOmniPlug = <Plug extends OmniPlugDataType>(
+export const isShorthand = <Shorthand extends Plug.Shorthand>(
   value: unknown
-): value is Plug =>
+): value is Shorthand =>
   typeof value === "string" ||
   typeof value === "number" ||
   typeof value === "boolean" ||
@@ -40,9 +35,9 @@ export const isOmniPlug = <Plug extends OmniPlugDataType>(
  * @public
  * Type guard for checking if a value is a valid plug props object.
  */
-export const isPlugProps = <P extends PlugPropsDataType>(
+export const isPlugProps = <Props extends PlugProps>(
   value: unknown
-): value is P =>
+): value is Props =>
   typeof value === "object" &&
   value !== null &&
   !isValidElement(value) &&
@@ -52,7 +47,5 @@ export const isPlugProps = <P extends PlugPropsDataType>(
  * @public
  * Type guard for checking if a value is a valid plug.
  */
-export const isPlug = <Plug extends PlugDataType>(
-  value: unknown
-): value is Plug =>
-  isPlugProps(value) || isOmniPlug(value) || value === _$unplugged;
+export const isPlug = <P extends Plug>(value: unknown): value is P =>
+  isPlugProps(value) || isShorthand(value) || value === _$unplugged;

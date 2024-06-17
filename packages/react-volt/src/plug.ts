@@ -1,11 +1,8 @@
+import type * as ReactTypes from "./types/react.types";
+import { forwardRef } from "react";
 import { _$unplugged } from "./constants";
-import { isOmniPlug, isPlugProps } from "./guards";
-import type {
-  OmniPlugDataType,
-  PlugDataType,
-  PlugPropsDataType,
-} from "./types/datatype.types";
-import type { Adapter, LockedIn } from "./types/plug.types";
+import { isShorthand, isPlugProps } from "./guards";
+import type { Plug, PlugProps } from "./types/plug.types";
 import { id } from "./utils/id";
 
 /**
@@ -23,78 +20,74 @@ import { id } from "./utils/id";
  * > **Note:** _In the context of electrical systems a plug adapter is a device that allows a plug to connect to a outlet that has a different shape or configuration._
  */
 export const adapt: {
-  <A extends PlugDataType>(input: A): A;
-  <A extends PlugDataType, B extends PlugPropsDataType>(
+  <A extends Plug>(input: A): A;
+  <A extends Plug, B extends PlugProps>(
     input: A,
-    adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>
-  ): B | Exclude<A, PlugPropsDataType>;
+    adapterAB: PlugProps.Adapter<Extract<A, PlugProps>, B>
+  ): B | Exclude<A, PlugProps>;
+  <A extends Plug, B extends PlugProps, C extends PlugProps>(
+    input: A,
+    adapterAB: PlugProps.Adapter<Extract<A, PlugProps>, B>,
+    adapterBC: PlugProps.Adapter<B, C>
+  ): C | Exclude<A, PlugProps>;
   <
-    A extends PlugDataType,
-    B extends PlugPropsDataType,
-    C extends PlugPropsDataType
+    A extends Plug,
+    B extends PlugProps,
+    C extends PlugProps,
+    D extends PlugProps
   >(
     input: A,
-    adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>,
-    adapterBC: Adapter<B, C>
-  ): C | Exclude<A, PlugPropsDataType>;
+    adapterAB: PlugProps.Adapter<Extract<A, PlugProps>, B>,
+    adapterBC: PlugProps.Adapter<B, C>,
+    adapterCD: PlugProps.Adapter<C, D>
+  ): D | Exclude<A, PlugProps>;
   <
-    A extends PlugDataType,
-    B extends PlugPropsDataType,
-    C extends PlugPropsDataType,
-    D extends PlugPropsDataType
+    A extends Plug,
+    B extends PlugProps,
+    C extends PlugProps,
+    D extends PlugProps,
+    E extends PlugProps
   >(
     input: A,
-    adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>,
-    adapterBC: Adapter<B, C>,
-    adapterCD: Adapter<C, D>
-  ): D | Exclude<A, PlugPropsDataType>;
+    adapterAB: PlugProps.Adapter<Extract<A, PlugProps>, B>,
+    adapterBC: PlugProps.Adapter<B, C>,
+    adapterCD: PlugProps.Adapter<C, D>,
+    adapterDE: PlugProps.Adapter<D, E>
+  ): E | Exclude<A, PlugProps>;
   <
-    A extends PlugDataType,
-    B extends PlugPropsDataType,
-    C extends PlugPropsDataType,
-    D extends PlugPropsDataType,
-    E extends PlugPropsDataType
+    A extends Plug,
+    B extends PlugProps,
+    C extends PlugProps,
+    D extends PlugProps,
+    E extends PlugProps,
+    F extends PlugProps
   >(
     input: A,
-    adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>,
-    adapterBC: Adapter<B, C>,
-    adapterCD: Adapter<C, D>,
-    adapterDE: Adapter<D, E>
-  ): E | Exclude<A, PlugPropsDataType>;
-  <
-    A extends PlugDataType,
-    B extends PlugPropsDataType,
-    C extends PlugPropsDataType,
-    D extends PlugPropsDataType,
-    E extends PlugPropsDataType,
-    F extends PlugPropsDataType
-  >(
-    input: A,
-    adapterAB: Adapter<Extract<A, PlugPropsDataType>, B>,
-    adapterBC: Adapter<B, C>,
-    adapterCD: Adapter<C, D>,
-    adapterDE: Adapter<D, E>,
-    adapterEF: Adapter<E, F>
-  ): F | Exclude<A, PlugPropsDataType>;
-} = <Input extends PlugDataType, OutputProps extends PlugPropsDataType>(
+    adapterAB: PlugProps.Adapter<Extract<A, PlugProps>, B>,
+    adapterBC: PlugProps.Adapter<B, C>,
+    adapterCD: PlugProps.Adapter<C, D>,
+    adapterDE: PlugProps.Adapter<D, E>,
+    adapterEF: PlugProps.Adapter<E, F>
+  ): F | Exclude<A, PlugProps>;
+} = <Input extends Plug, OutputProps extends PlugProps>(
   inputPlug: Input,
-  ...adapters: Adapter<PlugPropsDataType, PlugPropsDataType>[]
-): NoInfer<OutputProps | Exclude<Input, PlugPropsDataType>> =>
-  isPlugProps<Extract<Input, PlugPropsDataType>>(inputPlug)
-    ? (adapters.reduce<PlugPropsDataType>(
+  ...adapters: PlugProps.Adapter<PlugProps, PlugProps>[]
+): NoInfer<OutputProps | Exclude<Input, PlugProps>> =>
+  isPlugProps<Extract<Input, PlugProps>>(inputPlug)
+    ? (adapters.reduce<PlugProps>(
         (acc, adapter) => adapter(acc),
         inputPlug
       ) as OutputProps)
-    : (inputPlug as Exclude<Input, PlugPropsDataType>);
+    : (inputPlug as Exclude<Input, PlugProps>);
 
 /**
  * @public
  *
  * Resolves a plug to its props.
  *
- * * If the plug is {@link PlugPropsDataType | PlugProps}, it will be returned as is.
- * * If the plug is a {@link OmniPlugDataType | Slot}, it will be resolved to `{children: plug}`.
- * * If the plug is {@link PlugStatus}, it will be resolved to `undefined`.
+ * * If the plug is {@link PlugProps | PlugProps}, it will be returned as is.
+ * * If the plug is a {@link Plug.Shorthand}, it will be resolved to `{children: plug}`.
+ * * If the plug is {@link Plug.Unplugged}, it will be resolved to `undefined`.
  *
  * This is useful when you want to access a plug's properties before providing it to a outlet.
  *
@@ -102,18 +95,13 @@ export const adapt: {
  * @param plug - The plug that will be resolved.
  */
 export const resolve: {
-  <Plug extends PlugDataType>(plug: LockedIn<Plug>): Extract<
-    Plug,
-    PlugPropsDataType
-  >;
-  <Plug extends PlugDataType>(plug: Plug):
-    | Extract<Plug, PlugPropsDataType>
-    | undefined;
-} = (plug) => {
+  <Props extends PlugProps>(plug: Plug.LockedIn<Props>): Props;
+  <Props extends PlugProps>(plug: Plug<Props>): Props | undefined;
+} = (plug: Plug): PlugProps | undefined => {
   if (plug === _$unplugged) {
     return undefined;
   }
-  if (isOmniPlug(plug)) {
+  if (isShorthand(plug)) {
     /**
      * casting here as in this case we have conflict between
      * void elements (elements without children) and non-void elements
@@ -145,7 +133,7 @@ export const resolve: {
  *
  * > **Note:** _In the context of electrical systems a plug that is not connected to an outlet is considered unplugged._
  */
-export const unplugged = (): typeof _$unplugged => _$unplugged;
+export const unplugged = (): Plug.Unplugged => _$unplugged;
 
 /**
  * @public
@@ -157,7 +145,29 @@ export const unplugged = (): typeof _$unplugged => _$unplugged;
  * > **Note:** _In the context of electrical systems a plug that is connected to an outlet is considered plugged in._
  */
 export const pluggedIn = id as {
-  <Plug extends PlugDataType | undefined>(
-    defaultProps: NoInfer<Extract<Plug, PlugPropsDataType>>
-  ): Extract<Plug, PlugPropsDataType>;
+  <P extends Plug | undefined>(
+    defaultProps: NoInfer<Extract<P, PlugProps>>
+  ): Extract<P, PlugProps>;
 };
+
+/**
+ * @public
+ *
+ * A method used to declare a function component that has plug properties.
+ * It works similar to the `ReactTypes.forwardRef` method, but without breaking `ref` type into a separate argument, as doing so would cause reconciliation issues for unions.
+ *
+ * > **Note:** _In React v19 New function components will no longer need `forwardRef`. In future versions they will deprecate and remove forwardRef. {@link https://react.dev/blog/2024/04/25/react-19#ref-as-a-prop | ref as a prop}_.
+ *
+ * > This method is not necessary for React v19 and above. If you are using React v19 or above, you can just declare a function directly
+ *
+ */
+export const fc = <Props extends PlugProps>(
+  fn: (props: Props) => ReactTypes.ReactNode
+): ReactTypes.NamedExoticComponent<Props> =>
+  forwardRef<unknown, Props & ReactTypes.RefAttributes<unknown>>((props, ref) =>
+    fn(
+      process.env.NODE_ENV === "development"
+        ? Object.freeze<Props>({ ...props, ref })
+        : ((props.ref = ref), props)
+    )
+  ) as ReactTypes.NamedExoticComponent<Props>;

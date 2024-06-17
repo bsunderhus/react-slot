@@ -1,13 +1,10 @@
 import * as React from "react";
 import {
-  LockedIn,
-  MainPlug,
+  Distributive,
   MouseEventHandler,
-  Optional,
   Outlet,
   Plug,
   PlugProps,
-  PlugRefElement,
   outlet,
   plug,
 } from "../index";
@@ -15,27 +12,39 @@ import {
   AriaButtonPlugProps,
   useAriaButtonAdapter,
 } from "./useARIAButtonAdapter";
-import { Button } from "./Button";
 export type AccordionHeaderSize = "small" | "medium" | "large" | "extra-large";
 export type AccordionHeaderExpandIconPosition = "start" | "end";
 
-type ButtonPlugProps = PlugProps<AriaButtonPlugProps<"a">>;
+type AccordionHeaderButtonElement = HTMLButtonElement | HTMLAnchorElement;
 
-export type AccordionHeaderProps = MainPlug<
-  "div?" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
-> & {
+export type AccordionHeaderProps = (
+  | Partial<PlugProps.IntrinsicElements.Div>
+  | PlugProps.IntrinsicElements.H1
+  | PlugProps.IntrinsicElements.H2
+  | PlugProps.IntrinsicElements.H3
+  | PlugProps.IntrinsicElements.H4
+  | PlugProps.IntrinsicElements.H5
+  | PlugProps.IntrinsicElements.H6
+) & {
   /**
    * The component to be used as button in heading
    */
-  button?: LockedIn<Plug<ButtonPlugProps | React.FC<ButtonPlugProps>>>;
+  button?: Plug.LockedIn<
+    Extract<
+      AriaButtonPlugProps,
+      Partial<
+        PlugProps.IntrinsicElements.Button | PlugProps.IntrinsicElements.A
+      >
+    >
+  >;
   /**
    * Expand icon plug rendered before (or after) children content in heading.
    */
-  expandIcon?: Plug<"span?">;
+  expandIcon?: Plug<Partial<PlugProps.IntrinsicElements.Span>>;
   /**
    * Expand icon plug rendered before (or after) children content in heading.
    */
-  icon?: Plug<"div?">;
+  icon?: Plug<Partial<PlugProps.IntrinsicElements.Span>>;
   /**
    * The position of the expand  icon plug in heading.
    */
@@ -53,12 +62,12 @@ export type AccordionHeaderProps = MainPlug<
 };
 
 export type AccordionHeaderState = Required<
-  Pick<AccordionHeaderProps, "inline">
+  Distributive.Pick<AccordionHeaderProps, "inline">
 > & {
-  root: Outlet<"div" | "h1?" | "h2?" | "h3?" | "h4?" | "h5?" | "h6?">;
-  button: Outlet<"button" | "a?" | Optional<React.FC<ButtonPlugProps>>>;
+  root: Outlet<"div" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6">;
+  button: Outlet<"button" | "a">;
   expandIcon?: Outlet<"span">;
-  icon?: Outlet<"div">;
+  icon?: Outlet<"span">;
 };
 
 /**
@@ -77,6 +86,8 @@ export const useAccordionHeader = (
     size = "medium",
     expandIconPosition = "start",
   } = props;
+
+  const ariaButtonAdapter = useAriaButtonAdapter();
 
   /**
    * force disabled state on button if accordion isn't collapsible
@@ -98,33 +109,31 @@ export const useAccordionHeader = (
   }
 
   const onButtonClick:
-    | MouseEventHandler<PlugRefElement<AriaButtonPlugProps<"a">>>
+    | MouseEventHandler<AccordionHeaderButtonElement>
     | undefined = plug.resolve(button).onClick;
 
-  const handleClick: MouseEventHandler<
-    PlugRefElement<AriaButtonPlugProps<"a">>
-  > = React.useCallback((event) => {
-    onButtonClick?.(event);
-    if (!event.defaultPrevented) {
-      // requestToggle({ value, event });
-    }
-  }, []);
+  const handleClick: MouseEventHandler<AccordionHeaderButtonElement> =
+    React.useCallback((event) => {
+      onButtonClick?.(event);
+      if (!event.defaultPrevented) {
+        // requestToggle({ value, event });
+      }
+    }, []);
 
   const state: AccordionHeaderState = {
     inline,
-    root: outlet.lockedIn<
-      "div" | "h1?" | "h2?" | "h3?" | "h4?" | "h5?" | "h6?"
-    >("div", props),
-    icon: outlet("div", icon),
+    root: outlet.lockedIn("div", props),
+    icon: outlet("span", icon),
     expandIcon: outlet("span", expandIcon),
-    button: outlet.lockedIn<
-      "button" | "a?" | Optional<React.FC<ButtonPlugProps>>
-    >(
+    button: outlet.lockedIn(
       "button",
       plug.adapt(
         button,
-        (buttonProps) => ({ ...buttonProps, onClick: handleClick }),
-        useAriaButtonAdapter<"a">
+        (buttonProps) => ({
+          ...buttonProps,
+          onClick: handleClick,
+        }),
+        ariaButtonAdapter
       )
     ),
   };
