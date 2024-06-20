@@ -1,16 +1,12 @@
 import * as React from "react";
-import type {
-  PlugProps,
-  MouseEventHandler,
-  KeyboardEventHandler,
-  Distributive,
-} from "../index";
+import type { PlugProps, Distributive, Default } from "../index";
 
-export type AriaButtonPlugProps = (
-  | Partial<PlugProps.IntrinsicElements.Button>
-  | PlugProps.IntrinsicElements.A
-  | PlugProps.IntrinsicElements.Div
-) & {
+type AriaButtonIntrinsicElementsPlugProps =
+  | Default<PlugProps.Intrinsics.Button>
+  | PlugProps.Intrinsics.A
+  | PlugProps.Intrinsics.Div;
+
+interface AriaButtonDisabledProps {
   disabled?: boolean;
   /**
    * When set, allows the button to be focusable even when it has been disabled.
@@ -21,36 +17,73 @@ export type AriaButtonPlugProps = (
    * @default false
    */
   disabledFocusable?: boolean;
-};
+}
 
-type IntrinsicAriaButtonPlugProps<Props extends AriaButtonPlugProps> =
-  | Distributive.Omit<Extract<Props, { as?: "button" }>, "disabledFocusable">
-  | Distributive.Omit<
-      Extract<Props, { as: "a" | "div" }>,
-      "disabled" | "disabledFocusable"
-    >;
+interface AriaButtonButtonProps
+  extends Default<PlugProps.Intrinsics.Button>,
+    AriaButtonDisabledProps {}
 
-type AriaButtonRefElement =
-  | HTMLButtonElement
-  | HTMLAnchorElement
-  | HTMLDivElement;
+interface AriaButtonAProps
+  extends PlugProps.Intrinsics.A,
+    AriaButtonDisabledProps {}
+
+interface AriaButtonDivProps
+  extends PlugProps.Intrinsics.Div,
+    AriaButtonDisabledProps {}
+
+export interface AriaButtonProps {
+  button: AriaButtonButtonProps;
+  a: AriaButtonAProps;
+  div: AriaButtonDivProps;
+}
+
+type AriaButtonElement = HTMLButtonElement | HTMLAnchorElement | HTMLDivElement;
 
 // TODO: find a way to stop breaking rule of hooks
 export const useAriaButtonAdapter =
   () =>
-  <Props extends AriaButtonPlugProps>(
+  <
+    Props extends Distributive.Pick<
+      AriaButtonProps["button" | "a" | "div"],
+      | "disabled"
+      | "disabledFocusable"
+      | "onClick"
+      | "onKeyDown"
+      | "onKeyUp"
+      | "aria-disabled"
+      | "role"
+      | "tabIndex"
+      | "href"
+      | "as"
+    >
+  >(
     props: Props
-  ): IntrinsicAriaButtonPlugProps<Props> => {
+  ): AriaButtonIntrinsicElementsPlugProps &
+    Distributive.Omit<Props, "disabled" | "disabledFocusable"> => {
     const { disabled, disabledFocusable = false, ..._ } = props;
 
-    const intrinsicProps = _ as IntrinsicAriaButtonPlugProps<Props>;
+    // destructuring props will lose the distributivity properties of the type
+    // we need to cast from Omit<Props, 'disabled' | 'disabledFocusable'>
+    // back into the distributive version of it
+    const rest = _ as Distributive.Omit<
+      Props,
+      "disabled" | "disabledFocusable"
+    >;
 
-    const onClick: MouseEventHandler<AriaButtonRefElement> | undefined =
-      props.onClick;
-    const onKeyDown: KeyboardEventHandler<AriaButtonRefElement> | undefined =
-      props.onKeyDown;
-    const onKeyUp: KeyboardEventHandler<AriaButtonRefElement> | undefined =
-      props.onKeyUp;
+    // we need to redeclare onClick type as the distributive version of it
+    const onClick:
+      | Distributive.MouseEventHandler<AriaButtonElement>
+      | undefined = props.onClick;
+
+    // we need to redeclare onKeyDown type as the distributive version of it
+    const onKeyDown:
+      | Distributive.KeyboardEventHandler<AriaButtonElement>
+      | undefined = props.onKeyDown;
+
+    // we need to redeclare onKeyUp type as the distributive version of it
+    const onKeyUp:
+      | Distributive.KeyboardEventHandler<AriaButtonElement>
+      | undefined = props.onKeyUp;
 
     const normalizedAriaDisabled =
       typeof props["aria-disabled"] === "string"
@@ -59,7 +92,7 @@ export const useAriaButtonAdapter =
 
     const isDisabled = disabled || disabledFocusable || normalizedAriaDisabled;
 
-    const handleClick: MouseEventHandler<
+    const handleClick: Distributive.MouseEventHandler<
       HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
     > = React.useCallback(
       (event) => {
@@ -73,7 +106,7 @@ export const useAriaButtonAdapter =
       [onClick, isDisabled]
     );
 
-    const handleNotAButtonKeyDown: KeyboardEventHandler<
+    const handleNotAButtonKeyDown: Distributive.KeyboardEventHandler<
       HTMLAnchorElement | HTMLDivElement
     > = React.useCallback(
       (event) => {
@@ -102,7 +135,7 @@ export const useAriaButtonAdapter =
       [onKeyDown, isDisabled]
     );
 
-    const handleNotAButtonKeyUp: KeyboardEventHandler<
+    const handleNotAButtonKeyUp: Distributive.KeyboardEventHandler<
       HTMLAnchorElement | HTMLDivElement
     > = React.useCallback(
       (event) => {
@@ -124,34 +157,34 @@ export const useAriaButtonAdapter =
     );
 
     // If a <button> tag is to be rendered we need to set disabled, aria-disabled and provide the correct handlers
-    if (intrinsicProps.as === "button" || intrinsicProps.as === undefined) {
-      intrinsicProps.disabled = disabled && !disabledFocusable;
-      intrinsicProps["aria-disabled"] = normalizedAriaDisabled;
-      // onClick should still use internal handler to ensure prevention if disabled
-      // if disabledFocusable then there's no requirement for handlers as those events should not be propagated
-      intrinsicProps.onClick = handleClick;
-      // if disabledFocusable then there's no requirement for handlers as those events should not be propagated
-      // and aria-disabled should be set to true
-      if (disabledFocusable) {
-        intrinsicProps["aria-disabled"] = true;
-        delete intrinsicProps.onClick;
-        delete intrinsicProps.onKeyUp;
-        delete intrinsicProps.onKeyDown;
+    if (rest.as === "button" || rest.as === undefined) {
+      const buttonProps: Default<PlugProps.Intrinsics["button"]> = {
+        ...rest,
+        disabled: disabled && !disabledFocusable,
+        // onClick should still use internal handler to ensure prevention if disabled
+        onClick: disabledFocusable ? undefined : handleClick,
+        // if disabledFocusable then there's no requirement for handlers as those events should not be propagated
+        onKeyDown: disabledFocusable ? undefined : onKeyDown,
+        // if disabledFocusable then there's no requirement for handlers as those events should not be propagated
+        onKeyUp: disabledFocusable ? undefined : onKeyUp,
+        // and aria-disabled should be set to true
+        "aria-disabled": disabledFocusable ? true : normalizedAriaDisabled,
+      };
+      return buttonProps;
+    } else if (rest.as === "a" || rest.as === "div") {
+      const nonButtonProps: PlugProps.Intrinsics["a" | "div"] = {
+        role: "button",
+        tabIndex: disabled && !disabledFocusable ? undefined : 0,
+        ...rest,
+        "aria-disabled": isDisabled,
+        onClick: handleClick,
+        onKeyUp: handleNotAButtonKeyUp,
+        onKeyDown: handleNotAButtonKeyDown,
+      };
+      if (nonButtonProps.as === "a" && isDisabled) {
+        delete nonButtonProps.href;
       }
-      return intrinsicProps;
+      return nonButtonProps;
     }
-
-    // If an <a> or <div> we have to set aria-disabled, role, tabIndex and provide the correct handlers
-    intrinsicProps.role ??= "button";
-    intrinsicProps.tabIndex ??= disabled && !disabledFocusable ? undefined : 0;
-    intrinsicProps["aria-disabled"] = isDisabled;
-    intrinsicProps.onClick = handleClick;
-    intrinsicProps.onKeyUp = handleNotAButtonKeyUp;
-    intrinsicProps.onKeyDown = handleNotAButtonKeyDown;
-
-    if (intrinsicProps.as === "a" && isDisabled) {
-      delete intrinsicProps.href;
-    }
-
-    return intrinsicProps;
+    return props;
   };

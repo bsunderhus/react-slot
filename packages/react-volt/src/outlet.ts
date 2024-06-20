@@ -2,7 +2,7 @@ import * as ReactTypes from "./types/react.types";
 import { _$outletElementType } from "./constants";
 import { isShorthand } from "./guards";
 import { resolve } from "./plug";
-import type { Plug, PlugProps } from "./types/plug.types";
+import type { LockedIn, Plug, PlugProps } from "./types/plug.types";
 import type { Outlet } from "./types/outlet.types";
 import type { PickDefault } from "./types/helper.types";
 
@@ -67,7 +67,7 @@ const outlet = <P extends Plug>(
  *
  * > **Note:** _In the context of electrical systems a Lock-in outlet is an outlet with a lock mechanism to avoid it from being accidentally unplugged._
  */
-outlet.lockedIn = outlet as <P extends Plug.LockedIn>(
+outlet.lockedIn = outlet as <P extends LockedIn<Plug>>(
   defaultOutletType: NoInfer<DefaultOutletTypeFromPlug<P>>,
   lockedInPlug: P
 ) => NoInfer<Outlet<OutletTypeFromPlug<P>>>;

@@ -1,10 +1,8 @@
 import * as React from "react";
 import { outlet, plug } from "../index";
-import type { Distributive, Outlet, Plug, PlugProps } from "../index";
-import {
-  useAriaButtonAdapter,
-  type AriaButtonPlugProps,
-} from "./useARIAButtonAdapter";
+import type { Default, Distributive, Outlet, Plug, PlugProps } from "../index";
+import { AriaButtonProps, useAriaButtonAdapter } from "./useARIAButtonAdapter";
+import { useMergedRefs } from "./useMergedRefs";
 
 /**
  * A button supports different sizes.
@@ -13,15 +11,12 @@ export type ButtonSize = "small" | "medium" | "large";
 
 type IconPosition = "before" | "after";
 
-export type ButtonProps = Extract<
-  AriaButtonPlugProps,
-  Partial<PlugProps.IntrinsicElements.Button | PlugProps.IntrinsicElements.A>
-> & {
+export type ButtonProps = AriaButtonProps["button" | "a"] & {
   /**
    * Icon that renders either before or after the `children` as specified by the `iconPosition` prop.
    */
   icon?: Plug<
-    Partial<PlugProps.IntrinsicElements.Span> & {
+    Default<PlugProps.Intrinsics["span"]> & {
       /**
        * A button can format its icon to appear before or after its content.
        *
@@ -102,6 +97,12 @@ export const Button = plug.fc((props: ButtonProps) => {
     disabledFocusable = false,
     ...rest
   } = props;
+
+  const innerRootRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(
+    null
+  );
+  const rootRef = useMergedRefs(innerRootRef, rest.ref);
+
   const ariaButtonAdapter = useAriaButtonAdapter();
   const iconProps = plug.resolve(icon);
   const state: ButtonState = {
@@ -117,7 +118,13 @@ export const Button = plug.fc((props: ButtonProps) => {
       "span",
       plug.adapt(icon, ({ position, ...iconProps }) => iconProps)
     ),
-    root: outlet.lockedIn("button", plug.adapt(rest, ariaButtonAdapter)),
+    root: outlet.lockedIn(
+      "button",
+      plug.adapt(rest, ariaButtonAdapter, (rootProps) => ({
+        ...rootProps,
+        ref: rootRef,
+      }))
+    ),
   };
   return (
     <state.root>

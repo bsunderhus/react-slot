@@ -2,8 +2,12 @@ import type * as ReactTypes from "./types/react.types";
 import { forwardRef } from "react";
 import { _$unplugged } from "./constants";
 import { isShorthand, isPlugProps } from "./guards";
-import type { Plug, PlugProps } from "./types/plug.types";
-import { id } from "./utils/id";
+import type {
+  LockedIn,
+  Plug,
+  PlugProps,
+  PlugPropsWithChildren,
+} from "./types/plug.types";
 
 /**
  * @public
@@ -95,9 +99,9 @@ export const adapt: {
  * @param plug - The plug that will be resolved.
  */
 export const resolve: {
-  <Props extends PlugProps>(plug: Plug.LockedIn<Props>): Props;
-  <Props extends PlugProps>(plug: Plug<Props>): Props | undefined;
-} = (plug: Plug): PlugProps | undefined => {
+  <Props extends PlugPropsWithChildren>(plug: LockedIn<Plug<Props>>): Props;
+  <Props extends PlugPropsWithChildren>(plug: Plug<Props>): Props | undefined;
+} = (plug: Plug): PlugPropsWithChildren | undefined => {
   if (plug === _$unplugged) {
     return undefined;
   }
@@ -144,11 +148,9 @@ export const unplugged = (): Plug.Unplugged => _$unplugged;
  *
  * > **Note:** _In the context of electrical systems a plug that is connected to an outlet is considered plugged in._
  */
-export const pluggedIn = id as {
-  <P extends Plug | undefined>(
-    defaultProps: NoInfer<Extract<P, PlugProps>>
-  ): Extract<P, PlugProps>;
-};
+export const pluggedIn: <P extends Plug | undefined>(
+  defaultProps: NoInfer<Extract<P, PlugProps>>
+) => Extract<P, PlugProps> = (v) => v;
 
 /**
  * @public

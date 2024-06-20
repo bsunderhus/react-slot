@@ -1,10 +1,18 @@
 import * as React from "react";
-import { Outlet, Plug, PlugProps, outlet, plug } from "../index";
+import {
+  Default,
+  LockedIn,
+  Outlet,
+  Plug,
+  PlugProps,
+  outlet,
+  plug,
+} from "../index";
 
 export type InputProps = Omit<
-  Partial<PlugProps.IntrinsicElements["input"]>,
+  Default<PlugProps.Intrinsics["input"]>,
   // `children` is unsupported. The rest of these native props have customized definitions.
-  "children" | "defaultValue" | "onChange" | "size" | "type" | "value" | "ref"
+  "children" | "defaultValue" | "onChange" | "size" | "type" | "value"
 > & {
   /**
    * Wrapper element which visually appears to be the input and is used for borders, focus styling, etc.
@@ -13,18 +21,16 @@ export type InputProps = Omit<
    * The root slot receives the `className` and `style` specified directly on the `<Input>`.
    * All other top-level native props will be applied to the primary slot, `input`.
    */
-  root?: Plug.LockedIn<Partial<PlugProps.IntrinsicElements["span"]>>;
+  root?: LockedIn<Plug<Default<PlugProps.Intrinsics["span"]>>>;
 
   /** Element before the input text, within the input border */
   contentBefore?: Plug<
-    | Partial<PlugProps.IntrinsicElements["span"]>
-    | PlugProps.IntrinsicElements["div"]
+    Default<PlugProps.Intrinsics["span"]> | PlugProps.Intrinsics["div"]
   >;
 
   /** Element after the input text, within the input border */
   contentAfter?: Plug<
-    | Partial<PlugProps.IntrinsicElements["span"]>
-    | PlugProps.IntrinsicElements["div"]
+    Default<PlugProps.Intrinsics["span"]> | PlugProps.Intrinsics["div"]
   >;
 
   /**
@@ -142,7 +148,6 @@ export const useInput_unstable = (props: InputProps): InputState => {
     contentBefore = plug.unplugged(),
     ...rest
   } = props;
-
   const [internalValue, setInternalValue] = React.useState(defaultValue);
   const controlledValue = value ?? internalValue;
   const setControlledValue = value ? () => {} : setInternalValue;

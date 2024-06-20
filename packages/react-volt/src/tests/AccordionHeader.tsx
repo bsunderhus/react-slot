@@ -1,50 +1,36 @@
 import * as React from "react";
 import {
+  Default,
   Distributive,
-  MouseEventHandler,
+  LockedIn,
   Outlet,
   Plug,
   PlugProps,
   outlet,
   plug,
 } from "../index";
-import {
-  AriaButtonPlugProps,
-  useAriaButtonAdapter,
-} from "./useARIAButtonAdapter";
+import { AriaButtonProps, useAriaButtonAdapter } from "./useARIAButtonAdapter";
 export type AccordionHeaderSize = "small" | "medium" | "large" | "extra-large";
 export type AccordionHeaderExpandIconPosition = "start" | "end";
 
 type AccordionHeaderButtonElement = HTMLButtonElement | HTMLAnchorElement;
 
 export type AccordionHeaderProps = (
-  | Partial<PlugProps.IntrinsicElements.Div>
-  | PlugProps.IntrinsicElements.H1
-  | PlugProps.IntrinsicElements.H2
-  | PlugProps.IntrinsicElements.H3
-  | PlugProps.IntrinsicElements.H4
-  | PlugProps.IntrinsicElements.H5
-  | PlugProps.IntrinsicElements.H6
+  | Default<PlugProps.Intrinsics["div"]>
+  | PlugProps.Intrinsics["h1" | "h2" | "h3" | "h4" | "h5" | "h6"]
 ) & {
   /**
    * The component to be used as button in heading
    */
-  button?: Plug.LockedIn<
-    Extract<
-      AriaButtonPlugProps,
-      Partial<
-        PlugProps.IntrinsicElements.Button | PlugProps.IntrinsicElements.A
-      >
-    >
-  >;
+  button?: LockedIn<Plug<AriaButtonProps["button" | "a"]>>;
   /**
    * Expand icon plug rendered before (or after) children content in heading.
    */
-  expandIcon?: Plug<Partial<PlugProps.IntrinsicElements.Span>>;
+  expandIcon?: Plug<Default<PlugProps.Intrinsics["span"]>>;
   /**
    * Expand icon plug rendered before (or after) children content in heading.
    */
-  icon?: Plug<Partial<PlugProps.IntrinsicElements.Span>>;
+  icon?: Plug<Default<PlugProps.Intrinsics["span"]>>;
   /**
    * The position of the expand  icon plug in heading.
    */
@@ -109,10 +95,10 @@ export const useAccordionHeader = (
   }
 
   const onButtonClick:
-    | MouseEventHandler<AccordionHeaderButtonElement>
+    | Distributive.MouseEventHandler<AccordionHeaderButtonElement>
     | undefined = plug.resolve(button).onClick;
 
-  const handleClick: MouseEventHandler<AccordionHeaderButtonElement> =
+  const handleClick: Distributive.MouseEventHandler<AccordionHeaderButtonElement> =
     React.useCallback((event) => {
       onButtonClick?.(event);
       if (!event.defaultPrevented) {
