@@ -81,7 +81,7 @@ export type Default<Props extends PlugProps> = Partial<Props>;
  * 1. {@link PlugProps.Intrinsics} - a set of properties that define an intrinsic element plug props.
  * 2. {@link PlugProps.FC} - a type that defines a plug props for a function component.
  */
-export interface PlugProps<Type extends PlugProps.Type = PlugProps.Type> {
+export interface PlugProps<Type extends PlugPropsType = PlugPropsType> {
   as?: Type;
 }
 
@@ -96,19 +96,19 @@ export interface PlugPropsWithChildren extends PlugProps {
   children?: unknown;
 }
 
+/**
+ * @public
+ *
+ * The type of the plug props (`as` property).
+ * It can be a function component or an intrinsic element.
+ */
+export type PlugPropsType =
+  | keyof ReactTypes.JSX.IntrinsicElements
+  // Due to contravariance on FC signature this has to be any
+  | ReactTypes.FunctionComponent<any>;
+
 /** @public */
 export namespace PlugProps {
-  /**
-   * @public
-   *
-   * The type of the plug props (`as` property).
-   * It can be a function component or an intrinsic element.
-   */
-  export type Type =
-    | keyof ReactTypes.JSX.IntrinsicElements
-    // Due to contravariance on FC signature this has to be any
-    | ReactTypes.FunctionComponent<any>;
-
   /**
    * @public
    *
@@ -727,21 +727,21 @@ export namespace PlugProps {
     export interface Var extends HTML<HTMLElement, "var"> {}
     export interface Wbr extends HTML<HTMLElement, "wbr"> {}
   }
+}
 
-  /**
-   * @public
-   *
-   * An adapter is a function that takes a set of input properties and returns a set of output properties.
-   *
-   * @typeParam InputProps - The input properties that the adapter will receive.
-   * @typeParam OutputProps - The output properties that the adapter will return.
-   *
-   * > **Note:** _In the context of electrical systems, an adapter is a device that allows a plug to connect to an outlet, even if the plug and outlet are not compatible._
-   */
-  export interface Adapter<
-    in out InputProps extends PlugProps,
-    in out OutputProps extends PlugProps
-  > {
-    (inputProps: InputProps): OutputProps;
-  }
+/**
+ * @public
+ *
+ * An adapter is a function that takes a set of input properties and returns a set of output properties.
+ *
+ * @typeParam InputProps - The input properties that the adapter will receive.
+ * @typeParam OutputProps - The output properties that the adapter will return.
+ *
+ * > **Note:** _In the context of electrical systems, an adapter is a device that allows a plug to connect to an outlet, even if the plug and outlet are not compatible._
+ */
+export interface PlugPropsAdapter<
+  in out InputProps extends PlugProps,
+  in out OutputProps extends PlugProps
+> {
+  (inputProps: InputProps): OutputProps;
 }

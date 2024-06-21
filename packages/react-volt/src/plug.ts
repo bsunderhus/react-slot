@@ -6,6 +6,7 @@ import type {
   LockedIn,
   Plug,
   PlugProps,
+  PlugPropsAdapter,
   PlugPropsWithChildren,
 } from "./types/plug.types";
 
@@ -27,12 +28,12 @@ export const adapt: {
   <A extends Plug>(input: A): A;
   <A extends Plug, B extends PlugProps>(
     input: A,
-    adapterAB: PlugProps.Adapter<Extract<A, PlugProps>, B>
+    adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>
   ): B | Exclude<A, PlugProps>;
   <A extends Plug, B extends PlugProps, C extends PlugProps>(
     input: A,
-    adapterAB: PlugProps.Adapter<Extract<A, PlugProps>, B>,
-    adapterBC: PlugProps.Adapter<B, C>
+    adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
+    adapterBC: PlugPropsAdapter<B, C>
   ): C | Exclude<A, PlugProps>;
   <
     A extends Plug,
@@ -41,9 +42,9 @@ export const adapt: {
     D extends PlugProps
   >(
     input: A,
-    adapterAB: PlugProps.Adapter<Extract<A, PlugProps>, B>,
-    adapterBC: PlugProps.Adapter<B, C>,
-    adapterCD: PlugProps.Adapter<C, D>
+    adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
+    adapterBC: PlugPropsAdapter<B, C>,
+    adapterCD: PlugPropsAdapter<C, D>
   ): D | Exclude<A, PlugProps>;
   <
     A extends Plug,
@@ -53,10 +54,10 @@ export const adapt: {
     E extends PlugProps
   >(
     input: A,
-    adapterAB: PlugProps.Adapter<Extract<A, PlugProps>, B>,
-    adapterBC: PlugProps.Adapter<B, C>,
-    adapterCD: PlugProps.Adapter<C, D>,
-    adapterDE: PlugProps.Adapter<D, E>
+    adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
+    adapterBC: PlugPropsAdapter<B, C>,
+    adapterCD: PlugPropsAdapter<C, D>,
+    adapterDE: PlugPropsAdapter<D, E>
   ): E | Exclude<A, PlugProps>;
   <
     A extends Plug,
@@ -67,16 +68,16 @@ export const adapt: {
     F extends PlugProps
   >(
     input: A,
-    adapterAB: PlugProps.Adapter<Extract<A, PlugProps>, B>,
-    adapterBC: PlugProps.Adapter<B, C>,
-    adapterCD: PlugProps.Adapter<C, D>,
-    adapterDE: PlugProps.Adapter<D, E>,
-    adapterEF: PlugProps.Adapter<E, F>
+    adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
+    adapterBC: PlugPropsAdapter<B, C>,
+    adapterCD: PlugPropsAdapter<C, D>,
+    adapterDE: PlugPropsAdapter<D, E>,
+    adapterEF: PlugPropsAdapter<E, F>
   ): F | Exclude<A, PlugProps>;
 } = <Input extends Plug, OutputProps extends PlugProps>(
   inputPlug: Input,
-  ...adapters: PlugProps.Adapter<PlugProps, PlugProps>[]
-): NoInfer<OutputProps | Exclude<Input, PlugProps>> =>
+  ...adapters: PlugPropsAdapter<PlugProps, PlugProps>[]
+): OutputProps | Exclude<Input, PlugProps> =>
   isPlugProps<Extract<Input, PlugProps>>(inputPlug)
     ? (adapters.reduce<PlugProps>(
         (acc, adapter) => adapter(acc),
@@ -148,9 +149,9 @@ export const unplugged = (): Plug.Unplugged => _$unplugged;
  *
  * > **Note:** _In the context of electrical systems a plug that is connected to an outlet is considered plugged in._
  */
-export const pluggedIn: <P extends Plug | undefined>(
-  defaultProps: NoInfer<Extract<P, PlugProps>>
-) => Extract<P, PlugProps> = (v) => v;
+export const pluggedIn = <P extends Plug | undefined>(
+  defaultProps: Extract<NonNullable<P>, PlugProps>
+): NonNullable<P> => defaultProps;
 
 /**
  * @public

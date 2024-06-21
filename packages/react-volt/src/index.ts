@@ -1,5 +1,12 @@
 export type { Outlet } from "./types/outlet.types";
-export type { Plug, PlugProps, LockedIn, Default } from "./types/plug.types";
+export type {
+  Plug,
+  Default,
+  LockedIn,
+  PlugProps,
+  PlugPropsType,
+  PlugPropsAdapter,
+} from "./types/plug.types";
 export type * as Distributive from "./types/distributive.types";
 
 export * as plug from "./plug";

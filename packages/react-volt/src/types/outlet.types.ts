@@ -1,6 +1,6 @@
 import type * as ReactTypes from "./react.types";
 import type { _$outletElementType } from "../constants";
-import type { PlugProps } from "./plug.types";
+import type { PlugPropsType } from "./plug.types";
 
 /**
  * @public
@@ -10,7 +10,7 @@ import type { PlugProps } from "./plug.types";
  *
  * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
-export interface Outlet<OutletType extends PlugProps.Type>
+export interface Outlet<OutletType extends PlugPropsType>
   extends ReactTypes.ExoticComponent<OutletProps<OutletType>> {
   readonly props: OutletProps<OutletType>;
   /**
@@ -29,7 +29,7 @@ export interface Outlet<OutletType extends PlugProps.Type>
 /**
  * Infer props based on the outlet type.
  */
-type OutletProps<Type extends PlugProps.Type> =
+type OutletProps<Type extends PlugPropsType> =
   Type extends keyof ReactTypes.JSX.IntrinsicElements
     ? ReactTypes.PropsWithRef<ReactTypes.JSX.IntrinsicElements[Type]>
     : Type extends ReactTypes.FC<infer Props>

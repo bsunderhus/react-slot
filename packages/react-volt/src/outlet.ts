@@ -18,10 +18,10 @@ import type { PickDefault } from "./types/helper.types";
  *
  * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
-const outlet = <P extends Plug>(
-  defaultOutletType: NoInfer<DefaultOutletTypeFromPlug<P>>,
-  plug: P
-): NoInfer<Outlet<OutletTypeFromPlug<P>> | undefined> => {
+const outlet = <Props extends PlugProps>(
+  defaultOutletType: DefaultPlugPropsTypeFromProps<Props>,
+  plug: Props | Plug.Shorthand | Plug.Unplugged
+): Outlet<PlugPropsTypeFromProps<Props>> | undefined => {
   const props = resolve(plug);
   if (props === undefined) return props;
 
@@ -33,7 +33,7 @@ const outlet = <P extends Plug>(
     props,
     [_$outletElementType]: defaultOutletType,
     $$typeof: _$outletElementType,
-  } as Outlet<OutletTypeFromPlug<P>>;
+  } as Outlet<PlugPropsTypeFromProps<Props>>;
 
   if (isShorthand(plug)) return component;
 
@@ -67,17 +67,15 @@ const outlet = <P extends Plug>(
  *
  * > **Note:** _In the context of electrical systems a Lock-in outlet is an outlet with a lock mechanism to avoid it from being accidentally unplugged._
  */
-outlet.lockedIn = outlet as <P extends LockedIn<Plug>>(
-  defaultOutletType: NoInfer<DefaultOutletTypeFromPlug<P>>,
-  lockedInPlug: P
-) => NoInfer<Outlet<OutletTypeFromPlug<P>>>;
+outlet.lockedIn = outlet as <Props extends PlugProps>(
+  defaultOutletType: DefaultPlugPropsTypeFromProps<Props>,
+  lockedInPlug: Props | Plug.Shorthand
+) => Outlet<PlugPropsTypeFromProps<Props>>;
 
-type DefaultOutletTypeFromPlug<P extends Plug> = P extends PlugProps
-  ? NonNullable<PickDefault<P>["as"]>
-  : never;
+type DefaultPlugPropsTypeFromProps<Props extends PlugProps> = NonNullable<
+  PickDefault<Props>["as"]
+>;
 
-type OutletTypeFromPlug<P extends Plug> = P extends PlugProps
-  ? NonNullable<P["as"]>
-  : never;
+type PlugPropsTypeFromProps<Props extends PlugProps> = NonNullable<Props["as"]>;
 
 export default outlet;

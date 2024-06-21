@@ -1,7 +1,7 @@
 import { isValidElement } from "react";
 import { _$outletElementType, _$unplugged } from "./constants";
 import type { Outlet } from "./types/outlet.types";
-import type { Plug, PlugProps } from "./types/plug.types";
+import type { Plug, PlugProps, PlugPropsType } from "./types/plug.types";
 
 /**
  * @public
@@ -9,7 +9,7 @@ import type { Plug, PlugProps } from "./types/plug.types";
  * Type guard for checking if a value is an outlet component.
  * @param value - value to check
  */
-export const isOutlet = <Type extends PlugProps.Type>(
+export const isOutlet = <Type extends PlugPropsType>(
   value: unknown
 ): value is Outlet<Type> =>
   typeof value === "object" &&
