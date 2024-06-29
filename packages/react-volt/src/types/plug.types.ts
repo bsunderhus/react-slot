@@ -1,10 +1,17 @@
-import type * as ReactTypes from "./react.types";
-import type { Never, PickDefault } from "./helper.types";
-import type { _$unplugged } from "../constants";
 import type * as plug from "../plug";
-import type { DangerouslyRenderFunction } from "./outlet.types";
+import type * as ReactTypes from "./react.types";
 import type * as SlotCompat from "./slot-compat.types";
+import type { Never } from "./helper.types";
+import type { DangerouslyRenderFunction } from "./outlet.types";
 
+/**
+ * @public
+ *
+ * A primary plug is a special type of plug that only allows plug props with no children render function,
+ * it does not allow {@link Plug.Shorthand} nor {@link Plug.Unplugged}.
+ *
+ *  > **Note:** _There is no such thing as a primary plug in electrical systems, this is a borrowed analogy from database systems and ignition systems. In ignition systems, the primary circuit is the low voltage circuit that initiates the ignition process, without it the ignition system will not work. In database systems, the primary key is a unique identifier for a record in a table, without it the record cannot be identified. Taking those analogies into account a primary plug is a plug that is required and if it is not present, no other plug can be used._
+ */
 // TODO: remove this once there is no need to support children render function
 export type PrimaryPlug<Props extends PlugProps> =
   SlotCompat.WithoutSlotRenderFunction<Props>;
@@ -32,19 +39,28 @@ export namespace Plug {
    *
    * A Shorthand plug is a simplified version of a plug props,
    * it is equivalent to `{children: someValue}`.
-   *
    */
   export type Shorthand<Props extends PlugProps = PlugPropsWithMetadata> =
-    Extract<
-      | ReactTypes.ReactElement
-      | string
-      | number
-      | Iterable<ReactTypes.ReactNode>
-      | boolean,
-      "children" extends keyof Props
-        ? PickDefault<Props>["children"]
-        : Never<"If Props has no 'children', there should be no plug shorthand, as the plug shorthand is a simplified version of a plug props containing only 'children'.">
-    >;
+    PickDefault<Props> extends infer DefaultProps
+      ? { children: any } extends DefaultProps
+        ? Extract<
+            | ReactTypes.ReactElement<any, any>
+            | string
+            | number
+            | Iterable<ReactTypes.ReactNode>
+            | boolean,
+            "children" extends keyof DefaultProps
+              ? DefaultProps["children"]
+              : Never<`
+                If Props has no "children", there should be no plug shorthand,
+                As the plug shorthand is a simplified version of a plug props containing only "children".
+              `>
+          >
+        : Never<`
+          If Props has other required properties than just "children", there should be no plug shorthand.
+          As the plug shorthand is a simplified version of a plug props containing only "children". 
+        `>
+      : never;
 
   /**
    * @public
@@ -55,7 +71,7 @@ export namespace Plug {
    *
    * > **Note:** _in the context of electrical systems unplugged is a term used to describe the connection between a plug and an outlet_
    */
-  export type Unplugged = typeof _$unplugged;
+  export type Unplugged = null;
 }
 
 /**
@@ -66,14 +82,35 @@ export namespace Plug {
  *
  * > **Note:** _In the context of electrical systems a Lock-in plug is a plug with a lock mechanism to avoid it from being accidentally unplugged._
  */
-export type LockedIn<P extends Plug> = Exclude<P, Plug.Unplugged>;
+export type LockedIn<P> = Exclude<P, Plug.Unplugged>;
 
 /**
  * @public
  */
 export type Default<Props extends PlugProps> = {
-  [P in keyof Props]?: Props[P];
-};
+  as?: Props["as"];
+} & Omit<Props, "as">;
+
+/**
+ * Internal Helper type that picks from an union of plug properties the ones that are {@link Default}.
+ *
+ * {@link Default} properties are the ones that have `as` property as optional.
+ *
+ * @example
+ * ```ts
+ *  type PickingTheDefaults =
+ *  PickDefault<
+ *    | Default<PlugProps<'button'>>
+ *    | PlugProps<'a'>
+ *    | PlugProps<'div'>
+ *  > // Default<PlugProps<'button'>>
+ * ```
+ */
+export type PickDefault<P extends Plug> = P extends PlugProps
+  ? undefined extends P["as"]
+    ? P
+    : Never<"Props is not default.">
+  : never;
 
 /**
  * @public
@@ -94,10 +131,15 @@ export interface PlugProps<Type extends PlugPropsType = PlugPropsType> {
 }
 
 /**
+ * Internal plug type that excludes the {@link Plug.Shorthand} type.
+ */
+export type PlugWithoutShorthand = Exclude<Plug, Plug.Shorthand>;
+
+/**
  * Internal plug props type that includes the children property.
  * This is used to ensure that the children property is present for the purpose of type checking.
  * It is used in two places:
- * 1. In the {@link plug.resolve} function to ensure that the children property is present when a shorthand plug is used.
+ * 1. In the {@link plug.resolveShorthand} function to ensure that the children property is present when a shorthand plug is used.
  * 2. As the default generic type for all the {@link Plug} types to ensure that the children property is present while evaluating the default cases.
  */
 export interface PlugPropsWithMetadata extends PlugProps {
@@ -113,22 +155,6 @@ interface DangerouslyRender<
     ReactTypes.ReactElement<Props, Type>
   >;
 }
-
-type DetailedIntrinsicPlugProps<
-  Element,
-  Attributes,
-  Type extends PlugPropsType
-> = DangerouslyRender<Type, Attributes & ReactTypes.RefAttributes<Element>> &
-  // TODO: remove this once there is no need to support children render function
-  SlotCompat.WithSlotRenderFunction<
-    Attributes & ReactTypes.RefAttributes<Element>
-  > &
-  ReactTypes.DataAttributes &
-  Required<PlugProps<Type>>;
-
-/** @public */
-interface SVGPlugProps<E, T extends keyof ReactTypes.JSX.IntrinsicElements>
-  extends DetailedIntrinsicPlugProps<E, ReactTypes.SVGAttributes<E>, T> {}
 
 /**
  * @public
@@ -148,11 +174,15 @@ export namespace PlugProps {
    *
    * Definition of the plug props for a function component.
    */
-  export type FC<Props> = Props extends unknown
-    ? Props &
-        Required<PlugProps<ReactTypes.FC<Props>>> &
-        DangerouslyRender<ReactTypes.FC<Props>, Props>
-    : never;
+  export type FC<Props> =
+    /**
+     * Props extends unknown is a distributive conditional on unions (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+     */
+    Props extends unknown
+      ? Props &
+          Required<PlugProps<ReactTypes.FC<Props>>> &
+          DangerouslyRender<ReactTypes.FC<Props>, Props>
+      : never;
 
   /**
    * @public
@@ -1144,3 +1174,19 @@ export interface PlugPropsAdapter<
 > {
   (inputProps: InputProps): OutputProps;
 }
+
+type DetailedIntrinsicPlugProps<
+  Element,
+  Attributes,
+  Type extends PlugPropsType
+> = DangerouslyRender<Type, Attributes & ReactTypes.RefAttributes<Element>> &
+  // TODO: remove this once there is no need to support children render function
+  SlotCompat.WithSlotRenderFunction<
+    Attributes & ReactTypes.RefAttributes<Element>
+  > &
+  ReactTypes.DataAttributes &
+  Required<PlugProps<Type>>;
+
+/** @public */
+interface SVGPlugProps<E, T extends keyof ReactTypes.JSX.IntrinsicElements>
+  extends DetailedIntrinsicPlugProps<E, ReactTypes.SVGAttributes<E>, T> {}

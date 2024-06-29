@@ -6,6 +6,7 @@ import {
   Plug,
   PlugProps,
   PrimaryPlug,
+  Unlocked,
   outlet,
   plug,
 } from "../index";
@@ -114,8 +115,8 @@ export type InputProps = Omit<
 export type InputState = Required<Pick<InputProps, "appearance" | "size">> & {
   root: Outlet<"span">;
   input: Outlet<"input">;
-  contentBefore?: Outlet<"span" | "div">;
-  contentAfter?: Outlet<"span" | "div">;
+  contentBefore: Unlocked<Outlet<"span" | "div">>;
+  contentAfter: Unlocked<Outlet<"span" | "div">>;
 };
 
 /**
@@ -144,7 +145,7 @@ export const useInput_unstable = (props: InputProps): InputState => {
     className: rootClassName,
     value,
     defaultValue,
-    root = plug.pluggedIn({}),
+    root = plug.pluggedIn(),
     contentAfter = plug.unplugged(),
     contentBefore = plug.unplugged(),
     ...rest
@@ -162,7 +163,7 @@ export const useInput_unstable = (props: InputProps): InputState => {
   const state: InputState = {
     size,
     appearance,
-    input: outlet.lockedIn(
+    input: outlet(
       "input",
       plug.adapt(rest, (inputProps) => ({
         type: "text",
@@ -174,7 +175,7 @@ export const useInput_unstable = (props: InputProps): InputState => {
     ),
     contentAfter: outlet("span", contentAfter),
     contentBefore: outlet("span", contentBefore),
-    root: outlet.lockedIn(
+    root: outlet(
       "span",
       plug.adapt(root, (rootProps) => ({
         className: rootClassName,

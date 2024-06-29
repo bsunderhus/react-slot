@@ -1,6 +1,6 @@
 import type * as ReactTypes from "./react.types";
 import type { _$outletElementType, _$dangerouslyRender } from "../constants";
-import type { PlugPropsType } from "./plug.types";
+import type { Plug, PlugPropsType } from "./plug.types";
 
 /**
  * @public
@@ -14,7 +14,11 @@ export type Outlet<OutletType extends PlugPropsType> =
   ReactTypes.FunctionComponent<OutletProps<OutletType>> &
     OutletProps<OutletType> &
     OutletMetadata;
-
+/**
+ * @public
+ *
+ * Metadata that is used to determine how to render the outlet.
+ */
 export interface OutletMetadata {
   /**
    * @internal
@@ -41,6 +45,9 @@ type OutletProps<Type extends PlugPropsType> =
 /**
  * @public
  *
+ * A function that is used to render the outlet.
+ * This function overrides the default rendering behavior of the outlet.
+ *
  * Similar to {@link React.RefCallback} and {@link React.EventHandler} dangerously render function
  * uses a bivariance hack to allow for more flexible types.
  *
@@ -51,3 +58,12 @@ export type DangerouslyRenderFunction<
 > = {
   bivarianceHack(element: E): ReactTypes.ReactNode;
 }["bivarianceHack"];
+
+/**
+ * @public
+ *
+ * An unlocked outlet is an outlet that can be disconnected from a plug.
+ *
+ * > **Note:** _in the context of electrical systems unlocked is a term used to describe the lack of a connection between a plug and an outlet_
+ */
+export type Unlocked<O> = O | Plug.Unplugged;

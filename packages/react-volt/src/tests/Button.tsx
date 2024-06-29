@@ -3,14 +3,14 @@ import { outlet, plug } from "../index";
 import type {
   Default,
   Distributive,
-  LockedIn,
   Outlet,
   Plug,
   PlugProps,
+  PrimaryPlug,
+  Unlocked,
 } from "../index";
-import { AriaButtonProps, useAriaButtonAdapter } from "./useARIAButtonAdapter";
+import { AriaButtonProps, useAriaButtonProps } from "./useARIAButtonAdapter";
 import { useMergedRefs } from "./useMergedRefs";
-import { PrimaryPlug } from "../types/plug.types";
 
 /**
  * A button supports different sizes.
@@ -23,17 +23,15 @@ export type ButtonProps = PrimaryPlug<AriaButtonProps["button" | "a"]> & {
   /**
    * Icon that renders either before or after the `children` as specified by the `iconPosition` prop.
    */
-  icon?: LockedIn<
-    Plug<
-      Default<PlugProps.Intrinsics["span"]> & {
-        /**
-         * A button can format its icon to appear before or after its content.
-         *
-         * @default 'before'
-         */
-        position: IconPosition;
-      }
-    >
+  icon?: Plug<
+    Default<PlugProps.Intrinsics["span"]> & {
+      /**
+       * A button can format its icon to appear before or after its content.
+       *
+       * @default 'before'
+       */
+      position?: IconPosition;
+    }
   >;
   /**
    * A button can have its content and borders styled for greater emphasis or to be subtle.
@@ -86,7 +84,7 @@ export type ButtonState = Required<
 > & {
   iconPosition: IconPosition;
   root: Outlet<"button" | "a">;
-  icon?: Outlet<"span">;
+  icon: Unlocked<Outlet<"span">>;
   /**
    * A button can contain only an icon.
    *
@@ -101,7 +99,7 @@ export const Button = plug.fc((props: ButtonProps) => {
     size = "medium",
     disabled = false,
     shape = "rounded",
-    icon = plug.pluggedIn<typeof props.icon>({ position: "before" }),
+    icon = plug.pluggedIn(),
     appearance = "secondary",
     disabledFocusable = false,
     ...rest
@@ -112,26 +110,22 @@ export const Button = plug.fc((props: ButtonProps) => {
   );
   const rootRef = useMergedRefs(innerRootRef, rest.ref);
 
-  const ariaButtonAdapter = useAriaButtonAdapter();
-  const iconProps = plug.resolve(icon);
+  const iconProps = plug.resolveShorthand(icon);
+  const iconPosition = iconProps?.position ?? "before";
+  delete iconProps?.position;
+
   const state: ButtonState = {
     appearance,
     disabled,
     disabledFocusable,
-    iconPosition: iconProps?.position ?? "before",
+    iconPosition: iconPosition,
     shape,
     size, // State calculated from a set of props
     iconOnly: Boolean(iconProps?.children && !children), // Slots definition
-    icon: outlet(
-      "span",
-      plug.adapt(icon, ({ position, ...iconProps }) => iconProps)
-    ),
-    root: outlet.lockedIn(
+    icon: outlet("span", iconProps),
+    root: outlet(
       "button",
-      plug.adapt(rest, ariaButtonAdapter, (rootProps) => ({
-        ...rootProps,
-        ref: rootRef,
-      }))
+      plug.merge({ ref: rootRef }, useAriaButtonProps(rest))
     ),
   };
   return (

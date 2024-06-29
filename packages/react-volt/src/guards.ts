@@ -1,8 +1,7 @@
 import { isValidElement } from "react";
-import { _$outletElementType, _$unplugged } from "./constants";
+import { _$outletElementType } from "./constants";
 import type { Outlet, DangerouslyRenderFunction } from "./types/outlet.types";
 import type { Plug, PlugProps, PlugPropsType } from "./types/plug.types";
-import type * as ReactTypes from "./types/react.types";
 
 /**
  * @public
@@ -49,11 +48,20 @@ export const isPlugProps = <Props extends PlugProps>(
  * Type guard for checking if a value is a valid plug.
  */
 export const isPlug = <P extends Plug>(value: unknown): value is P =>
-  isPlugProps(value) || isShorthand(value) || value === _$unplugged;
+  isPlugProps(value) || isShorthand(value) || isUnplugged(value);
 
 /**
  * @internal
+ * Type guard for checking if a value is a dangerously render function.
  */
 export const _isDangerouslyRenderFunction = (
   value: unknown
 ): value is DangerouslyRenderFunction => typeof value === "function";
+
+/**
+ * @public
+ * Type guard for checking if a value is an unplugged plug.
+ */
+export const isUnplugged = <U extends Plug.Unplugged>(
+  value: unknown
+): value is U => value === null;

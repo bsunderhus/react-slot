@@ -7,10 +7,15 @@ import {
   Plug,
   PlugProps,
   PrimaryPlug,
+  Unlocked,
   outlet,
   plug,
 } from "../index";
-import { AriaButtonProps, useAriaButtonAdapter } from "./useARIAButtonAdapter";
+import {
+  AriaButtonProps,
+  useAriaButtonAdapter,
+  useAriaButtonProps,
+} from "./useARIAButtonAdapter";
 export type AccordionHeaderSize = "small" | "medium" | "large" | "extra-large";
 export type AccordionHeaderExpandIconPosition = "start" | "end";
 
@@ -53,8 +58,8 @@ export type AccordionHeaderState = Required<
 > & {
   root: Outlet<"div" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6">;
   button: Outlet<"button" | "a">;
-  expandIcon?: Outlet<"span">;
-  icon?: Outlet<"span">;
+  expandIcon: Unlocked<Outlet<"span">>;
+  icon: Unlocked<Outlet<"span">>;
 };
 
 /**
@@ -67,14 +72,12 @@ export const useAccordionHeader = (
 ): AccordionHeaderState => {
   const {
     icon = plug.unplugged(),
-    button = plug.pluggedIn({}),
-    expandIcon = plug.pluggedIn({}),
+    button = plug.pluggedIn(),
+    expandIcon = plug.pluggedIn(),
     inline = false,
     size = "medium",
     expandIconPosition = "start",
   } = props;
-
-  const ariaButtonAdapter = useAriaButtonAdapter();
 
   /**
    * force disabled state on button if accordion isn't collapsible
@@ -95,9 +98,11 @@ export const useAccordionHeader = (
     expandIconRotation = open ? 90 : dir !== "rtl" ? 0 : 180;
   }
 
+  const buttonProps = plug.resolveShorthand(button);
+
   const onButtonClick:
     | Distributive.MouseEventHandler<AccordionHeaderButtonElement>
-    | undefined = plug.resolve(button).onClick;
+    | undefined = buttonProps.onClick;
 
   const handleClick: Distributive.MouseEventHandler<AccordionHeaderButtonElement> =
     React.useCallback((event) => {
@@ -109,24 +114,18 @@ export const useAccordionHeader = (
 
   const state: AccordionHeaderState = {
     inline,
-    root: outlet.lockedIn("div", props),
+    root: outlet("div", props),
     icon: outlet("span", icon),
     expandIcon: outlet(
       "span",
-      plug.adapt(expandIcon, (expandIconProps) => ({
-        children: <i>some default icon</i>,
-        ...expandIconProps,
-      }))
+      plug.merge(<i>some default icon</i>, expandIcon)
     ),
-    button: outlet.lockedIn(
+    button: outlet(
       "button",
-      plug.adapt(
-        button,
-        (buttonProps) => ({
-          ...buttonProps,
+      useAriaButtonProps(
+        plug.merge(buttonProps, {
           onClick: handleClick,
-        }),
-        ariaButtonAdapter
+        })
       )
     ),
   };

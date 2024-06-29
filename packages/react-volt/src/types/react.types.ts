@@ -1,59 +1,3 @@
-import type {
-  SVGAttributes,
-  RefAttributes,
-  AnchorHTMLAttributes,
-  AreaHTMLAttributes,
-  AudioHTMLAttributes,
-  BaseHTMLAttributes,
-  BlockquoteHTMLAttributes,
-  ButtonHTMLAttributes,
-  CanvasHTMLAttributes,
-  ColHTMLAttributes,
-  ColgroupHTMLAttributes,
-  DataHTMLAttributes,
-  DelHTMLAttributes,
-  DetailsHTMLAttributes,
-  DialogHTMLAttributes,
-  EmbedHTMLAttributes,
-  FieldsetHTMLAttributes,
-  FormHTMLAttributes,
-  HtmlHTMLAttributes,
-  IframeHTMLAttributes,
-  ImgHTMLAttributes,
-  InputHTMLAttributes,
-  InsHTMLAttributes,
-  KeygenHTMLAttributes,
-  LabelHTMLAttributes,
-  LiHTMLAttributes,
-  LinkHTMLAttributes,
-  MapHTMLAttributes,
-  MenuHTMLAttributes,
-  MetaHTMLAttributes,
-  MeterHTMLAttributes,
-  ObjectHTMLAttributes,
-  OlHTMLAttributes,
-  OptgroupHTMLAttributes,
-  OptionHTMLAttributes,
-  OutputHTMLAttributes,
-  ParamHTMLAttributes,
-  ProgressHTMLAttributes,
-  QuoteHTMLAttributes,
-  SlotHTMLAttributes,
-  ScriptHTMLAttributes,
-  SelectHTMLAttributes,
-  SourceHTMLAttributes,
-  StyleHTMLAttributes,
-  TableHTMLAttributes,
-  TdHTMLAttributes,
-  TextareaHTMLAttributes,
-  ThHTMLAttributes,
-  TimeHTMLAttributes,
-  TrackHTMLAttributes,
-  VideoHTMLAttributes,
-  HTMLAttributes,
-  WebViewHTMLAttributes,
-} from "react";
-
 /**
  * @public
  *
@@ -69,7 +13,9 @@ export type FC<P> = FunctionComponent<P>;
 
 /** @public */
 export interface DataAttributes {
-  [DataAttribute: `data-${string}`]: any;
+  // TODO: investigate better alternatives
+  // this will produce expressions with unions too complex to be represented
+  // [DataAttribute: `data-${string}`]: any;
 }
 
 export type {

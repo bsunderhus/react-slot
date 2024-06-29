@@ -1,16 +1,19 @@
-import type * as ReactTypes from "./types/react.types";
 import { forwardRef } from "react";
-import { _$dangerouslyRender, _$unplugged } from "./constants";
+import type * as ReactTypes from "./types/react.types";
+import { _$dangerouslyRender } from "./constants";
 import {
   isShorthand,
   isPlugProps,
+  isUnplugged,
   _isDangerouslyRenderFunction,
 } from "./guards";
 import type {
+  PickDefault,
   Plug,
   PlugProps,
   PlugPropsAdapter,
   PlugPropsWithMetadata,
+  PlugWithoutShorthand,
 } from "./types/plug.types";
 
 /**
@@ -91,38 +94,53 @@ export const adapt: {
 /**
  * @public
  *
- * Resolves a plug to its props.
+ * Resolves a shorthand plug to plug properties or an unplugged plug.
  *
- * * If the plug is {@link PlugProps | PlugProps}, it will be returned as is.
- * * If the plug is a {@link Plug.Shorthand}, it will be resolved to `{children: plug}`.
- * * If the plug is {@link Plug.Unplugged}, it will be resolved to `undefined`.
- *
- * This is useful when you want to access a plug's properties before providing it to a outlet.
- *
- * @typeParam Props - The type of the plug props that will be resolved.
- * @param plug - The plug that will be resolved.
+ * @param plug - The plug that will have its shorthand resolved.
  */
-export const resolve: {
-  <Props extends PlugProps>(plug: Props | Plug.Shorthand): Props;
-  <Props extends PlugProps>(plug: Props | Plug.Shorthand | Plug.Unplugged):
-    | Props
-    | undefined;
-} = (plug: Plug): PlugPropsWithMetadata | undefined => {
-  if (isPlugProps(plug)) {
-    _assignDangerouslyRenderFunction(plug);
+export const resolveShorthand = <P extends PlugWithoutShorthand>(
+  plug: P | Plug.Shorthand
+): P => {
+  if (isUnplugged(plug)) {
     return plug;
   }
-  if (plug === _$unplugged) {
-    return undefined;
+  if (isPlugProps<Extract<P, PlugProps>>(plug)) {
+    return _assignDangerouslyRenderFunction({ ...plug });
   }
   if (isShorthand(plug)) {
-    return { children: plug };
+    /**
+     * Why casting here:
+     *
+     * `{children: plug}` is not assignable to P.
+     * P may have additional required properties that are not present in `{children: plug}`.
+     * But, by definition of {@link Plug.Shorthand}: if the value is a shorthand,
+     * then 'children' is the only required property.
+     */
+    return { children: plug } as P;
   }
   throw new TypeError(/** #__DE-INDENT__ */ `
-    [react-volt - plug.resolve(plugValue)]:
+    [react-volt - plug.resolveShorthand(plugValue)]:
     A plug got an invalid value "${String(plug)}" (${typeof plug}).
     A valid value for a plug is a React node, plug properties or 'plug.unplugged()'.
   `);
+};
+
+/**
+ * @public
+ *
+ * Merges multiple plugs into a single plug.
+ * If a plug is unplugged, it will short-circuit and return the unplugged plug.
+ *
+ * Useful to define default props or overrides for a plug.
+ */
+export const merge = <P extends Plug>(...plugs: P[]): P => {
+  const resolvedPlug = {} as Extract<P, PlugProps>;
+  for (const plug of plugs) {
+    // short-circuit if the plug is unplugged
+    if (isUnplugged(plug)) return plug;
+    Object.assign(resolvedPlug, resolveShorthand(plug));
+  }
+  return resolvedPlug;
 };
 
 /**
@@ -130,28 +148,29 @@ export const resolve: {
  *
  * Assigns the `dangerouslyRender` property to the plug props if the children is a function.
  * This method ensures compatibility between children render function and the `dangerouslyRender` method.
- *
- * TODO: remove this once/if `children` stops supporting render functions.
  */
-const _assignDangerouslyRenderFunction = (plugProps: PlugPropsWithMetadata) => {
+// TODO: remove this once/if `children` stops supporting render functions.
+export const _assignDangerouslyRenderFunction = <
+  Props extends PlugPropsWithMetadata
+>(
+  plugProps: Props
+) => {
   if (_isDangerouslyRenderFunction(plugProps.children)) {
     plugProps.dangerouslyRender = plugProps.children;
     delete plugProps.children;
   }
+  return plugProps;
 };
 
 /**
  * @public
- *
- * `unplugged` returns a symbol that can be used to
- * indicate that a plug is not connected to an outlet.
  *
  * When an outlet receives a plug with the value of `unplugged`,
  * it will not render the plug.
  *
  * > **Note:** _In the context of electrical systems a plug that is not connected to an outlet is considered unplugged._
  */
-export const unplugged = (): Plug.Unplugged => _$unplugged;
+export const unplugged = (): Plug.Unplugged => null;
 
 /**
  * @public
@@ -163,8 +182,8 @@ export const unplugged = (): Plug.Unplugged => _$unplugged;
  * > **Note:** _In the context of electrical systems a plug that is connected to an outlet is considered plugged in._
  */
 export const pluggedIn = <P extends Plug | undefined>(
-  defaultProps: Extract<NonNullable<P>, PlugProps>
-): NonNullable<P> => defaultProps;
+  defaultProps?: PickDefault<Extract<NonNullable<P>, PlugProps>>
+): NonNullable<P> => defaultProps ?? ({} as NonNullable<P>);
 
 /**
  * @public
@@ -175,7 +194,6 @@ export const pluggedIn = <P extends Plug | undefined>(
  * > **Note:** _In React v19 New function components will no longer need `forwardRef`. In future versions they will deprecate and remove forwardRef. {@link https://react.dev/blog/2024/04/25/react-19#ref-as-a-prop | ref as a prop}_.
  *
  * > This method is not necessary for React v19 and above. If you are using React v19 or above, you can just declare a function directly
- *
  */
 export const fc = <Props extends PlugProps>(
   fn: (props: Props) => ReactTypes.ReactNode

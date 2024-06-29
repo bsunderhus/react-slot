@@ -5,13 +5,17 @@ export type SlotRenderFunction<Props> = (
   props: Omit<Props, "as">
 ) => ReactTypes.ReactNode;
 
-export type WithoutSlotRenderFunction<Props> = Props extends unknown
-  ? "children" extends keyof Props
-    ? Omit<Props, "children"> & {
-        children?: Exclude<Props["children"], Function>;
-      }
-    : Props
-  : never;
+export type WithoutSlotRenderFunction<Props> =
+  /**
+   * Props extends unknown is a distributive conditional on unions (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
+   */
+  Props extends unknown
+    ? "children" extends keyof Props
+      ? Omit<Props, "children"> & {
+          children?: Exclude<Props["children"], Function>;
+        }
+      : Props
+    : never;
 
 export type WithSlotRenderFunction<Props> = "children" extends keyof Props
   ? Omit<Props, "children"> & {
