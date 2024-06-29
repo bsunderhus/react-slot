@@ -1,13 +1,16 @@
 import type * as ReactTypes from "./types/react.types";
 import { forwardRef } from "react";
-import { _$unplugged } from "./constants";
-import { isShorthand, isPlugProps } from "./guards";
+import { _$dangerouslyRender, _$unplugged } from "./constants";
+import {
+  isShorthand,
+  isPlugProps,
+  _isDangerouslyRenderFunction,
+} from "./guards";
 import type {
-  LockedIn,
   Plug,
   PlugProps,
   PlugPropsAdapter,
-  PlugPropsWithChildren,
+  PlugPropsWithMetadata,
 } from "./types/plug.types";
 
 /**
@@ -79,10 +82,10 @@ export const adapt: {
   ...adapters: PlugPropsAdapter<PlugProps, PlugProps>[]
 ): OutputProps | Exclude<Input, PlugProps> =>
   isPlugProps<Extract<Input, PlugProps>>(inputPlug)
-    ? (adapters.reduce<PlugProps>(
-        (acc, adapter) => adapter(acc),
-        inputPlug
-      ) as OutputProps)
+    ? (adapters.reduce<PlugProps>((acc, adapter) => {
+        _assignDangerouslyRenderFunction(acc);
+        return adapter(acc);
+      }, inputPlug) as OutputProps)
     : (inputPlug as Exclude<Input, PlugProps>);
 
 /**
@@ -100,31 +103,41 @@ export const adapt: {
  * @param plug - The plug that will be resolved.
  */
 export const resolve: {
-  <Props extends PlugPropsWithChildren>(plug: LockedIn<Plug<Props>>): Props;
-  <Props extends PlugPropsWithChildren>(plug: Plug<Props>): Props | undefined;
-} = (plug: Plug): PlugPropsWithChildren | undefined => {
+  <Props extends PlugProps>(plug: Props | Plug.Shorthand): Props;
+  <Props extends PlugProps>(plug: Props | Plug.Shorthand | Plug.Unplugged):
+    | Props
+    | undefined;
+} = (plug: Plug): PlugPropsWithMetadata | undefined => {
+  if (isPlugProps(plug)) {
+    _assignDangerouslyRenderFunction(plug);
+    return plug;
+  }
   if (plug === _$unplugged) {
     return undefined;
   }
   if (isShorthand(plug)) {
-    /**
-     * casting here as in this case we have conflict between
-     * void elements (elements without children) and non-void elements
-     * if the user is properly using typescript this condition can't be reached on void elements
-     *
-     * if the user is not using typescript and is using a void element as a plug,
-     * then React will console.error so we don't need to worry about this case
-     */
     return { children: plug };
-  }
-  if (isPlugProps(plug)) {
-    return plug;
   }
   throw new TypeError(/** #__DE-INDENT__ */ `
     [react-volt - plug.resolve(plugValue)]:
     A plug got an invalid value "${String(plug)}" (${typeof plug}).
     A valid value for a plug is a React node, plug properties or 'plug.unplugged()'.
   `);
+};
+
+/**
+ * @internal
+ *
+ * Assigns the `dangerouslyRender` property to the plug props if the children is a function.
+ * This method ensures compatibility between children render function and the `dangerouslyRender` method.
+ *
+ * TODO: remove this once/if `children` stops supporting render functions.
+ */
+const _assignDangerouslyRenderFunction = (plugProps: PlugPropsWithMetadata) => {
+  if (_isDangerouslyRenderFunction(plugProps.children)) {
+    plugProps.dangerouslyRender = plugProps.children;
+    delete plugProps.children;
+  }
 };
 
 /**

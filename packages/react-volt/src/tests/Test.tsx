@@ -1,11 +1,11 @@
 import * as React from "react";
-import { Default, Outlet, Plug, PlugProps, outlet, plug } from "../index";
+import { Default, Plug, PlugProps, outlet, plug } from "../index";
 
 type CustomIconProps = { className?: string };
 
-type CustomComponentProps = Default<PlugProps.IntrinsicElements.Button> & {
+type CustomComponentProps = Default<PlugProps.Intrinsics.Button> & {
   icon?: Plug<
-    Default<PlugProps.IntrinsicElements.Span> | PlugProps.FC<CustomIconProps>
+    Default<PlugProps.Intrinsics.Span> | PlugProps.FC<CustomIconProps>
   >;
 };
 

@@ -4,6 +4,11 @@
 export const _$outletElementType = Symbol();
 
 /**
+ * @internal internal reference for the dangerously render outlet function
+ */
+export const _$dangerouslyRender = Symbol();
+
+/**
  * @public
  *
  * Symbol used to declare that the plug is unplugged from the outlet

@@ -1,7 +1,8 @@
 import { isValidElement } from "react";
 import { _$outletElementType, _$unplugged } from "./constants";
-import type { Outlet } from "./types/outlet.types";
+import type { Outlet, DangerouslyRenderFunction } from "./types/outlet.types";
 import type { Plug, PlugProps, PlugPropsType } from "./types/plug.types";
+import type * as ReactTypes from "./types/react.types";
 
 /**
  * @public
@@ -49,3 +50,10 @@ export const isPlugProps = <Props extends PlugProps>(
  */
 export const isPlug = <P extends Plug>(value: unknown): value is P =>
   isPlugProps(value) || isShorthand(value) || value === _$unplugged;
+
+/**
+ * @internal
+ */
+export const _isDangerouslyRenderFunction = (
+  value: unknown
+): value is DangerouslyRenderFunction => typeof value === "function";

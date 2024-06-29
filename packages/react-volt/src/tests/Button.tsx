@@ -1,8 +1,16 @@
 import * as React from "react";
 import { outlet, plug } from "../index";
-import type { Default, Distributive, Outlet, Plug, PlugProps } from "../index";
+import type {
+  Default,
+  Distributive,
+  LockedIn,
+  Outlet,
+  Plug,
+  PlugProps,
+} from "../index";
 import { AriaButtonProps, useAriaButtonAdapter } from "./useARIAButtonAdapter";
 import { useMergedRefs } from "./useMergedRefs";
+import { PrimaryPlug } from "../types/plug.types";
 
 /**
  * A button supports different sizes.
@@ -11,19 +19,21 @@ export type ButtonSize = "small" | "medium" | "large";
 
 type IconPosition = "before" | "after";
 
-export type ButtonProps = AriaButtonProps["button" | "a"] & {
+export type ButtonProps = PrimaryPlug<AriaButtonProps["button" | "a"]> & {
   /**
    * Icon that renders either before or after the `children` as specified by the `iconPosition` prop.
    */
-  icon?: Plug<
-    Default<PlugProps.Intrinsics["span"]> & {
-      /**
-       * A button can format its icon to appear before or after its content.
-       *
-       * @default 'before'
-       */
-      position?: IconPosition;
-    }
+  icon?: LockedIn<
+    Plug<
+      Default<PlugProps.Intrinsics["span"]> & {
+        /**
+         * A button can format its icon to appear before or after its content.
+         *
+         * @default 'before'
+         */
+        position: IconPosition;
+      }
+    >
   >;
   /**
    * A button can have its content and borders styled for greater emphasis or to be subtle.
@@ -83,7 +93,6 @@ export type ButtonState = Required<
    * @default false
    */
   iconOnly: boolean;
-  children: React.ReactNode;
 };
 
 export const Button = plug.fc((props: ButtonProps) => {
@@ -92,7 +101,7 @@ export const Button = plug.fc((props: ButtonProps) => {
     size = "medium",
     disabled = false,
     shape = "rounded",
-    icon = plug.unplugged(),
+    icon = plug.pluggedIn<typeof props.icon>({ position: "before" }),
     appearance = "secondary",
     disabledFocusable = false,
     ...rest
@@ -106,7 +115,6 @@ export const Button = plug.fc((props: ButtonProps) => {
   const ariaButtonAdapter = useAriaButtonAdapter();
   const iconProps = plug.resolve(icon);
   const state: ButtonState = {
-    children: children,
     appearance,
     disabled,
     disabledFocusable,
@@ -129,7 +137,7 @@ export const Button = plug.fc((props: ButtonProps) => {
   return (
     <state.root>
       {state.iconPosition !== "after" && state.icon && <state.icon />}
-      {!state.iconOnly && state.children}
+      {!state.iconOnly && state.root.children}
       {state.iconPosition === "after" && state.icon && <state.icon />}
     </state.root>
   );

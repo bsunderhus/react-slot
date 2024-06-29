@@ -5,12 +5,13 @@ import {
   Outlet,
   Plug,
   PlugProps,
+  PrimaryPlug,
   outlet,
   plug,
 } from "../index";
 
 export type InputProps = Omit<
-  Default<PlugProps.Intrinsics["input"]>,
+  PrimaryPlug<Default<PlugProps.Intrinsics["input"]>>,
   // `children` is unsupported. The rest of these native props have customized definitions.
   "children" | "defaultValue" | "onChange" | "size" | "type" | "value"
 > & {
@@ -148,6 +149,7 @@ export const useInput_unstable = (props: InputProps): InputState => {
     contentBefore = plug.unplugged(),
     ...rest
   } = props;
+
   const [internalValue, setInternalValue] = React.useState(defaultValue);
   const controlledValue = value ?? internalValue;
   const setControlledValue = value ? () => {} : setInternalValue;

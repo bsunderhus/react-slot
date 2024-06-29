@@ -1,8 +1,12 @@
 import * as ReactTypes from "./types/react.types";
-import { _$outletElementType } from "./constants";
+import { _$dangerouslyRender, _$outletElementType } from "./constants";
 import { isShorthand } from "./guards";
 import { resolve } from "./plug";
-import type { LockedIn, Plug, PlugProps } from "./types/plug.types";
+import type {
+  Plug,
+  PlugProps,
+  PlugPropsWithMetadata,
+} from "./types/plug.types";
 import type { Outlet } from "./types/outlet.types";
 import type { PickDefault } from "./types/helper.types";
 
@@ -19,21 +23,24 @@ import type { PickDefault } from "./types/helper.types";
  * > **Note:** _In the context of electrical systems a outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
 const outlet = <Props extends PlugProps>(
-  defaultOutletType: DefaultPlugPropsTypeFromProps<Props>,
+  defaultOutletType: ExtractPlugPropsType<PickDefault<Props>>,
   plug: Props | Plug.Shorthand | Plug.Unplugged
-): Outlet<PlugPropsTypeFromProps<Props>> | undefined => {
-  const props = resolve(plug);
-  if (props === undefined) return props;
+): Outlet<ExtractPlugPropsType<Props>> | undefined => {
+  const props = resolve<PlugPropsWithMetadata>(plug);
+
+  if (!props) return props;
+
+  const { as, dangerouslyRender, ...rest } = props;
 
   // Casting is required here as we're using the signature
   // of a function to define the outlet component.
   // This is similar to how React exotic components are defined
   // (e.g. Suspense, Fragment, ForwardRef, Memo, etc,.)
   const component = {
-    props,
-    [_$outletElementType]: defaultOutletType,
-    $$typeof: _$outletElementType,
-  } as Outlet<PlugPropsTypeFromProps<Props>>;
+    ...rest,
+    [_$outletElementType]: as ?? defaultOutletType,
+    [_$dangerouslyRender]: dangerouslyRender,
+  } as Outlet<ExtractPlugPropsType<Props>>;
 
   if (isShorthand(plug)) return component;
 
@@ -44,12 +51,6 @@ const outlet = <Props extends PlugProps>(
       A valid value for a plug is a React node, plug properties or 'plug.unplugged()'.
     `);
   }
-  let override: ReactTypes.JSX.ElementType | undefined;
-  if ("as" in props) {
-    override = props.as;
-    delete props.as;
-  }
-  if (override) component[_$outletElementType] = override;
 
   return component;
 };
@@ -68,14 +69,10 @@ const outlet = <Props extends PlugProps>(
  * > **Note:** _In the context of electrical systems a Lock-in outlet is an outlet with a lock mechanism to avoid it from being accidentally unplugged._
  */
 outlet.lockedIn = outlet as <Props extends PlugProps>(
-  defaultOutletType: DefaultPlugPropsTypeFromProps<Props>,
+  defaultOutletType: ExtractPlugPropsType<PickDefault<Props>>,
   lockedInPlug: Props | Plug.Shorthand
-) => Outlet<PlugPropsTypeFromProps<Props>>;
+) => Outlet<ExtractPlugPropsType<Props>>;
 
-type DefaultPlugPropsTypeFromProps<Props extends PlugProps> = NonNullable<
-  PickDefault<Props>["as"]
->;
-
-type PlugPropsTypeFromProps<Props extends PlugProps> = NonNullable<Props["as"]>;
+type ExtractPlugPropsType<Props extends PlugProps> = NonNullable<Props["as"]>;
 
 export default outlet;

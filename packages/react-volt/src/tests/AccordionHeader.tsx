@@ -6,6 +6,7 @@ import {
   Outlet,
   Plug,
   PlugProps,
+  PrimaryPlug,
   outlet,
   plug,
 } from "../index";
@@ -15,10 +16,10 @@ export type AccordionHeaderExpandIconPosition = "start" | "end";
 
 type AccordionHeaderButtonElement = HTMLButtonElement | HTMLAnchorElement;
 
-export type AccordionHeaderProps = (
+export type AccordionHeaderProps = PrimaryPlug<
   | Default<PlugProps.Intrinsics["div"]>
   | PlugProps.Intrinsics["h1" | "h2" | "h3" | "h4" | "h5" | "h6"]
-) & {
+> & {
   /**
    * The component to be used as button in heading
    */
@@ -110,7 +111,13 @@ export const useAccordionHeader = (
     inline,
     root: outlet.lockedIn("div", props),
     icon: outlet("span", icon),
-    expandIcon: outlet("span", expandIcon),
+    expandIcon: outlet(
+      "span",
+      plug.adapt(expandIcon, (expandIconProps) => ({
+        children: <i>some default icon</i>,
+        ...expandIconProps,
+      }))
+    ),
     button: outlet.lockedIn(
       "button",
       plug.adapt(

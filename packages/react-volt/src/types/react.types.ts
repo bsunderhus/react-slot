@@ -1,3 +1,59 @@
+import type {
+  SVGAttributes,
+  RefAttributes,
+  AnchorHTMLAttributes,
+  AreaHTMLAttributes,
+  AudioHTMLAttributes,
+  BaseHTMLAttributes,
+  BlockquoteHTMLAttributes,
+  ButtonHTMLAttributes,
+  CanvasHTMLAttributes,
+  ColHTMLAttributes,
+  ColgroupHTMLAttributes,
+  DataHTMLAttributes,
+  DelHTMLAttributes,
+  DetailsHTMLAttributes,
+  DialogHTMLAttributes,
+  EmbedHTMLAttributes,
+  FieldsetHTMLAttributes,
+  FormHTMLAttributes,
+  HtmlHTMLAttributes,
+  IframeHTMLAttributes,
+  ImgHTMLAttributes,
+  InputHTMLAttributes,
+  InsHTMLAttributes,
+  KeygenHTMLAttributes,
+  LabelHTMLAttributes,
+  LiHTMLAttributes,
+  LinkHTMLAttributes,
+  MapHTMLAttributes,
+  MenuHTMLAttributes,
+  MetaHTMLAttributes,
+  MeterHTMLAttributes,
+  ObjectHTMLAttributes,
+  OlHTMLAttributes,
+  OptgroupHTMLAttributes,
+  OptionHTMLAttributes,
+  OutputHTMLAttributes,
+  ParamHTMLAttributes,
+  ProgressHTMLAttributes,
+  QuoteHTMLAttributes,
+  SlotHTMLAttributes,
+  ScriptHTMLAttributes,
+  SelectHTMLAttributes,
+  SourceHTMLAttributes,
+  StyleHTMLAttributes,
+  TableHTMLAttributes,
+  TdHTMLAttributes,
+  TextareaHTMLAttributes,
+  ThHTMLAttributes,
+  TimeHTMLAttributes,
+  TrackHTMLAttributes,
+  VideoHTMLAttributes,
+  HTMLAttributes,
+  WebViewHTMLAttributes,
+} from "react";
+
 /**
  * @public
  *
@@ -5,22 +61,21 @@
  * the extra optional properties, like: `propTypes`, `defaultProps`, etc,.
  */
 export interface FunctionComponent<P> {
-  (props: P): ReactNode;
+  (props: P): any;
 }
 
 /** @public */
 export type FC<P> = FunctionComponent<P>;
 
 /** @public */
-export interface HTMLDataAttributes {
+export interface DataAttributes {
   [DataAttribute: `data-${string}`]: any;
 }
 
-export type ReactNode = any;
-
 export type {
-  PropsWithRef,
   JSX,
+  ReactNode,
+  PropsWithRef,
   NamedExoticComponent,
   ExoticComponent,
   ElementRef,
