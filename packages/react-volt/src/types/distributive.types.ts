@@ -3,8 +3,8 @@ import type * as ReactTypes from "./react.types";
 /**
  * @public
  *
- * Helper type that works similar to Pick,
- * but when modifying an union type it will distribute the picking to all the union members.
+ * Helper type that works similar to Omit,
+ * but when modifying an union type it will distribute the omission to all the union members.
  *
  * See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types} for more information
  */
@@ -15,8 +15,8 @@ type DistributiveOmit<T, K extends keyof any> = T extends unknown
 /**
  * @public
  *
- * Helper type that works similar to Omit,
- * but when modifying an union type it will distribute the omission to all the union members.
+ * Helper type that works similar to Pick,
+ * but when modifying an union type it will distribute the picking to all the union members.
  *
  * See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types} for more information
  */

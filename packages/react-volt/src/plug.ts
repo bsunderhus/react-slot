@@ -165,7 +165,7 @@ export const _assignDangerouslyRenderFunction = <
 /**
  * @public
  *
- * When an outlet receives a plug with the value of `unplugged`,
+ * When an outlet receives a plug with the value of {@link Plug.Unplugged},
  * it will not render the plug.
  *
  * > **Note:** _In the context of electrical systems a plug that is not connected to an outlet is considered unplugged._
@@ -182,8 +182,8 @@ export const unplugged = (): Plug.Unplugged => null;
  * > **Note:** _In the context of electrical systems a plug that is connected to an outlet is considered plugged in._
  */
 export const pluggedIn = <P extends Plug | undefined>(
-  defaultProps?: PickDefault<Extract<NonNullable<P>, PlugProps>>
-): NonNullable<P> => defaultProps ?? ({} as NonNullable<P>);
+  defaultProps: PickDefault<Extract<NonNullable<P>, PlugProps>>
+): NonNullable<P> => defaultProps;
 
 /**
  * @public

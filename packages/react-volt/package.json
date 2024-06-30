@@ -8,7 +8,8 @@
     "build": "vite build",
     "build:types": "tsc -b tsconfig.lib.json",
     "build:api": "api-extractor run --local --verbose",
-    "clean": "rimraf dist dist-tsc"
+    "clean": "rimraf dist dist-tsc",
+    "test": "vitest run"
   },
   "peerDependencies": {
     "react": "^18.2.0",

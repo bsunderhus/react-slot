@@ -5,6 +5,11 @@
     "composite": true,
     "jsx": "preserve"
   },
-  "include": ["src/**/*.test.ts", "src/**/*.test.tsx"],
+  "include": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.test-d.ts",
+    "src/**/*.test-d.tsx"
+  ],
   "references": [{ "path": "./tsconfig.lib.json" }]
 }

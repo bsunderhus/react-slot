@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
-interface ImportMetaEnv {
-  readonly NODE_ENV: "production" | "development";
+declare namespace NodeJS {
+  interface ProcessEnv {
+    readonly NODE_ENV: "production" | "development";
+  }
 }
-
-declare const process: { env: ImportMetaEnv };

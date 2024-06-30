@@ -41,16 +41,16 @@ export namespace Plug {
    * it is equivalent to `{children: someValue}`.
    */
   export type Shorthand<Props extends PlugProps = PlugPropsWithMetadata> =
-    PickDefault<Props> extends infer DefaultProps
-      ? { children: any } extends DefaultProps
+    Props extends unknown
+      ? { children: any } extends Props
         ? Extract<
             | ReactTypes.ReactElement<any, any>
             | string
             | number
             | Iterable<ReactTypes.ReactNode>
             | boolean,
-            "children" extends keyof DefaultProps
-              ? DefaultProps["children"]
+            "children" extends keyof Props
+              ? Props["children"]
               : Never<`
                 If Props has no "children", there should be no plug shorthand,
                 As the plug shorthand is a simplified version of a plug props containing only "children".
@@ -87,9 +87,10 @@ export type LockedIn<P> = Exclude<P, Plug.Unplugged>;
 /**
  * @public
  */
-export type Default<Props extends PlugProps> = {
-  as?: Props["as"];
-} & Omit<Props, "as">;
+export type Default<Props extends PlugProps> = PlugProps<
+  NonNullable<Props["as"]>
+> &
+  Omit<Props, "as">;
 
 /**
  * Internal Helper type that picks from an union of plug properties the ones that are {@link Default}.
@@ -111,24 +112,6 @@ export type PickDefault<P extends Plug> = P extends PlugProps
     ? P
     : Never<"Props is not default.">
   : never;
-
-/**
- * @public
- *
- * A plug props is a set of properties that define a plug.
- *
- * > This type itself is the base type from which every other plug props type is derived.
- * > It is used to ensure that the `as` property is present in every plug props type,
- * > this property will  ensure proper discrimination between multiple plug props types.
- * > see {@link https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions | Discriminated Unions} for more information
- *
- * To define a plug props, you can use either:
- * 1. {@link PlugProps.Intrinsics} - a set of properties that define an intrinsic element plug props.
- * 2. {@link PlugProps.FC} - a type that defines a plug props for a function component.
- */
-export interface PlugProps<Type extends PlugPropsType = PlugPropsType> {
-  as?: Type;
-}
 
 /**
  * Internal plug type that excludes the {@link Plug.Shorthand} type.
@@ -166,6 +149,24 @@ export type PlugPropsType =
   | keyof ReactTypes.JSX.IntrinsicElements
   // Due to contravariance on FC signature this has to be any
   | ReactTypes.FunctionComponent<any>;
+
+/**
+ * @public
+ *
+ * A plug props is a set of properties that define a plug.
+ *
+ * > This type itself is the base type from which every other plug props type is derived.
+ * > It is used to ensure that the `as` property is present in every plug props type,
+ * > this property will  ensure proper discrimination between multiple plug props types.
+ * > see {@link https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions | Discriminated Unions} for more information
+ *
+ * To define a plug props, you can use either:
+ * 1. {@link PlugProps.Intrinsics} - a set of properties that define an intrinsic element plug props.
+ * 2. {@link PlugProps.FC} - a type that defines a plug props for a function component.
+ */
+export interface PlugProps<Type extends PlugPropsType = PlugPropsType> {
+  as?: Type;
+}
 
 /** @public */
 export namespace PlugProps {
@@ -1175,7 +1176,7 @@ export interface PlugPropsAdapter<
   (inputProps: InputProps): OutputProps;
 }
 
-type DetailedIntrinsicPlugProps<
+export type DetailedIntrinsicPlugProps<
   Element,
   Attributes,
   Type extends PlugPropsType
@@ -1187,6 +1188,7 @@ type DetailedIntrinsicPlugProps<
   ReactTypes.DataAttributes &
   Required<PlugProps<Type>>;
 
-/** @public */
-interface SVGPlugProps<E, T extends keyof ReactTypes.JSX.IntrinsicElements>
-  extends DetailedIntrinsicPlugProps<E, ReactTypes.SVGAttributes<E>, T> {}
+export interface SVGPlugProps<
+  E,
+  T extends keyof ReactTypes.JSX.IntrinsicElements
+> extends DetailedIntrinsicPlugProps<E, ReactTypes.SVGAttributes<E>, T> {}
