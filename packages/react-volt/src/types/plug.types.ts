@@ -2,6 +2,7 @@ import type * as plug from "../plug";
 import type * as ReactTypes from "./react.types";
 import type { Never } from "./helper.types";
 import type { DangerouslyRenderFunction } from "./outlet.types";
+import type { _$unplugged } from "../constants";
 
 /**
  * @public
@@ -58,7 +59,7 @@ export namespace Plug {
    *
    * > **Note:** _in the context of electrical systems unplugged is a term used to describe the connection between a plug and an outlet_
    */
-  export type Unplugged = null;
+  export type Unplugged = typeof _$unplugged;
 }
 
 /**
