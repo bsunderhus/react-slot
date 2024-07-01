@@ -22,33 +22,44 @@ import type * as ReactTypes from "./types/react.types";
  *
  * > **Note:** _In the context of electrical systems a  lock-in outlet, also known as a twist-lock outlet or power lock outlet, is a type of electrical outlet that has a locking mechanism to prevent the plug from being accidentally pulled out._
  */
-export const outlet: {
-  <
-    DefaultType extends PlugPropsType<any>,
-    AlternativeType extends PlugPropsType<any> = never
-  >(
-    defaultType: DefaultType,
-    plug:
-      | Default<PlugPropsFromType<DefaultType>>
-      | PlugPropsFromType<Exclude<AlternativeType, DefaultType>>
-      | Plug.Shorthand
-  ): Outlet<DefaultType | AlternativeType>;
-
-  <
-    DefaultType extends PlugPropsType<any>,
-    AlternativeType extends PlugPropsType<any> = never
-  >(
-    defaultType: DefaultType,
-    plug:
-      | Default<PlugPropsFromType<DefaultType>>
-      | PlugPropsFromType<Exclude<AlternativeType, DefaultType>>
-      | Plug.Shorthand
-      | Plug.Unplugged
-  ): Unlocked<Outlet<DefaultType | AlternativeType>>;
-} = (defaultType: PlugPropsType, plug: Plug): Unlocked<Outlet> => {
+export function outlet<
+  const DefaultType extends PlugPropsType<any>,
+  const AlternativeType extends PlugPropsType<any> = never
+>(
+  defaultType: DefaultType,
+  plug:
+    | Default<PlugPropsFromType<DefaultType>>
+    | PlugPropsFromType<Exclude<AlternativeType, DefaultType>>
+    | Plug.Shorthand
+): Outlet<DefaultType | AlternativeType>;
+/**
+ * @public
+ *
+ * Method to create a outlet.
+ *
+ * @param defaultType - The default type of the outlet. This is used when the plug does not specify a type.
+ * @param plug - The plug that connects to the outlet. This can be a React node or plug properties.
+ *
+ * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
+ */
+export function outlet<
+  const DefaultType extends PlugPropsType<any>,
+  const AlternativeType extends PlugPropsType<any> = never
+>(
+  defaultType: DefaultType,
+  plug:
+    | Default<PlugPropsFromType<DefaultType>>
+    | PlugPropsFromType<Exclude<AlternativeType, DefaultType>>
+    | Plug.Shorthand
+    | Plug.Unplugged
+): Unlocked<Outlet<DefaultType | AlternativeType>>;
+export function outlet(
+  defaultType: PlugPropsType,
+  plug: Plug
+): Unlocked<Outlet> {
   const props = resolveShorthand(plug);
 
-  if (isUnplugged(props)) return props;
+  if (isUnplugged(props)) return null;
 
   const { as = defaultType, dangerouslyRender, ...rest } = props;
 
@@ -73,7 +84,7 @@ export const outlet: {
     `);
   }
   return component;
-};
+}
 
 type PlugPropsFromType<Type extends PlugPropsType<any>> =
   Type extends keyof PlugProps.Intrinsics

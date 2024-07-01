@@ -2,7 +2,25 @@ import type * as React from "react";
 import { expectTypeOf, it, describe } from "vitest";
 import type * as Distributive from "./distributive.types";
 
-describe("Distributive types", () => {
+type ClickElementType = HTMLButtonElement | HTMLAnchorElement | HTMLDivElement;
+
+const onClick: Required<
+  Distributive.Pick<
+    React.JSX.IntrinsicElements["button" | "a" | "div"],
+    "onClick"
+  >
+>["onClick"] = () => {};
+
+const distributiveOnClick: Distributive.MouseEventHandler<ClickElementType> =
+  onClick;
+
+const clickEvent = undefined as unknown as Parameters<typeof onClick>[0];
+
+const distributiveClickEvent = undefined as unknown as Parameters<
+  typeof distributiveOnClick
+>[0];
+
+describe("Distributive", () => {
   describe("Omit", () => {
     it("should work like native Omit on non-union types", () => {
       const obj = { a: 1, b: 2, c: 3 };
@@ -35,17 +53,7 @@ describe("Distributive types", () => {
       >();
     });
   });
-  describe("MouseEventHandler<button | a | div>", () => {
-    type ElementType = HTMLButtonElement | HTMLAnchorElement | HTMLDivElement;
-    const onClick: React.MouseEventHandler<ElementType> = (e) => {};
-    const distributiveOnClick: Distributive.MouseEventHandler<ElementType> = (
-      e
-    ) => {};
-    const event = undefined as unknown as Parameters<typeof onClick>[0];
-    const distributiveEvent = undefined as unknown as Parameters<
-      typeof distributiveOnClick
-    >[0];
-
+  describe("MouseEventHandler", () => {
     it("should be equal to a handler with an union of mouse events", () => {
       expectTypeOf(distributiveOnClick).toEqualTypeOf<
         React.EventHandler<
@@ -56,36 +64,117 @@ describe("Distributive types", () => {
       >();
     });
 
-    it('should match "React.MouseEventHandler<button | a | div>"', () => {
+    it('should match "React.MouseEventHandler"', () => {
       expectTypeOf(distributiveOnClick).toMatchTypeOf(onClick);
+      expectTypeOf(onClick).toMatchTypeOf(distributiveOnClick);
     });
 
-    it('should not be equal to "React.MouseEventHandler<button | a | div>"', () => {
+    it('should not be equal to "React.MouseEventHandler"', () => {
       expectTypeOf(distributiveOnClick).not.toEqualTypeOf(onClick);
     });
-    describe("event", () => {
-      it('should be "React.MouseEvent<button> | React.MouseEvent<a> | React.MouseEvent<div>"', () => {
-        () => {
-          expectTypeOf(distributiveOnClick)
-            .parameter(0)
-            .toEqualTypeOf<
-              | React.MouseEvent<HTMLButtonElement>
-              | React.MouseEvent<HTMLAnchorElement>
-              | React.MouseEvent<HTMLDivElement>
-            >();
-        };
-      });
-      it('should not be equal to "React.MouseEvent<button | a | div>"', () => {
-        expectTypeOf(distributiveOnClick)
-          .parameter(0)
-          .not.toEqualTypeOf<Event>();
-      });
-      it('should match "React.MouseEvent<button | a | div>"', () => {
-        expectTypeOf(distributiveOnClick).parameter(0).toMatchTypeOf(event);
-        // THIS is the problematic test!
-        // We're asserting here that react does not support distributive types in this case 💣
-        expectTypeOf(event).not.toMatchTypeOf(distributiveEvent);
-      });
+    it("distributive should be callable", () => {
+      expectTypeOf(distributiveOnClick).toBeCallableWith(clickEvent);
+      expectTypeOf(distributiveOnClick).toBeCallableWith(
+        distributiveClickEvent
+      );
+      // @ts-expect-error 💣
+      expectTypeOf(onClick).toBeCallableWith(clickEvent);
+      // @ts-expect-error 💣
+      expectTypeOf(onClick).toBeCallableWith(distributiveClickEvent);
     });
+  });
+  describe("MouseEvent", () => {
+    it('should be equal to union of "React.MouseEvent"', () => {
+      () => {
+        expectTypeOf(distributiveClickEvent).toEqualTypeOf<
+          | React.MouseEvent<HTMLButtonElement>
+          | React.MouseEvent<HTMLAnchorElement>
+          | React.MouseEvent<HTMLDivElement>
+        >();
+      };
+    });
+    it('should be equal to "React.MouseEvent"', () => {
+      expectTypeOf(distributiveClickEvent).toEqualTypeOf(clickEvent);
+    });
+    it('should match to "React.MouseEvent"', () => {
+      expectTypeOf(distributiveClickEvent).toMatchTypeOf(clickEvent);
+      expectTypeOf(clickEvent).toMatchTypeOf(distributiveClickEvent);
+    });
+  });
+});
+
+/**
+ * This is what breaks when using classic react event handlers!
+ *
+ * 1. event handler is not callable with an union of events.
+ * 2. event handler is only callable with an intersection of the events
+ *    * an intersection of events is dangerous. By using it, type leakage will happen (you might use an anchor property while the event came from a button element)
+ * 3. event handlers will infer argument type as any 💣💣
+ *    * a quick fix for this problem is to declare the intersection 💣💣
+ * 4. if the argument is properly declared as an union then we're back at the not callable problem 🥲🥲
+ */
+describe("React.MouseEventHandler", () => {
+  const clickEventIntersection = undefined as unknown as React.MouseEvent<
+    HTMLButtonElement & HTMLAnchorElement & HTMLDivElement
+  >;
+  it("is not be callable with union", () => {
+    // @ts-expect-error 💣
+    expectTypeOf(onClick).toBeCallableWith(clickEvent);
+    // @ts-expect-error 💣
+    expectTypeOf(onClick).toBeCallableWith(distributiveClickEvent);
+  });
+  it("is callable with intersection", () => {
+    // 💣💣
+    expectTypeOf(onClick).toBeCallableWith(clickEventIntersection);
+  });
+  it("fails to infer the argument type", () => {
+    const handleClick: Required<
+      Distributive.Pick<
+        React.JSX.IntrinsicElements["button" | "a" | "div"],
+        "onClick"
+      >
+    >["onClick"] =
+      //@ts-expect-error - Parameter 'event' implicitly has an 'any' type.ts(7006)
+      (event) => {};
+  });
+  it("leak types if intersection is used as quick fix for the argument type", () => {
+    const handleClick: Required<
+      Distributive.Pick<
+        React.JSX.IntrinsicElements["button" | "a" | "div"],
+        "onClick"
+      >
+    >["onClick"] = (
+      event: React.MouseEvent<
+        HTMLButtonElement & HTMLAnchorElement & HTMLDivElement
+      >
+    ) => {
+      // 💣💣💣
+      // this should fail, as we haven't verified the element type
+      event.currentTarget.href;
+      if (event.currentTarget instanceof HTMLAnchorElement) {
+        event.currentTarget.href;
+      }
+      onClick(event);
+    };
+  });
+  it("if argument is properly declared as union, then we're back into the not callable with unions problem", () => {
+    const handleClick: Required<
+      Distributive.Pick<
+        React.JSX.IntrinsicElements["button" | "a" | "div"],
+        "onClick"
+      >
+    >["onClick"] = (
+      event: React.MouseEvent<
+        HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
+      >
+    ) => {
+      // @ts-expect-error this should fail, as we haven't verified the element type
+      event.currentTarget.href;
+      if (event.currentTarget instanceof HTMLAnchorElement) {
+        event.currentTarget.href;
+      }
+      // @ts-expect-error onClick is not callable, only if it was an intersection 🥲🥲
+      onClick(event);
+    };
   });
 });

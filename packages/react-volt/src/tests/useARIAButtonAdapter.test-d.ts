@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { PlugProps, Distributive, Default } from "react-volt";
+import { expectTypeOf } from "vitest";
 
 interface DefaultPlugPropsButton extends Default<PlugProps.Intrinsics.Button> {}
 

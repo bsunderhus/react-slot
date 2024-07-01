@@ -26,8 +26,13 @@ export interface DataAttributes {
   // [DataAttribute: `data-${string}`]: any;
 }
 
+export namespace JSX {
+  export type ElementType = string | FunctionComponent<any>;
+  export type Element = React.JSX.Element;
+  export type IntrinsicElements = React.JSX.IntrinsicElements;
+}
+
 export type {
-  JSX,
   ReactNode,
   PropsWithRef,
   ElementRef,

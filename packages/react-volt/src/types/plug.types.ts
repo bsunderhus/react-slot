@@ -32,7 +32,7 @@ export namespace Plug {
     Props extends unknown
       ? { children: any } extends Props
         ? Extract<
-            | ReactTypes.ReactElement<any, any>
+            | ReactTypes.JSX.Element
             | string
             | number
             | Iterable<ReactTypes.ReactNode>
@@ -102,39 +102,13 @@ export type PickDefault<P extends Plug> = P extends PlugProps
   : never;
 
 /**
- * Internal plug type that excludes the {@link Plug.Shorthand} type.
- */
-export type PlugWithoutShorthand = Exclude<Plug, Plug.Shorthand>;
-
-/**
- * Internal plug props type that includes the children property.
- * This is used to ensure that the children property is present for the purpose of type checking.
- * It is used in two places:
- * 1. In the {@link plug.resolveShorthand} function to ensure that the children property is present when a shorthand plug is used.
- * 2. As the default generic type for all the {@link Plug} types to ensure that the children property is present while evaluating the default cases.
- */
-export interface PlugPropsWithMetadata extends PlugProps {
-  children?: unknown;
-  dangerouslyRender?: unknown;
-}
-
-export interface DangerouslyRender<
-  Type extends ReactTypes.JSX.ElementType = ReactTypes.JSX.ElementType,
-  Props = {}
-> {
-  dangerouslyRender?: DangerouslyRenderFunction<
-    ReactTypes.ReactElement<Props, Type>
-  >;
-}
-
-/**
  * @public
  *
  * The type of the plug props (`as` property).
  * It can be a function component or an intrinsic element.
  */
 export type PlugPropsType<P = unknown> =
-  | keyof ReactTypes.JSX.IntrinsicElements
+  | keyof PlugProps.Intrinsics
   // Due to contravariance on FC signature this has to be any
   | ReactTypes.FunctionComponent<P>;
 
@@ -1176,7 +1150,26 @@ export type DetailedIntrinsicPlugProps<
   ReactTypes.DataAttributes &
   Required<PlugProps<Type>>;
 
-export interface SVGPlugProps<
-  E,
-  T extends keyof ReactTypes.JSX.IntrinsicElements
-> extends DetailedIntrinsicPlugProps<E, ReactTypes.SVGAttributes<E>, T> {}
+export interface SVGPlugProps<E, T extends keyof PlugProps.Intrinsics>
+  extends DetailedIntrinsicPlugProps<E, ReactTypes.SVGAttributes<E>, T> {}
+
+/**
+ * Internal plug props type that includes the children property.
+ * This is used to ensure that the children property is present for the purpose of type checking.
+ * It is used in two places:
+ * 1. In the {@link plug.resolveShorthand} function to ensure that the children property is present when a shorthand plug is used.
+ * 2. As the default generic type for all the {@link Plug} types to ensure that the children property is present while evaluating the default cases.
+ */
+export interface PlugPropsWithMetadata extends PlugProps {
+  children?: unknown;
+  dangerouslyRender?: unknown;
+}
+
+export interface DangerouslyRender<
+  Type extends ReactTypes.JSX.ElementType = ReactTypes.JSX.ElementType,
+  Props = {}
+> {
+  dangerouslyRender?: DangerouslyRenderFunction<
+    ReactTypes.ReactElement<Props, Type>
+  >;
+}
