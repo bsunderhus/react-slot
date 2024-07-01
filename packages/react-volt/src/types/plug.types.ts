@@ -7,18 +7,6 @@ import type { DangerouslyRenderFunction } from "./outlet.types";
 /**
  * @public
  *
- * A primary plug is a special type of plug that only allows plug props with no children render function,
- * it does not allow {@link Plug.Shorthand} nor {@link Plug.Unplugged}.
- *
- *  > **Note:** _There is no such thing as a primary plug in electrical systems, this is a borrowed analogy from database systems and ignition systems. In ignition systems, the primary circuit is the low voltage circuit that initiates the ignition process, without it the ignition system will not work. In database systems, the primary key is a unique identifier for a record in a table, without it the record cannot be identified. Taking those analogies into account a primary plug is a plug that is required and if it is not present, no other plug can be used._
- */
-// TODO: remove this once there is no need to support children render function
-export type PrimaryPlug<Props extends PlugProps> =
-  SlotCompat.WithoutSlotRenderFunction<Props>;
-
-/**
- * @public
- *
  * A plug will consist of a union of 3 types:
  *
  * 1. {@link PlugProps} - the properties that define a plug.
@@ -145,10 +133,10 @@ interface DangerouslyRender<
  * The type of the plug props (`as` property).
  * It can be a function component or an intrinsic element.
  */
-export type PlugPropsType =
+export type PlugPropsType<P = unknown> =
   | keyof ReactTypes.JSX.IntrinsicElements
   // Due to contravariance on FC signature this has to be any
-  | ReactTypes.FunctionComponent<any>;
+  | ReactTypes.FunctionComponent<P>;
 
 /**
  * @public
@@ -164,7 +152,9 @@ export type PlugPropsType =
  * 1. {@link PlugProps.Intrinsics} - a set of properties that define an intrinsic element plug props.
  * 2. {@link PlugProps.FC} - a type that defines a plug props for a function component.
  */
-export interface PlugProps<Type extends PlugPropsType = PlugPropsType> {
+export interface PlugProps<
+  Type extends PlugPropsType<any> = PlugPropsType<any>
+> {
   as?: Type;
 }
 

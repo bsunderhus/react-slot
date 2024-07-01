@@ -10,10 +10,11 @@ import type { Plug, PlugPropsType } from "./plug.types";
  *
  * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
-export type Outlet<OutletType extends PlugPropsType> =
-  ReactTypes.FunctionComponent<OutletProps<OutletType>> &
+export type Outlet<OutletType extends PlugPropsType<any> = PlugPropsType> =
+  ReactTypes.ExoticComponent<OutletProps<OutletType>> &
     OutletProps<OutletType> &
     OutletMetadata;
+
 /**
  * @public
  *
@@ -33,7 +34,7 @@ export interface OutletMetadata {
 }
 
 /**
- * Infer props based on the outlet type.
+ * Infer props based on the plug type.
  */
 type OutletProps<Type extends PlugPropsType> =
   Type extends keyof ReactTypes.JSX.IntrinsicElements
@@ -48,10 +49,10 @@ type OutletProps<Type extends PlugPropsType> =
  * A function that is used to render the outlet.
  * This function overrides the default rendering behavior of the outlet.
  *
- * Similar to {@link React.RefCallback} and {@link React.EventHandler} dangerously render function
+ * > Similar to {@link React.RefCallback} and {@link React.EventHandler} dangerously render function
  * uses a bivariance hack to allow for more flexible types.
  *
- * Here's more {@link https://dev.to/codeoz/how-i-understand-covariance-contravariance-in-typescript-2766 | information on type variance}
+ * > Here's more {@link https://dev.to/codeoz/how-i-understand-covariance-contravariance-in-typescript-2766 | information on type variance}
  */
 export type DangerouslyRenderFunction<
   E extends ReactTypes.JSX.Element = ReactTypes.JSX.Element

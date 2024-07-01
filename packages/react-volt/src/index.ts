@@ -5,12 +5,13 @@ export type {
   DangerouslyRenderFunction,
 } from "./types/outlet.types";
 
+export type * as SlotCompat from "./types/slot-compat.types";
+
 export type {
   Plug,
   Default,
   LockedIn,
   PlugProps,
-  PrimaryPlug,
   PlugPropsType,
   PlugPropsAdapter,
 } from "./types/plug.types";

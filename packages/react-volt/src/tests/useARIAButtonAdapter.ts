@@ -39,7 +39,8 @@ export interface AriaButtonProps {
   div: AriaButtonDivProps;
 }
 
-type AriaButtonElement = HTMLButtonElement | HTMLAnchorElement | HTMLDivElement;
+type AriaNoButtonElement = HTMLAnchorElement | HTMLDivElement;
+type AriaButtonElement = HTMLButtonElement | AriaNoButtonElement;
 
 // TODO: find a way to stop breaking rule of hooks
 export const useAriaButtonAdapter = () => useAriaButtonProps;
@@ -90,10 +91,8 @@ export const useAriaButtonProps = <
 
   const isDisabled = disabled || disabledFocusable || normalizedAriaDisabled;
 
-  const handleClick: Distributive.MouseEventHandler<
-    HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
-  > = React.useCallback(
-    (event) => {
+  const handleClick = React.useCallback(
+    (event: Distributive.MouseEvent<AriaButtonElement>) => {
       if (isDisabled) {
         event.preventDefault();
         event.stopPropagation();
@@ -104,10 +103,8 @@ export const useAriaButtonProps = <
     [onClick, isDisabled]
   );
 
-  const handleNotAButtonKeyDown: Distributive.KeyboardEventHandler<
-    HTMLAnchorElement | HTMLDivElement
-  > = React.useCallback(
-    (event) => {
+  const handleNotAButtonKeyDown = React.useCallback(
+    (event: Distributive.KeyboardEvent<AriaNoButtonElement>) => {
       onKeyDown?.(event);
 
       if (event.isDefaultPrevented()) {
@@ -133,10 +130,8 @@ export const useAriaButtonProps = <
     [onKeyDown, isDisabled]
   );
 
-  const handleNotAButtonKeyUp: Distributive.KeyboardEventHandler<
-    HTMLAnchorElement | HTMLDivElement
-  > = React.useCallback(
-    (event) => {
+  const handleNotAButtonKeyUp = React.useCallback(
+    (event: Distributive.KeyboardEvent<AriaNoButtonElement>) => {
       onKeyUp?.(event);
       if (event.isDefaultPrevented()) {
         return;

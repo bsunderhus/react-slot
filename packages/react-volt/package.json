@@ -7,6 +7,7 @@
     "dev": "vitest run",
     "build": "vite build",
     "build:types": "tsc -b tsconfig.lib.json",
+    "build:types:test": "tsc -b tsconfig.test.json",
     "build:api": "api-extractor run --local --verbose",
     "clean": "rimraf dist dist-tsc",
     "test": "vitest run"
@@ -25,7 +26,7 @@
     "swc-plugin-de-indent-template-literal": "^1.4.0",
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
-    "vitest": "^1.6.0"
+    "vitest": "1.6.0"
   },
   "files": [
     "dist",

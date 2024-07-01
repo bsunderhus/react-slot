@@ -1,5 +1,13 @@
 import * as React from "react";
-import { Default, Plug, PlugProps, outlet, plug } from "../index";
+import {
+  type Default,
+  type Plug,
+  type PlugProps,
+  outlet,
+  plug,
+  type Outlet,
+  type Unlocked,
+} from "../index";
 
 type CustomIconProps = { className: string };
 
@@ -16,7 +24,10 @@ function CustomComponent({
   ...rest
 }: CustomComponentProps) {
   const Root = outlet("button", rest);
-  const Icon = outlet(CustomIcon, icon);
+  const Icon: Unlocked<Outlet<typeof CustomIcon | "span">> = outlet(
+    CustomIcon,
+    icon
+  );
   return <Root>{Icon && <Icon />}</Root>;
 }
 

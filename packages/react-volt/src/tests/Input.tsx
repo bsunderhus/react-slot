@@ -1,18 +1,18 @@
 import * as React from "react";
 import {
-  Default,
-  LockedIn,
-  Outlet,
-  Plug,
-  PlugProps,
-  PrimaryPlug,
-  Unlocked,
+  type Default,
+  type LockedIn,
+  type Outlet,
+  type Plug,
+  type PlugProps,
+  type SlotCompat,
+  type Unlocked,
   outlet,
   plug,
 } from "../index";
 
 export type InputProps = Omit<
-  PrimaryPlug<Default<PlugProps.Intrinsics["input"]>>,
+  SlotCompat.WithoutSlotRenderFunction<Default<PlugProps.Intrinsics["input"]>>,
   // `children` is unsupported. The rest of these native props have customized definitions.
   "children" | "defaultValue" | "onChange" | "size" | "type" | "value"
 > & {
@@ -23,16 +23,16 @@ export type InputProps = Omit<
    * The root slot receives the `className` and `style` specified directly on the `<Input>`.
    * All other top-level native props will be applied to the primary slot, `input`.
    */
-  root?: LockedIn<Plug<Default<PlugProps.Intrinsics["span"]>>>;
+  root?: LockedIn<Plug<Default<PlugProps.Intrinsics.Span>>>;
 
   /** Element before the input text, within the input border */
   contentBefore?: Plug<
-    Default<PlugProps.Intrinsics["span"]> | PlugProps.Intrinsics["div"]
+    Default<PlugProps.Intrinsics.Span> | PlugProps.Intrinsics.Div
   >;
 
   /** Element after the input text, within the input border */
   contentAfter?: Plug<
-    Default<PlugProps.Intrinsics["span"]> | PlugProps.Intrinsics["div"]
+    Default<PlugProps.Intrinsics.Span> | PlugProps.Intrinsics.Div
   >;
 
   /**
@@ -145,7 +145,7 @@ export const useInput_unstable = (props: InputProps): InputState => {
     className: rootClassName,
     value,
     defaultValue,
-    root = plug.pluggedIn(),
+    root = plug.pluggedIn({}),
     contentAfter = plug.unplugged(),
     contentBefore = plug.unplugged(),
     ...rest

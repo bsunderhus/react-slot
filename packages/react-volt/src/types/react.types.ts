@@ -8,6 +8,14 @@ export interface FunctionComponent<P> {
   (props: P): any;
 }
 
+export interface ExoticComponent<P> extends FunctionComponent<P> {
+  readonly $$typeof: symbol;
+}
+
+export interface NamedExoticComponent<P = {}> extends ExoticComponent<P> {
+  displayName?: string | undefined;
+}
+
 /** @public */
 export type FC<P> = FunctionComponent<P>;
 
@@ -22,8 +30,6 @@ export type {
   JSX,
   ReactNode,
   PropsWithRef,
-  NamedExoticComponent,
-  ExoticComponent,
   ElementRef,
   ReactElement,
   ReactPortal,
@@ -42,6 +48,7 @@ export type {
   TouchEvent,
   PointerEvent,
   UIEvent,
+  InvalidEvent,
   WheelEvent,
   AnimationEvent,
   TransitionEvent,

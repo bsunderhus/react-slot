@@ -6,10 +6,13 @@ import type {
   Outlet,
   Plug,
   PlugProps,
-  PrimaryPlug,
   Unlocked,
+  SlotCompat,
 } from "../index";
-import { AriaButtonProps, useAriaButtonProps } from "./useARIAButtonAdapter";
+import {
+  type AriaButtonProps,
+  useAriaButtonProps,
+} from "./useARIAButtonAdapter";
 import { useMergedRefs } from "./useMergedRefs";
 
 /**
@@ -19,20 +22,22 @@ export type ButtonSize = "small" | "medium" | "large";
 
 type IconPosition = "before" | "after";
 
-export type ButtonProps = PrimaryPlug<AriaButtonProps["button" | "a"]> & {
+interface IconPlugProps extends Default<PlugProps.Intrinsics["span"]> {
+  /**
+   * A button can format its icon to appear before or after its content.
+   *
+   * @default 'before'
+   */
+  position?: IconPosition;
+}
+
+export type ButtonProps = SlotCompat.WithoutSlotRenderFunction<
+  AriaButtonProps["button" | "a"]
+> & {
   /**
    * Icon that renders either before or after the `children` as specified by the `iconPosition` prop.
    */
-  icon?: Plug<
-    Default<PlugProps.Intrinsics["span"]> & {
-      /**
-       * A button can format its icon to appear before or after its content.
-       *
-       * @default 'before'
-       */
-      position?: IconPosition;
-    }
-  >;
+  icon?: Plug<IconPlugProps>;
   /**
    * A button can have its content and borders styled for greater emphasis or to be subtle.
    * - 'secondary' (default): Gives emphasis to the button in such a way that it indicates a secondary action.
@@ -99,7 +104,7 @@ export const Button = plug.fc((props: ButtonProps) => {
     size = "medium",
     disabled = false,
     shape = "rounded",
-    icon = plug.pluggedIn(),
+    icon = plug.pluggedIn({}),
     appearance = "secondary",
     disabledFocusable = false,
     ...rest

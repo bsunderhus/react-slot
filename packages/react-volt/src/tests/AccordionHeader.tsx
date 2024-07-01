@@ -1,19 +1,18 @@
 import * as React from "react";
 import {
-  Default,
-  Distributive,
-  LockedIn,
-  Outlet,
-  Plug,
-  PlugProps,
-  PrimaryPlug,
-  Unlocked,
+  type Default,
+  type Distributive,
+  type LockedIn,
+  type Outlet,
+  type Plug,
+  type PlugProps,
+  type SlotCompat,
+  type Unlocked,
   outlet,
   plug,
 } from "../index";
 import {
-  AriaButtonProps,
-  useAriaButtonAdapter,
+  type AriaButtonProps,
   useAriaButtonProps,
 } from "./useARIAButtonAdapter";
 export type AccordionHeaderSize = "small" | "medium" | "large" | "extra-large";
@@ -21,7 +20,7 @@ export type AccordionHeaderExpandIconPosition = "start" | "end";
 
 type AccordionHeaderButtonElement = HTMLButtonElement | HTMLAnchorElement;
 
-export type AccordionHeaderProps = PrimaryPlug<
+export type AccordionHeaderProps = SlotCompat.WithoutSlotRenderFunction<
   | Default<PlugProps.Intrinsics["div"]>
   | PlugProps.Intrinsics["h1" | "h2" | "h3" | "h4" | "h5" | "h6"]
 > & {
@@ -72,8 +71,8 @@ export const useAccordionHeader = (
 ): AccordionHeaderState => {
   const {
     icon = plug.unplugged(),
-    button = plug.pluggedIn(),
-    expandIcon = plug.pluggedIn(),
+    button = plug.pluggedIn({}),
+    expandIcon = plug.pluggedIn({}),
     inline = false,
     size = "medium",
     expandIconPosition = "start",

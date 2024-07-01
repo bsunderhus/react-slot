@@ -13,7 +13,6 @@ import type {
   PlugProps,
   PlugPropsAdapter,
   PlugPropsWithMetadata,
-  PlugWithoutShorthand,
 } from "./types/plug.types";
 
 /**
@@ -30,67 +29,150 @@ import type {
  *
  * > **Note:** _In the context of electrical systems a plug adapter is a device that allows a plug to connect to a outlet that has a different shape or configuration._
  */
-export const adapt: {
-  <A extends Plug>(input: A): A;
-  <A extends Plug, B extends PlugProps>(
-    input: A,
-    adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>
-  ): B | Exclude<A, PlugProps>;
-  <A extends Plug, B extends PlugProps, C extends PlugProps>(
-    input: A,
-    adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
-    adapterBC: PlugPropsAdapter<B, C>
-  ): C | Exclude<A, PlugProps>;
-  <
-    A extends Plug,
-    B extends PlugProps,
-    C extends PlugProps,
-    D extends PlugProps
-  >(
-    input: A,
-    adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
-    adapterBC: PlugPropsAdapter<B, C>,
-    adapterCD: PlugPropsAdapter<C, D>
-  ): D | Exclude<A, PlugProps>;
-  <
-    A extends Plug,
-    B extends PlugProps,
-    C extends PlugProps,
-    D extends PlugProps,
-    E extends PlugProps
-  >(
-    input: A,
-    adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
-    adapterBC: PlugPropsAdapter<B, C>,
-    adapterCD: PlugPropsAdapter<C, D>,
-    adapterDE: PlugPropsAdapter<D, E>
-  ): E | Exclude<A, PlugProps>;
-  <
-    A extends Plug,
-    B extends PlugProps,
-    C extends PlugProps,
-    D extends PlugProps,
-    E extends PlugProps,
-    F extends PlugProps
-  >(
-    input: A,
-    adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
-    adapterBC: PlugPropsAdapter<B, C>,
-    adapterCD: PlugPropsAdapter<C, D>,
-    adapterDE: PlugPropsAdapter<D, E>,
-    adapterEF: PlugPropsAdapter<E, F>
-  ): F | Exclude<A, PlugProps>;
-} = <Input extends Plug, OutputProps extends PlugProps>(
-  inputPlug: Input,
+export function adapt<A extends Plug>(input: A): A;
+/**
+ * @public
+ *
+ * Adapts a plug to the required props of an outlet.
+ * This is useful when you want to change the props of a plug before it is connected into an outlet.
+ *
+ * @typeParam Input - The type of the plug that will be adapted.
+ * @typeParam Output - The type of the plug that will be returned.
+ *
+ * @param inputPlug - The plug that will be adapted.
+ * @param adapters - functions that will be used to adapt the plug.
+ *
+ * > **Note:** _In the context of electrical systems a plug adapter is a device that allows a plug to connect to a outlet that has a different shape or configuration._
+ */
+export function adapt<A extends Plug, B extends PlugProps>(
+  input: A,
+  adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>
+): B | Exclude<A, PlugProps>;
+/**
+ * @public
+ *
+ * Adapts a plug to the required props of an outlet.
+ * This is useful when you want to change the props of a plug before it is connected into an outlet.
+ *
+ * @typeParam Input - The type of the plug that will be adapted.
+ * @typeParam Output - The type of the plug that will be returned.
+ *
+ * @param inputPlug - The plug that will be adapted.
+ * @param adapters - functions that will be used to adapt the plug.
+ *
+ * > **Note:** _In the context of electrical systems a plug adapter is a device that allows a plug to connect to a outlet that has a different shape or configuration._
+ */
+export function adapt<A extends Plug, B extends PlugProps, C extends PlugProps>(
+  input: A,
+  adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
+  adapterBC: PlugPropsAdapter<B, C>
+): C | Exclude<A, PlugProps>;
+/**
+ * @public
+ *
+ * Adapts a plug to the required props of an outlet.
+ * This is useful when you want to change the props of a plug before it is connected into an outlet.
+ *
+ * @typeParam Input - The type of the plug that will be adapted.
+ * @typeParam Output - The type of the plug that will be returned.
+ *
+ * @param inputPlug - The plug that will be adapted.
+ * @param adapters - functions that will be used to adapt the plug.
+ *
+ * > **Note:** _In the context of electrical systems a plug adapter is a device that allows a plug to connect to a outlet that has a different shape or configuration._
+ */
+export function adapt<
+  A extends Plug,
+  B extends PlugProps,
+  C extends PlugProps,
+  D extends PlugProps
+>(
+  input: A,
+  adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
+  adapterBC: PlugPropsAdapter<B, C>,
+  adapterCD: PlugPropsAdapter<C, D>
+): D | Exclude<A, PlugProps>;
+/**
+ * @public
+ *
+ * Adapts a plug to the required props of an outlet.
+ * This is useful when you want to change the props of a plug before it is connected into an outlet.
+ *
+ * @typeParam Input - The type of the plug that will be adapted.
+ * @typeParam Output - The type of the plug that will be returned.
+ *
+ * @param inputPlug - The plug that will be adapted.
+ * @param adapters - functions that will be used to adapt the plug.
+ *
+ * > **Note:** _In the context of electrical systems a plug adapter is a device that allows a plug to connect to a outlet that has a different shape or configuration._
+ */
+export function adapt<
+  A extends Plug,
+  B extends PlugProps,
+  C extends PlugProps,
+  D extends PlugProps,
+  E extends PlugProps
+>(
+  input: A,
+  adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
+  adapterBC: PlugPropsAdapter<B, C>,
+  adapterCD: PlugPropsAdapter<C, D>,
+  adapterDE: PlugPropsAdapter<D, E>
+): E | Exclude<A, PlugProps>;
+/**
+ * @public
+ *
+ * Adapts a plug to the required props of an outlet.
+ * This is useful when you want to change the props of a plug before it is connected into an outlet.
+ *
+ * @typeParam Input - The type of the plug that will be adapted.
+ * @typeParam Output - The type of the plug that will be returned.
+ *
+ * @param inputPlug - The plug that will be adapted.
+ * @param adapters - functions that will be used to adapt the plug.
+ *
+ * > **Note:** _In the context of electrical systems a plug adapter is a device that allows a plug to connect to a outlet that has a different shape or configuration._
+ */
+export function adapt<
+  A extends Plug,
+  B extends PlugProps,
+  C extends PlugProps,
+  D extends PlugProps,
+  E extends PlugProps,
+  F extends PlugProps
+>(
+  input: A,
+  adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
+  adapterBC: PlugPropsAdapter<B, C>,
+  adapterCD: PlugPropsAdapter<C, D>,
+  adapterDE: PlugPropsAdapter<D, E>,
+  adapterEF: PlugPropsAdapter<E, F>
+): F | Exclude<A, PlugProps>;
+/**
+ * @public
+ *
+ * Adapts a plug to the required props of an outlet.
+ * This is useful when you want to change the props of a plug before it is connected into an outlet.
+ *
+ * @typeParam Input - The type of the plug that will be adapted.
+ * @typeParam Output - The type of the plug that will be returned.
+ *
+ * @param inputPlug - The plug that will be adapted.
+ * @param adapters - functions that will be used to adapt the plug.
+ *
+ * > **Note:** _In the context of electrical systems a plug adapter is a device that allows a plug to connect to a outlet that has a different shape or configuration._
+ */
+export function adapt(
+  inputPlug: Plug,
   ...adapters: PlugPropsAdapter<PlugProps, PlugProps>[]
-): OutputProps | Exclude<Input, PlugProps> =>
-  isPlugProps<Extract<Input, PlugProps>>(inputPlug)
-    ? (adapters.reduce<PlugProps>((acc, adapter) => {
-        _assignDangerouslyRenderFunction(acc);
-        return adapter(acc);
-      }, inputPlug) as OutputProps)
-    : (inputPlug as Exclude<Input, PlugProps>);
-
+): PlugProps | Exclude<Plug, PlugProps> {
+  return isPlugProps<Extract<Plug, PlugProps>>(inputPlug)
+    ? adapters.reduce<PlugProps>(
+        (acc, adapter) => adapter(_assignDangerouslyRenderFunction(acc)),
+        inputPlug
+      )
+    : inputPlug;
+}
 /**
  * @public
  *
@@ -98,32 +180,24 @@ export const adapt: {
  *
  * @param plug - The plug that will have its shorthand resolved.
  */
-export const resolveShorthand = <P extends PlugWithoutShorthand>(
-  plug: P | Plug.Shorthand
-): P => {
-  if (isUnplugged(plug)) {
-    return plug;
-  }
-  if (isPlugProps<Extract<P, PlugProps>>(plug)) {
-    return _assignDangerouslyRenderFunction({ ...plug });
-  }
-  if (isShorthand(plug)) {
-    /**
-     * Why casting here:
-     *
-     * `{children: plug}` is not assignable to P.
-     * P may have additional required properties that are not present in `{children: plug}`.
-     * But, by definition of {@link Plug.Shorthand}: if the value is a shorthand,
-     * then 'children' is the only required property.
-     */
-    return { children: plug } as P;
-  }
+export function resolveShorthand<Props extends PlugProps>(
+  plug: Props | Plug.Shorthand
+): Props;
+/** @public */
+export function resolveShorthand<Props extends PlugProps>(
+  plug: Props | Plug.Shorthand | Plug.Unplugged
+): Props | Plug.Unplugged;
+/** @public */
+export function resolveShorthand(plug: Plug): Exclude<Plug, Plug.Shorthand> {
+  if (isUnplugged(plug)) return plug;
+  if (isPlugProps(plug)) return _assignDangerouslyRenderFunction({ ...plug });
+  if (isShorthand(plug)) return { children: plug };
   throw new TypeError(/** #__DE-INDENT__ */ `
     [react-volt - plug.resolveShorthand(plugValue)]:
     A plug got an invalid value "${String(plug)}" (${typeof plug}).
     A valid value for a plug is a React node, plug properties or 'plug.unplugged()'.
   `);
-};
+}
 
 /**
  * @public
@@ -133,7 +207,7 @@ export const resolveShorthand = <P extends PlugWithoutShorthand>(
  *
  * Useful to define default props or overrides for a plug.
  */
-export const merge = <P extends Plug>(...plugs: P[]): P => {
+export function merge<P extends Plug>(...plugs: P[]): P {
   const resolvedPlug = {} as Extract<P, PlugProps>;
   for (const plug of plugs) {
     // short-circuit if the plug is unplugged
@@ -141,7 +215,7 @@ export const merge = <P extends Plug>(...plugs: P[]): P => {
     Object.assign(resolvedPlug, resolveShorthand(plug));
   }
   return resolvedPlug;
-};
+}
 
 /**
  * @internal
@@ -150,17 +224,15 @@ export const merge = <P extends Plug>(...plugs: P[]): P => {
  * This method ensures compatibility between children render function and the `dangerouslyRender` method.
  */
 // TODO: remove this once/if `children` stops supporting render functions.
-export const _assignDangerouslyRenderFunction = <
+export function _assignDangerouslyRenderFunction<
   Props extends PlugPropsWithMetadata
->(
-  plugProps: Props
-) => {
+>(plugProps: Props): Props {
   if (_isDangerouslyRenderFunction(plugProps.children)) {
     plugProps.dangerouslyRender = plugProps.children;
     delete plugProps.children;
   }
   return plugProps;
-};
+}
 
 /**
  * @public
@@ -170,7 +242,9 @@ export const _assignDangerouslyRenderFunction = <
  *
  * > **Note:** _In the context of electrical systems a plug that is not connected to an outlet is considered unplugged._
  */
-export const unplugged = (): Plug.Unplugged => null;
+export function unplugged(): Plug.Unplugged {
+  return null;
+}
 
 /**
  * @public
@@ -181,9 +255,11 @@ export const unplugged = (): Plug.Unplugged => null;
  *
  * > **Note:** _In the context of electrical systems a plug that is connected to an outlet is considered plugged in._
  */
-export const pluggedIn = <P extends Plug | undefined>(
+export function pluggedIn<P extends Plug | undefined>(
   defaultProps: PickDefault<Extract<NonNullable<P>, PlugProps>>
-): NonNullable<P> => defaultProps;
+): NonNullable<P> {
+  return defaultProps;
+}
 
 /**
  * @public
@@ -195,13 +271,15 @@ export const pluggedIn = <P extends Plug | undefined>(
  *
  * > This method is not necessary for React v19 and above. If you are using React v19 or above, you can just declare a function directly
  */
-export const fc = <Props extends PlugProps>(
+export function fc<Props extends PlugProps>(
   fn: (props: Props) => ReactTypes.ReactNode
-): ReactTypes.NamedExoticComponent<Props> =>
-  forwardRef<unknown, Props & ReactTypes.RefAttributes<unknown>>((props, ref) =>
-    fn(
-      process.env.NODE_ENV === "development"
-        ? Object.freeze<Props>({ ...props, ref })
-        : ((props.ref = ref), props)
-    )
+): ReactTypes.NamedExoticComponent<Props> {
+  return forwardRef<unknown, Props & ReactTypes.RefAttributes<unknown>>(
+    (props, ref) =>
+      fn(
+        process.env.NODE_ENV === "development"
+          ? Object.freeze<Props>({ ...props, ref })
+          : ((props.ref = ref), props)
+      )
   ) as ReactTypes.NamedExoticComponent<Props>;
+}

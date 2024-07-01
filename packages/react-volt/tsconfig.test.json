@@ -6,6 +6,8 @@
     "jsx": "preserve"
   },
   "include": [
+    "src/tests/**/*.ts",
+    "src/tests/**/*.tsx",
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
     "src/**/*.test-d.ts",
