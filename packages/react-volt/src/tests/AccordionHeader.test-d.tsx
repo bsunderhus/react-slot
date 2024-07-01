@@ -1,29 +1,28 @@
 import * as React from "react";
 import {
-  type Default,
-  type Distributive,
-  type LockedIn,
-  type Outlet,
-  type Plug,
-  type PlugProps,
-  type SlotCompat,
-  type Unlocked,
+  Default,
+  Distributive,
+  LockedIn,
+  Outlet,
+  Plug,
+  PlugProps,
+  Unlocked,
   outlet,
   plug,
-} from "../index";
+} from "react-volt";
 import {
-  type AriaButtonProps,
+  AriaButtonProps,
   useAriaButtonProps,
-} from "./useARIAButtonAdapter";
+} from "./useARIAButtonAdapter.test-d";
 export type AccordionHeaderSize = "small" | "medium" | "large" | "extra-large";
 export type AccordionHeaderExpandIconPosition = "start" | "end";
 
 type AccordionHeaderButtonElement = HTMLButtonElement | HTMLAnchorElement;
 
-export type AccordionHeaderProps = SlotCompat.WithoutSlotRenderFunction<
+export type AccordionHeaderProps = (
   | Default<PlugProps.Intrinsics["div"]>
   | PlugProps.Intrinsics["h1" | "h2" | "h3" | "h4" | "h5" | "h6"]
-> & {
+) & {
   /**
    * The component to be used as button in heading
    */

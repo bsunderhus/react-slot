@@ -30,7 +30,7 @@ export function outlet<
   // TODO: use NoInfer here, TS 5.4 feature
   plug:
     | Default<PlugPropsFromType<DefaultType>>
-    | PlugPropsFromType<AlternativeType>
+    | PlugPropsFromType<Exclude<AlternativeType, DefaultType>>
     | Plug.Shorthand
 ): Outlet<DefaultType | AlternativeType>;
 /**
@@ -51,7 +51,7 @@ export function outlet<
   // TODO: use NoInfer here, TS 5.4 feature
   plug:
     | Default<PlugPropsFromType<DefaultType>>
-    | PlugPropsFromType<AlternativeType>
+    | PlugPropsFromType<Exclude<AlternativeType, DefaultType>>
     | Plug.Shorthand
     | Plug.Unplugged
 ): Unlocked<Outlet<DefaultType | AlternativeType>>;

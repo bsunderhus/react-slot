@@ -1,5 +1,5 @@
 import * as React from "react";
-import { outlet, plug } from "../index";
+import { outlet, plug } from "react-volt";
 import type {
   Default,
   Distributive,
@@ -7,13 +7,12 @@ import type {
   Plug,
   PlugProps,
   Unlocked,
-  SlotCompat,
-} from "../index";
+} from "react-volt";
 import {
-  type AriaButtonProps,
+  AriaButtonProps,
   useAriaButtonProps,
-} from "./useARIAButtonAdapter";
-import { useMergedRefs } from "./useMergedRefs";
+} from "./useARIAButtonAdapter.test-d";
+import { useMergedRefs } from "./useMergedRefs.test-d";
 
 /**
  * A button supports different sizes.
@@ -22,22 +21,20 @@ export type ButtonSize = "small" | "medium" | "large";
 
 type IconPosition = "before" | "after";
 
-interface IconPlugProps extends Default<PlugProps.Intrinsics["span"]> {
-  /**
-   * A button can format its icon to appear before or after its content.
-   *
-   * @default 'before'
-   */
-  position?: IconPosition;
-}
-
-export type ButtonProps = SlotCompat.WithoutSlotRenderFunction<
-  AriaButtonProps["button" | "a"]
-> & {
+export type ButtonProps = AriaButtonProps["button" | "a"] & {
   /**
    * Icon that renders either before or after the `children` as specified by the `iconPosition` prop.
    */
-  icon?: Plug<IconPlugProps>;
+  icon?: Plug<
+    Default<PlugProps.Intrinsics["span"]> & {
+      /**
+       * A button can format its icon to appear before or after its content.
+       *
+       * @default 'before'
+       */
+      position?: IconPosition;
+    }
+  >;
   /**
    * A button can have its content and borders styled for greater emphasis or to be subtle.
    * - 'secondary' (default): Gives emphasis to the button in such a way that it indicates a secondary action.

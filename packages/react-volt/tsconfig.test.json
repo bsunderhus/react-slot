@@ -3,7 +3,12 @@
   "compilerOptions": {
     "outDir": "dist-tsc",
     "composite": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "verbatimModuleSyntax": false,
+    "baseUrl": ".",
+    "paths": {
+      "react-volt": ["./src/index.ts"]
+    }
   },
   "include": [
     "src/tests/**/*.ts",

@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { PlugProps, Distributive, Default } from "../index";
+import type { PlugProps, Distributive, Default } from "react-volt";
 
 interface DefaultPlugPropsButton extends Default<PlugProps.Intrinsics.Button> {}
 
@@ -39,8 +39,7 @@ export interface AriaButtonProps {
   div: AriaButtonDivProps;
 }
 
-type AriaNoButtonElement = HTMLAnchorElement | HTMLDivElement;
-type AriaButtonElement = HTMLButtonElement | AriaNoButtonElement;
+type AriaButtonElement = HTMLButtonElement | HTMLAnchorElement | HTMLDivElement;
 
 // TODO: find a way to stop breaking rule of hooks
 export const useAriaButtonAdapter = () => useAriaButtonProps;
@@ -91,8 +90,10 @@ export const useAriaButtonProps = <
 
   const isDisabled = disabled || disabledFocusable || normalizedAriaDisabled;
 
-  const handleClick = React.useCallback(
-    (event: Distributive.MouseEvent<AriaButtonElement>) => {
+  const handleClick: Distributive.MouseEventHandler<
+    HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
+  > = React.useCallback(
+    (event) => {
       if (isDisabled) {
         event.preventDefault();
         event.stopPropagation();
@@ -103,8 +104,10 @@ export const useAriaButtonProps = <
     [onClick, isDisabled]
   );
 
-  const handleNotAButtonKeyDown = React.useCallback(
-    (event: Distributive.KeyboardEvent<AriaNoButtonElement>) => {
+  const handleNotAButtonKeyDown: Distributive.KeyboardEventHandler<
+    HTMLAnchorElement | HTMLDivElement
+  > = React.useCallback(
+    (event) => {
       onKeyDown?.(event);
 
       if (event.isDefaultPrevented()) {
@@ -130,8 +133,10 @@ export const useAriaButtonProps = <
     [onKeyDown, isDisabled]
   );
 
-  const handleNotAButtonKeyUp = React.useCallback(
-    (event: Distributive.KeyboardEvent<AriaNoButtonElement>) => {
+  const handleNotAButtonKeyUp: Distributive.KeyboardEventHandler<
+    HTMLAnchorElement | HTMLDivElement
+  > = React.useCallback(
+    (event) => {
       onKeyUp?.(event);
       if (event.isDefaultPrevented()) {
         return;

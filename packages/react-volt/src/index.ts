@@ -1,13 +1,4 @@
 export type {
-  Outlet,
-  Unlocked,
-  OutletMetadata,
-  DangerouslyRenderFunction,
-} from "./types/outlet.types";
-
-export type * as SlotCompat from "./types/slot-compat.types";
-
-export type {
   Plug,
   Default,
   LockedIn,
@@ -15,6 +6,13 @@ export type {
   PlugPropsType,
   PlugPropsAdapter,
 } from "./types/plug.types";
+
+export type {
+  Outlet,
+  Unlocked,
+  OutletMetadata,
+  DangerouslyRenderFunction,
+} from "./types/outlet.types";
 
 export type * as Distributive from "./types/distributive.types";
 

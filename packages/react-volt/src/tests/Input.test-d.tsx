@@ -1,21 +1,21 @@
 import * as React from "react";
 import {
-  type Default,
-  type LockedIn,
-  type Outlet,
-  type Plug,
-  type PlugProps,
-  type SlotCompat,
-  type Unlocked,
+  Default,
+  LockedIn,
+  Outlet,
+  Plug,
+  PlugProps,
+  Unlocked,
   outlet,
   plug,
-} from "../index";
+} from "react-volt";
 
-export type InputProps = Omit<
-  SlotCompat.WithoutSlotRenderFunction<Default<PlugProps.Intrinsics["input"]>>,
-  // `children` is unsupported. The rest of these native props have customized definitions.
-  "children" | "defaultValue" | "onChange" | "size" | "type" | "value"
-> & {
+export interface InputProps
+  extends Omit<
+    Default<PlugProps.Intrinsics["input"]>,
+    // `children` is unsupported. The rest of these native props have customized definitions.
+    "children" | "defaultValue" | "onChange" | "size" | "type" | "value"
+  > {
   /**
    * Wrapper element which visually appears to be the input and is used for borders, focus styling, etc.
    * (A wrapper is needed to properly position `contentBefore` and `contentAfter` relative to `input`.)
@@ -23,16 +23,16 @@ export type InputProps = Omit<
    * The root slot receives the `className` and `style` specified directly on the `<Input>`.
    * All other top-level native props will be applied to the primary slot, `input`.
    */
-  root?: LockedIn<Plug<Default<PlugProps.Intrinsics.Span>>>;
+  root?: LockedIn<Plug<Default<PlugProps.Intrinsics["span"]>>>;
 
   /** Element before the input text, within the input border */
   contentBefore?: Plug<
-    Default<PlugProps.Intrinsics.Span> | PlugProps.Intrinsics.Div
+    Default<PlugProps.Intrinsics["span"]> | PlugProps.Intrinsics["div"]
   >;
 
   /** Element after the input text, within the input border */
   contentAfter?: Plug<
-    Default<PlugProps.Intrinsics.Span> | PlugProps.Intrinsics.Div
+    Default<PlugProps.Intrinsics["span"]> | PlugProps.Intrinsics["div"]
   >;
 
   /**
@@ -107,7 +107,7 @@ export type InputProps = Omit<
     | "number"
     | "time"
     | "week";
-};
+}
 
 /**
  * State used in rendering Input.

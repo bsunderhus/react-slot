@@ -1,6 +1,5 @@
 import type * as plug from "../plug";
 import type * as ReactTypes from "./react.types";
-import type * as SlotCompat from "./slot-compat.types";
 import type { Never } from "./helper.types";
 import type { DangerouslyRenderFunction } from "./outlet.types";
 
@@ -118,7 +117,7 @@ export interface PlugPropsWithMetadata extends PlugProps {
   dangerouslyRender?: unknown;
 }
 
-interface DangerouslyRender<
+export interface DangerouslyRender<
   Type extends ReactTypes.JSX.ElementType = ReactTypes.JSX.ElementType,
   Props = {}
 > {
@@ -1171,10 +1170,8 @@ export type DetailedIntrinsicPlugProps<
   Attributes,
   Type extends PlugPropsType
 > = DangerouslyRender<Type, Attributes & ReactTypes.RefAttributes<Element>> &
-  // TODO: remove this once there is no need to support children render function
-  SlotCompat.WithSlotRenderFunction<
-    Attributes & ReactTypes.RefAttributes<Element>
-  > &
+  Attributes &
+  ReactTypes.RefAttributes<Element> &
   ReactTypes.DataAttributes &
   Required<PlugProps<Type>>;
 

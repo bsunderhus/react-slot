@@ -35,6 +35,11 @@ export default defineConfig({
     },
     minify: false,
   },
+  resolve: {
+    alias: {
+      "react-volt": "./src/index.ts",
+    },
+  },
   test: {
     typecheck: {
       enabled: true,
