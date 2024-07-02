@@ -2,13 +2,12 @@ import { _$dangerouslyRender, _$outletElementType } from "./constants";
 import { isShorthand, isUnplugged } from "./guards";
 import { resolveShorthand } from "./plug";
 import type {
+  PickDefault,
   Plug,
   PlugProps,
   PlugPropsType,
-  Default,
 } from "./types/plug.types";
 import type { Outlet, Unlocked } from "./types/outlet.types";
-import type * as ReactTypes from "./types/react.types";
 
 /**
  * @public
@@ -22,16 +21,10 @@ import type * as ReactTypes from "./types/react.types";
  *
  * > **Note:** _In the context of electrical systems a  lock-in outlet, also known as a twist-lock outlet or power lock outlet, is a type of electrical outlet that has a locking mechanism to prevent the plug from being accidentally pulled out._
  */
-export function outlet<
-  const DefaultType extends PlugPropsType<any>,
-  const AlternativeType extends PlugPropsType<any> = never
->(
-  defaultType: DefaultType,
-  plug:
-    | Default<PlugPropsFromType<DefaultType>>
-    | PlugPropsFromType<Exclude<AlternativeType, DefaultType>>
-    | Plug.Shorthand
-): Outlet<DefaultType | AlternativeType>;
+export function outlet<Props extends PlugProps>(
+  defaultType: PlugPropsTypeFromPlugProps<PickDefault<Props>>,
+  plug: Props | Plug.Shorthand
+): Outlet<PlugPropsTypeFromPlugProps<Props>>;
 /**
  * @public
  *
@@ -42,17 +35,10 @@ export function outlet<
  *
  * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
-export function outlet<
-  const DefaultType extends PlugPropsType<any>,
-  const AlternativeType extends PlugPropsType<any> = never
->(
-  defaultType: DefaultType,
-  plug:
-    | Default<PlugPropsFromType<DefaultType>>
-    | PlugPropsFromType<Exclude<AlternativeType, DefaultType>>
-    | Plug.Shorthand
-    | Plug.Unplugged
-): Unlocked<Outlet<DefaultType | AlternativeType>>;
+export function outlet<Props extends PlugProps>(
+  defaultType: PlugPropsTypeFromPlugProps<PickDefault<Props>>,
+  plug: Props | Plug.Shorthand | Plug.Unplugged
+): Unlocked<Outlet<PlugPropsTypeFromPlugProps<Props>>>;
 export function outlet(
   defaultType: PlugPropsType,
   plug: Plug
@@ -86,9 +72,8 @@ export function outlet(
   return component;
 }
 
-type PlugPropsFromType<Type extends PlugPropsType<any>> =
-  Type extends keyof PlugProps.Intrinsics
-    ? PlugProps.Intrinsics[Type]
-    : Type extends ReactTypes.FC<infer Props>
-    ? PlugProps.FC<Props>
-    : never;
+type PlugPropsTypeFromPlugProps<Props extends PlugProps> = NonNullable<
+  Props["as"]
+> extends PlugPropsType<any>
+  ? NonNullable<Props["as"]>
+  : never;

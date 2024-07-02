@@ -16,7 +16,7 @@ function CustomComponent({
   ...rest
 }: CustomComponentProps) {
   const Root = outlet("button", rest);
-  const Icon = outlet<typeof CustomIcon, "span">(CustomIcon, icon);
+  const Icon = outlet(CustomIcon, icon);
   return <Root>{Icon && <Icon />}</Root>;
 }
 
