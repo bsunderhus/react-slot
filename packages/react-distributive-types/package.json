@@ -1,0 +1,33 @@
+{
+  "name": "react-distributive-types",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vitest run",
+    "build:types": "tsc -b tsconfig.lib.json",
+    "clean": "rimraf dist",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@types/react": "^18.2.43"
+  },
+  "devDependencies": {
+    "config": "workspace:*",
+    "typescript": "^5.4.5",
+    "vitest": "1.6.0"
+  },
+  "files": [
+    "dist",
+    "*.md"
+  ],
+  "main": "./dist/distributive-types.d.ts",
+  "module": "./dist/distributive-types.d.ts",
+  "typings": "./dist/distributive-types.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/distributive-types.d.ts"
+    },
+    "./package.json": "./package.json"
+  }
+}

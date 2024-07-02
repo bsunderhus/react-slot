@@ -1,6 +1,6 @@
 import type * as React from "react";
 import { expectTypeOf, it, describe } from "vitest";
-import type * as Distributive from "./distributive.types";
+import type * as Distributive from "./distributive-types";
 
 type ClickElementType = HTMLButtonElement | HTMLAnchorElement | HTMLDivElement;
 

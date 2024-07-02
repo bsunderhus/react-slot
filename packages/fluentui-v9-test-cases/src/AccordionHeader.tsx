@@ -1,7 +1,7 @@
 import * as React from "react";
+import type * as Distributive from "react-distributive-types";
 import {
   Default,
-  Distributive,
   LockedIn,
   Outlet,
   Plug,
@@ -10,10 +10,7 @@ import {
   outlet,
   plug,
 } from "react-volt";
-import {
-  AriaButtonProps,
-  useAriaButtonProps,
-} from "./useARIAButtonAdapter.test-d";
+import { AriaButtonProps, useAriaButtonProps } from "./useARIAButtonAdapter";
 export type AccordionHeaderSize = "small" | "medium" | "large" | "extra-large";
 export type AccordionHeaderExpandIconPosition = "start" | "end";
 

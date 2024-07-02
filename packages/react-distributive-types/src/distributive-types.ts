@@ -1,4 +1,4 @@
-import type * as ReactTypes from "./react.types";
+import type * as React from "react";
 
 /**
  * @public
@@ -30,7 +30,7 @@ type DistributivePick<T, K> = T extends unknown ? Pick<T, K & keyof T> : never;
 type DistributiveSyntheticEvent<
   Target = Element,
   E = Event
-> = Target extends unknown ? ReactTypes.SyntheticEvent<Target, E> : never;
+> = Target extends unknown ? React.SyntheticEvent<Target, E> : never;
 
 /**
  * @public
@@ -38,7 +38,7 @@ type DistributiveSyntheticEvent<
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
 type DistributiveClipboardEvent<Target = Element> = Target extends unknown
-  ? ReactTypes.ClipboardEvent<Target>
+  ? React.ClipboardEvent<Target>
   : never;
 
 /**
@@ -47,7 +47,7 @@ type DistributiveClipboardEvent<Target = Element> = Target extends unknown
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
 type DistributiveCompositionEvent<Target = Element> = Target extends unknown
-  ? ReactTypes.CompositionEvent<Target>
+  ? React.CompositionEvent<Target>
   : never;
 
 /**
@@ -55,7 +55,7 @@ type DistributiveCompositionEvent<Target = Element> = Target extends unknown
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveDragEvent<Target = Element> = ReactTypes.DragEvent<Target>;
+type DistributiveDragEvent<Target = Element> = React.DragEvent<Target>;
 
 /**
  * @public
@@ -63,7 +63,7 @@ type DistributiveDragEvent<Target = Element> = ReactTypes.DragEvent<Target>;
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
 type DistributivePointerEvent<Target = Element> = Target extends unknown
-  ? ReactTypes.PointerEvent<Target>
+  ? React.PointerEvent<Target>
   : never;
 
 /**
@@ -74,9 +74,7 @@ type DistributivePointerEvent<Target = Element> = Target extends unknown
 type DistributiveFocusEvent<
   Target = Element,
   RelatedTarget = Element
-> = Target extends unknown
-  ? ReactTypes.FocusEvent<Target, RelatedTarget>
-  : never;
+> = Target extends unknown ? React.FocusEvent<Target, RelatedTarget> : never;
 
 /**
  * @public
@@ -84,7 +82,7 @@ type DistributiveFocusEvent<
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
 type DistributiveFormEvent<Target = Element> = Target extends unknown
-  ? ReactTypes.FormEvent<Target>
+  ? React.FormEvent<Target>
   : never;
 
 /**
@@ -93,7 +91,7 @@ type DistributiveFormEvent<Target = Element> = Target extends unknown
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
 type DistributiveInvalidEvent<Target = Element> = Target extends unknown
-  ? ReactTypes.InvalidEvent<Target>
+  ? React.InvalidEvent<Target>
   : never;
 
 /**
@@ -102,7 +100,7 @@ type DistributiveInvalidEvent<Target = Element> = Target extends unknown
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
 type DistributiveChangeEvent<Target = Element> = Target extends unknown
-  ? ReactTypes.ChangeEvent<Target>
+  ? React.ChangeEvent<Target>
   : never;
 
 /**
@@ -111,7 +109,7 @@ type DistributiveChangeEvent<Target = Element> = Target extends unknown
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
 type DistributiveKeyboardEvent<Target = Element> = Target extends unknown
-  ? ReactTypes.KeyboardEvent<Target>
+  ? React.KeyboardEvent<Target>
   : never;
 
 /**
@@ -122,7 +120,7 @@ type DistributiveKeyboardEvent<Target = Element> = Target extends unknown
 type DistributiveMouseEvent<
   Target = Element,
   E = MouseEvent
-> = Target extends unknown ? ReactTypes.MouseEvent<Target, E> : never;
+> = Target extends unknown ? React.MouseEvent<Target, E> : never;
 
 /**
  * @public
@@ -130,7 +128,7 @@ type DistributiveMouseEvent<
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
 type DistributiveTouchEvent<Target = Element> = Target extends unknown
-  ? ReactTypes.TouchEvent<Target>
+  ? React.TouchEvent<Target>
   : never;
 
 /**
@@ -139,7 +137,7 @@ type DistributiveTouchEvent<Target = Element> = Target extends unknown
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
 type DistributiveUIEvent<Target = Element, E = UIEvent> = Target extends unknown
-  ? ReactTypes.UIEvent<Target, E>
+  ? React.UIEvent<Target, E>
   : never;
 
 /**
@@ -148,7 +146,7 @@ type DistributiveUIEvent<Target = Element, E = UIEvent> = Target extends unknown
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
 type DistributiveWheelEvent<Target = Element> = Target extends unknown
-  ? ReactTypes.WheelEvent<Target>
+  ? React.WheelEvent<Target>
   : never;
 
 /**
@@ -157,7 +155,7 @@ type DistributiveWheelEvent<Target = Element> = Target extends unknown
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
 type DistributiveAnimationEvent<Target = Element> = Target extends unknown
-  ? ReactTypes.AnimationEvent<Target>
+  ? React.AnimationEvent<Target>
   : never;
 
 /**
@@ -166,7 +164,7 @@ type DistributiveAnimationEvent<Target = Element> = Target extends unknown
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
 type DistributiveTransitionEvent<Target = Element> = Target extends unknown
-  ? ReactTypes.TransitionEvent<Target>
+  ? React.TransitionEvent<Target>
   : never;
 
 /**
@@ -174,7 +172,7 @@ type DistributiveTransitionEvent<Target = Element> = Target extends unknown
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveReactEventHandler<Target = Element> = ReactTypes.EventHandler<
+type DistributiveReactEventHandler<Target = Element> = React.EventHandler<
   DistributiveSyntheticEvent<Target>
 >;
 /**
@@ -182,21 +180,23 @@ type DistributiveReactEventHandler<Target = Element> = ReactTypes.EventHandler<
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveClipboardEventHandler<Target = Element> =
-  ReactTypes.EventHandler<DistributiveClipboardEvent<Target>>;
+type DistributiveClipboardEventHandler<Target = Element> = React.EventHandler<
+  DistributiveClipboardEvent<Target>
+>;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveCompositionEventHandler<Target = Element> =
-  ReactTypes.EventHandler<DistributiveCompositionEvent<Target>>;
+type DistributiveCompositionEventHandler<Target = Element> = React.EventHandler<
+  DistributiveCompositionEvent<Target>
+>;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveDragEventHandler<Target = Element> = ReactTypes.EventHandler<
+type DistributiveDragEventHandler<Target = Element> = React.EventHandler<
   DistributiveDragEvent<Target>
 >;
 /**
@@ -204,7 +204,7 @@ type DistributiveDragEventHandler<Target = Element> = ReactTypes.EventHandler<
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveFocusEventHandler<Target = Element> = ReactTypes.EventHandler<
+type DistributiveFocusEventHandler<Target = Element> = React.EventHandler<
   DistributiveFocusEvent<Target>
 >;
 /**
@@ -212,7 +212,7 @@ type DistributiveFocusEventHandler<Target = Element> = ReactTypes.EventHandler<
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveFormEventHandler<Target = Element> = ReactTypes.EventHandler<
+type DistributiveFormEventHandler<Target = Element> = React.EventHandler<
   DistributiveFormEvent<Target>
 >;
 /**
@@ -220,7 +220,7 @@ type DistributiveFormEventHandler<Target = Element> = ReactTypes.EventHandler<
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveChangeEventHandler<Target = Element> = ReactTypes.EventHandler<
+type DistributiveChangeEventHandler<Target = Element> = React.EventHandler<
   DistributiveChangeEvent<Target>
 >;
 /**
@@ -228,14 +228,15 @@ type DistributiveChangeEventHandler<Target = Element> = ReactTypes.EventHandler<
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveKeyboardEventHandler<Target = Element> =
-  ReactTypes.EventHandler<DistributiveKeyboardEvent<Target>>;
+type DistributiveKeyboardEventHandler<Target = Element> = React.EventHandler<
+  DistributiveKeyboardEvent<Target>
+>;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveMouseEventHandler<Target = Element> = ReactTypes.EventHandler<
+type DistributiveMouseEventHandler<Target = Element> = React.EventHandler<
   DistributiveMouseEvent<Target>
 >;
 /**
@@ -243,7 +244,7 @@ type DistributiveMouseEventHandler<Target = Element> = ReactTypes.EventHandler<
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveTouchEventHandler<Target = Element> = ReactTypes.EventHandler<
+type DistributiveTouchEventHandler<Target = Element> = React.EventHandler<
   DistributiveTouchEvent<Target>
 >;
 /**
@@ -251,14 +252,15 @@ type DistributiveTouchEventHandler<Target = Element> = ReactTypes.EventHandler<
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributivePointerEventHandler<Target = Element> =
-  ReactTypes.EventHandler<DistributivePointerEvent<Target>>;
+type DistributivePointerEventHandler<Target = Element> = React.EventHandler<
+  DistributivePointerEvent<Target>
+>;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveUIEventHandler<Target = Element> = ReactTypes.EventHandler<
+type DistributiveUIEventHandler<Target = Element> = React.EventHandler<
   DistributiveUIEvent<Target>
 >;
 /**
@@ -266,7 +268,7 @@ type DistributiveUIEventHandler<Target = Element> = ReactTypes.EventHandler<
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveWheelEventHandler<Target = Element> = ReactTypes.EventHandler<
+type DistributiveWheelEventHandler<Target = Element> = React.EventHandler<
   DistributiveWheelEvent<Target>
 >;
 /**
@@ -274,15 +276,17 @@ type DistributiveWheelEventHandler<Target = Element> = ReactTypes.EventHandler<
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveAnimationEventHandler<Target = Element> =
-  ReactTypes.EventHandler<DistributiveAnimationEvent<Target>>;
+type DistributiveAnimationEventHandler<Target = Element> = React.EventHandler<
+  DistributiveAnimationEvent<Target>
+>;
 /**
  * @public
  *
  * > Redefining react's internal event handler method as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveTransitionEventHandler<Target = Element> =
-  ReactTypes.EventHandler<DistributiveTransitionEvent<Target>>;
+type DistributiveTransitionEventHandler<Target = Element> = React.EventHandler<
+  DistributiveTransitionEvent<Target>
+>;
 
 export type {
   DistributiveOmit as Omit,

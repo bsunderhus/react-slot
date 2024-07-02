@@ -14,8 +14,6 @@ export type {
   DangerouslyRenderFunction,
 } from "./types/outlet.types";
 
-export type * as Distributive from "./types/distributive.types";
-
 export * as plug from "./plug";
 
 export { outlet } from "./outlet";

@@ -12,10 +12,6 @@ export interface ExoticComponent<P> extends FunctionComponent<P> {
   readonly $$typeof: symbol;
 }
 
-export interface NamedExoticComponent<P = {}> extends ExoticComponent<P> {
-  displayName?: string | undefined;
-}
-
 /** @public */
 export type FC<P> = FunctionComponent<P>;
 
@@ -33,6 +29,7 @@ export namespace JSX {
 }
 
 export type {
+  NamedExoticComponent,
   ReactNode,
   PropsWithRef,
   ElementRef,

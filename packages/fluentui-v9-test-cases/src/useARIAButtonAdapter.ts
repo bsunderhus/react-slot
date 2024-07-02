@@ -1,6 +1,6 @@
 import * as React from "react";
-import type { PlugProps, Distributive, Default } from "react-volt";
-import { expectTypeOf } from "vitest";
+import type { PlugProps, Default } from "react-volt";
+import type * as Distributive from "react-distributive-types";
 
 interface DefaultPlugPropsButton extends Default<PlugProps.Intrinsics.Button> {}
 
@@ -40,7 +40,8 @@ export interface AriaButtonProps {
   div: AriaButtonDivProps;
 }
 
-type AriaButtonElement = HTMLButtonElement | HTMLAnchorElement | HTMLDivElement;
+type AriaNoButtonElement = HTMLAnchorElement | HTMLDivElement;
+type AriaButtonElement = HTMLButtonElement | AriaNoButtonElement;
 
 // TODO: find a way to stop breaking rule of hooks
 export const useAriaButtonAdapter = () => useAriaButtonProps;
@@ -91,69 +92,66 @@ export const useAriaButtonProps = <
 
   const isDisabled = disabled || disabledFocusable || normalizedAriaDisabled;
 
-  const handleClick: Distributive.MouseEventHandler<
-    HTMLButtonElement | HTMLAnchorElement | HTMLDivElement
-  > = React.useCallback(
-    (event) => {
-      if (isDisabled) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
-      onClick?.(event);
-    },
-    [onClick, isDisabled]
-  );
+  const handleClick: Distributive.MouseEventHandler<AriaButtonElement> =
+    React.useCallback(
+      (event) => {
+        if (isDisabled) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+        onClick?.(event);
+      },
+      [onClick, isDisabled]
+    );
 
-  const handleNotAButtonKeyDown: Distributive.KeyboardEventHandler<
-    HTMLAnchorElement | HTMLDivElement
-  > = React.useCallback(
-    (event) => {
-      onKeyDown?.(event);
+  const handleNotAButtonKeyDown: Distributive.KeyboardEventHandler<AriaNoButtonElement> =
+    React.useCallback(
+      (event) => {
+        onKeyDown?.(event);
 
-      if (event.isDefaultPrevented()) {
-        return;
-      }
+        if (event.isDefaultPrevented()) {
+          return;
+        }
 
-      if (isDisabled && (event.key === "Enter" || event.key === " ")) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
+        if (isDisabled && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
 
-      if (event.key === " ") {
-        event.preventDefault();
-        return;
-      }
-      // If enter is pressed, activate the button
-      if (event.key === "Enter") {
-        event.preventDefault();
-        event.currentTarget.click();
-      }
-    },
-    [onKeyDown, isDisabled]
-  );
+        if (event.key === " ") {
+          event.preventDefault();
+          return;
+        }
+        // If enter is pressed, activate the button
+        if (event.key === "Enter") {
+          event.preventDefault();
+          event.currentTarget.click();
+        }
+      },
+      [onKeyDown, isDisabled]
+    );
 
-  const handleNotAButtonKeyUp: Distributive.KeyboardEventHandler<
-    HTMLAnchorElement | HTMLDivElement
-  > = React.useCallback(
-    (event) => {
-      onKeyUp?.(event);
-      if (event.isDefaultPrevented()) {
-        return;
-      }
-      if (isDisabled && (event.key === "Enter" || event.key === " ")) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
-      if (event.key === " ") {
-        event.preventDefault();
-        event.currentTarget.click();
-      }
-    },
-    [onKeyUp, isDisabled]
-  );
+  const handleNotAButtonKeyUp: Distributive.KeyboardEventHandler<AriaNoButtonElement> =
+    React.useCallback(
+      (event) => {
+        onKeyUp?.(event);
+        if (event.isDefaultPrevented()) {
+          return;
+        }
+        if (isDisabled && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+        if (event.key === " ") {
+          event.preventDefault();
+          event.currentTarget.click();
+        }
+      },
+      [onKeyUp, isDisabled]
+    );
 
   // If a <button> tag is to be rendered we need to set disabled, aria-disabled and provide the correct handlers
   if (rest.as === "button" || rest.as === undefined) {

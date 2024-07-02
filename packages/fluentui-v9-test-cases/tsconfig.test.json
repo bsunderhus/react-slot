@@ -1,0 +1,10 @@
+{
+  "extends": "config/tsconfig.node.json",
+  "compilerOptions": {
+    "outDir": "dist-tsc",
+    "composite": true,
+    "jsx": "preserve",
+    "verbatimModuleSyntax": false
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}

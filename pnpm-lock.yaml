@@ -51,6 +51,62 @@ importers:
         specifier: 1.6.0
         version: 1.6.0(@types/node@20.12.10)
 
+  packages/fluentui-v9-test-cases:
+    dependencies:
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      '@microsoft/api-extractor':
+        specifier: ^7.47.0
+        version: 7.47.0(@types/node@20.12.10)
+      '@rollup/plugin-swc':
+        specifier: ^0.3.0
+        version: 0.3.0(@swc/core@1.5.5)(rollup@4.17.2)
+      '@types/react':
+        specifier: ^18.2.43
+        version: 18.2.55
+      '@types/react-dom':
+        specifier: ^18.2.17
+        version: 18.2.18
+      '@types/react-is':
+        specifier: ^18.2.4
+        version: 18.2.4
+      config:
+        specifier: workspace:*
+        version: link:../../config
+      react-distributive-types:
+        specifier: workspace:*
+        version: link:../react-distributive-types
+      react-volt:
+        specifier: workspace:*
+        version: link:../react-volt
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+      vitest:
+        specifier: 1.6.0
+        version: 1.6.0(@types/node@20.12.10)
+
+  packages/react-distributive-types:
+    dependencies:
+      '@types/react':
+        specifier: ^18.2.43
+        version: 18.2.55
+    devDependencies:
+      config:
+        specifier: workspace:*
+        version: link:../../config
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+      vitest:
+        specifier: 1.6.0
+        version: 1.6.0(@types/node@20.12.10)
+
   packages/react-volt:
     dependencies:
       react:

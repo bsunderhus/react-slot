@@ -1,18 +1,9 @@
 import * as React from "react";
 import { outlet, plug } from "react-volt";
-import type {
-  Default,
-  Distributive,
-  Outlet,
-  Plug,
-  PlugProps,
-  Unlocked,
-} from "react-volt";
-import {
-  AriaButtonProps,
-  useAriaButtonProps,
-} from "./useARIAButtonAdapter.test-d";
-import { useMergedRefs } from "./useMergedRefs.test-d";
+import type { Default, Outlet, Plug, PlugProps, Unlocked } from "react-volt";
+import type * as Distributive from "react-distributive-types";
+import { AriaButtonProps, useAriaButtonProps } from "./useARIAButtonAdapter";
+import { useMergedRefs } from "./useMergedRefs";
 
 /**
  * A button supports different sizes.
@@ -115,7 +106,6 @@ export const Button = plug.fc((props: ButtonProps) => {
   const iconProps = plug.resolveShorthand(icon);
   const iconPosition = iconProps?.position ?? "before";
   delete iconProps?.position;
-
   const state: ButtonState = {
     appearance,
     disabled,

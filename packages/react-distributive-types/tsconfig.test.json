@@ -1,0 +1,11 @@
+{
+  "extends": "config/tsconfig.node.json",
+  "compilerOptions": {
+    "outDir": "dist-tsc",
+    "composite": true,
+    "jsx": "preserve",
+    "verbatimModuleSyntax": false
+  },
+  "include": ["src/**/*.test-d.ts"],
+  "references": [{ "path": "./tsconfig.lib.json" }]
+}
