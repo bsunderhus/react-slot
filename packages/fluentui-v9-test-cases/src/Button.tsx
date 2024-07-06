@@ -1,31 +1,38 @@
 import * as React from "react";
 import { outlet, plug } from "react-volt";
-import type { Default, Outlet, Plug, PlugProps, Unlocked } from "react-volt";
-import type * as Distributive from "react-distributive-types";
-import { AriaButtonProps, useAriaButtonProps } from "./useARIAButtonAdapter";
-import { useMergedRefs } from "./useMergedRefs";
-
+import type { Default, Plug, PlugProps, Unlocked } from "react-volt";
+import { expectTypeOf } from "react-volt/test";
+import {
+  AriaButtonAProps,
+  AriaButtonButtonProps,
+  AriaButtonProps,
+  useAriaButtonProps,
+} from "./useARIAButtonAdapter";
+import { RefObjectFunction, useMergedRefs } from "./useMergedRefs";
 /**
  * A button supports different sizes.
  */
 export type ButtonSize = "small" | "medium" | "large";
 
-type IconPosition = "before" | "after";
+export type IconPosition = "before" | "after";
 
-export type ButtonProps = AriaButtonProps["button" | "a"] & {
+interface IconPlugProps extends Default<PlugProps.Intrinsics.Span> {
+  /**
+   * A button can format its icon to appear before or after its content.
+   *
+   * @default 'before'
+   */
+  position?: IconPosition;
+}
+
+export interface ButtonConfig
+  extends AriaButtonProps<HTMLButtonElement | HTMLAnchorElement>,
+    Default<PlugProps.Intrinsics.HTML<HTMLButtonElement | HTMLAnchorElement>> {
+  as?: "button" | "a";
   /**
    * Icon that renders either before or after the `children` as specified by the `iconPosition` prop.
    */
-  icon?: Plug<
-    Default<PlugProps.Intrinsics["span"]> & {
-      /**
-       * A button can format its icon to appear before or after its content.
-       *
-       * @default 'before'
-       */
-      position?: IconPosition;
-    }
-  >;
+  icon?: Plug<IconPlugProps>;
   /**
    * A button can have its content and borders styled for greater emphasis or to be subtle.
    * - 'secondary' (default): Gives emphasis to the button in such a way that it indicates a secondary action.
@@ -37,22 +44,6 @@ export type ButtonProps = AriaButtonProps["button" | "a"] & {
    * @default 'secondary'
    */
   appearance?: "secondary" | "primary" | "outline" | "subtle" | "transparent";
-
-  /**
-   * When set, allows the button to be focusable even when it has been disabled. This is used in scenarios where it
-   * is important to keep a consistent tab order for screen reader and keyboard users. The primary example of this
-   * pattern is when the disabled button is in a menu or a commandbar and is seldom used for standalone buttons.
-   *
-   * @default false
-   */
-  disabledFocusable?: boolean;
-
-  /**
-   * A button can show that it cannot be interacted with.
-   *
-   * @default false
-   */
-  disabled?: boolean;
 
   /**
    * A button can be rounded, circular, or square.
@@ -67,64 +58,99 @@ export type ButtonProps = AriaButtonProps["button" | "a"] & {
    * @default 'medium'
    */
   size?: ButtonSize;
-};
+}
+interface ButtonButtonProps
+  extends AriaButtonButtonProps,
+    Pick<ButtonConfig, "icon" | "appearance" | "shape" | "size"> {}
 
-export type ButtonState = Required<
-  Distributive.Pick<
-    ButtonProps,
-    "appearance" | "disabledFocusable" | "disabled" | "shape" | "size"
-  >
-> & {
+interface ButtonAProps
+  extends AriaButtonAProps,
+    Pick<ButtonConfig, "icon" | "appearance" | "shape" | "size"> {}
+
+export type ButtonProps = ButtonButtonProps | ButtonAProps;
+
+interface ButtonStateRoot
+  extends PlugProps.Intrinsics.HTML<HTMLButtonElement | HTMLAnchorElement> {
+  as: "button" | "a";
+  ref?: RefObjectFunction<HTMLButtonElement | HTMLAnchorElement>;
+}
+
+export interface ButtonState
+  extends Required<
+    Pick<
+      ButtonConfig,
+      "appearance" | "disabledFocusable" | "disabled" | "shape" | "size"
+    >
+  > {
   iconPosition: IconPosition;
-  root: Outlet<"button" | "a">;
-  icon: Unlocked<Outlet<"span">>;
+  root: ButtonStateRoot;
+  icon: Unlocked<PlugProps.Intrinsics.Span>;
   /**
    * A button can contain only an icon.
    *
    * @default false
    */
   iconOnly: boolean;
-};
+}
 
-export const Button = plug.fc((props: ButtonProps) => {
+export const useButton = (config: ButtonConfig): ButtonState => {
   const {
-    children,
     size = "medium",
-    disabled = false,
     shape = "rounded",
     icon = plug.pluggedIn({}),
     appearance = "secondary",
-    disabledFocusable = false,
     ...rest
-  } = props;
+  } = config;
 
   const innerRootRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(
     null
   );
-  const rootRef = useMergedRefs(innerRootRef, rest.ref);
 
-  const iconProps = plug.resolveShorthand(icon);
-  const iconPosition = iconProps?.position ?? "before";
-  delete iconProps?.position;
+  const iconPosition = plug.resolveShorthand(icon)?.position ?? "before";
+
+  const rootProps = plug.extend(
+    { as: "button" as "a" | "button" },
+    useAriaButtonProps(rest),
+    { ref: useMergedRefs(innerRootRef, rest.ref) }
+  );
+
+  const iconProps = plug.adapt(icon, ({ position, ...restIconProps }) => ({
+    as: "span" as const,
+    ...restIconProps,
+  }));
+
   const state: ButtonState = {
     appearance,
-    disabled,
-    disabledFocusable,
+    disabled: config.disabled ?? false,
+    disabledFocusable: config.disabledFocusable ?? false,
     iconPosition: iconPosition,
     shape,
     size, // State calculated from a set of props
-    iconOnly: Boolean(iconProps?.children && !children), // Slots definition
-    icon: outlet("span", iconProps),
-    root: outlet(
-      "button",
-      plug.merge({ ref: rootRef }, useAriaButtonProps(rest))
-    ),
+    iconOnly: Boolean(iconProps?.children && !config.children), // Slots definition
+    icon: iconProps,
+    root: rootProps,
   };
+
+  /* @__PURE__ */ expectTypeOf(rootProps).toEquivalentTypeOf(state.root);
+
+  /* @__PURE__ */ expectTypeOf(iconProps).toEquivalentTypeOf(state.icon);
+
+  return state;
+};
+
+export const renderButton = (state: ButtonState): JSX.Element => {
+  const Root = outlet(state.root);
+  const Icon = outlet(state.icon);
   return (
-    <state.root>
-      {state.iconPosition !== "after" && state.icon && <state.icon />}
+    <Root>
+      {state.iconPosition !== "after" && Icon && <Icon />}
       {!state.iconOnly && state.root.children}
-      {state.iconPosition === "after" && state.icon && <state.icon />}
-    </state.root>
+      {state.iconPosition === "after" && Icon && <Icon />}
+    </Root>
   );
+};
+
+export const Button = plug.fc<ButtonProps>((props: ButtonConfig) => {
+  const state = useButton(props);
+  return renderButton(state);
 });

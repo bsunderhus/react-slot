@@ -1,18 +1,10 @@
 import * as React from "react";
-import {
-  Default,
-  LockedIn,
-  Outlet,
-  Plug,
-  PlugProps,
-  Unlocked,
-  outlet,
-  plug,
-} from "react-volt";
+import { Default, LockedIn, Plug, PlugProps, Unlocked, plug } from "react-volt";
+import { expectTypeOf } from "react-volt/test";
 
 export interface InputProps
   extends Omit<
-    Default<PlugProps.Intrinsics["input"]>,
+    Default<PlugProps.Intrinsics.Input>,
     // `children` is unsupported. The rest of these native props have customized definitions.
     "children" | "defaultValue" | "onChange" | "size" | "type" | "value"
   > {
@@ -23,16 +15,16 @@ export interface InputProps
    * The root slot receives the `className` and `style` specified directly on the `<Input>`.
    * All other top-level native props will be applied to the primary slot, `input`.
    */
-  root?: LockedIn<Plug<Default<PlugProps.Intrinsics["span"]>>>;
+  root?: LockedIn<Plug<Default<PlugProps.Intrinsics.Span>>>;
 
   /** Element before the input text, within the input border */
   contentBefore?: Plug<
-    Default<PlugProps.Intrinsics["span"]> | PlugProps.Intrinsics["div"]
+    Default<PlugProps.Intrinsics.Span> | PlugProps.Intrinsics.Div
   >;
 
   /** Element after the input text, within the input border */
   contentAfter?: Plug<
-    Default<PlugProps.Intrinsics["span"]> | PlugProps.Intrinsics["div"]
+    Default<PlugProps.Intrinsics.Span> | PlugProps.Intrinsics.Div
   >;
 
   /**
@@ -113,10 +105,14 @@ export interface InputProps
  * State used in rendering Input.
  */
 export type InputState = Required<Pick<InputProps, "appearance" | "size">> & {
-  root: Outlet<"span">;
-  input: Outlet<"input">;
-  contentBefore: Unlocked<Outlet<"span" | "div">>;
-  contentAfter: Unlocked<Outlet<"span" | "div">>;
+  root: PlugProps.Intrinsics.Span;
+  input: PlugProps.Intrinsics.Input;
+  contentBefore: Unlocked<
+    PlugProps.Intrinsics.HTML<HTMLSpanElement | HTMLDivElement>
+  >;
+  contentAfter: Unlocked<
+    PlugProps.Intrinsics.HTML<HTMLSpanElement | HTMLDivElement>
+  >;
 };
 
 /**
@@ -160,29 +156,36 @@ export const useInput_unstable = (props: InputProps): InputState => {
     onChange?.(event, { value: newValue });
     setControlledValue(newValue);
   };
+  const inputProps = {
+    type: "text",
+    as: "input" as const,
+    ...rest,
+    value: controlledValue,
+    onChange: handleChange,
+  };
+  const contentAfterProps = plug.extend({ as: "span" }, contentAfter);
+  const contentBeforeProps = plug.extend({ as: "span" }, contentBefore);
+  const rootProps = plug.extend(
+    { as: "span", className: rootClassName, style: rootStyle },
+    root
+  );
   const state: InputState = {
     size,
     appearance,
-    input: outlet(
-      "input",
-      plug.adapt(rest, (inputProps) => ({
-        type: "text",
-        ...rest,
-        ...inputProps,
-        value: controlledValue,
-        onChange: handleChange,
-      }))
-    ),
-    contentAfter: outlet("span", contentAfter),
-    contentBefore: outlet("span", contentBefore),
-    root: outlet(
-      "span",
-      plug.adapt(root, (rootProps) => ({
-        className: rootClassName,
-        style: rootStyle,
-        ...rootProps,
-      }))
-    ),
+    input: inputProps,
+    contentAfter: contentAfterProps,
+    contentBefore: contentBeforeProps,
+    root: rootProps,
   };
+
+  /* @__PURE__ */ expectTypeOf(rootProps).toEquivalentTypeOf(state.root);
+  /* @__PURE__ */ expectTypeOf(inputProps).toEquivalentTypeOf(state.input);
+  /* @__PURE__ */ expectTypeOf(contentAfterProps).toEquivalentTypeOf(
+    state.contentAfter
+  );
+  /* @__PURE__ */ expectTypeOf(contentBeforeProps).toEquivalentTypeOf(
+    state.contentBefore
+  );
+
   return state;
 };

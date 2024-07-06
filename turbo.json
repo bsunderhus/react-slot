@@ -28,7 +28,12 @@
     },
     "build:api": {
       "dependsOn": ["^build:api", "build:types"],
-      "inputs": ["dist-tsc/**/*.d.ts", "dist-tsc/**/*.d.ts.map"],
+      "inputs": [
+        "dist-tsc/**/*.d.ts",
+        "dist-tsc/**/*.d.ts.map",
+        "api-extractor.json",
+        "api-extractor.*.json"
+      ],
       "outputs": ["dist/**/*.d.ts"]
     },
     "prepack": {

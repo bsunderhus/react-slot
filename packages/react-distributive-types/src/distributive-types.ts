@@ -8,9 +8,7 @@ import type * as React from "react";
  *
  * See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types} for more information
  */
-type DistributiveOmit<T, K extends keyof any> = T extends unknown
-  ? Omit<T, K>
-  : T;
+type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : T;
 
 /**
  * @public
@@ -20,7 +18,7 @@ type DistributiveOmit<T, K extends keyof any> = T extends unknown
  *
  * See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types} for more information
  */
-type DistributivePick<T, K> = T extends unknown ? Pick<T, K & keyof T> : never;
+type DistributivePick<T, K> = T extends any ? Pick<T, K & keyof T> : never;
 
 /**
  * @public
@@ -30,14 +28,14 @@ type DistributivePick<T, K> = T extends unknown ? Pick<T, K & keyof T> : never;
 type DistributiveSyntheticEvent<
   Target = Element,
   E = Event
-> = Target extends unknown ? React.SyntheticEvent<Target, E> : never;
+> = Target extends any ? React.SyntheticEvent<Target, E> : never;
 
 /**
  * @public
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveClipboardEvent<Target = Element> = Target extends unknown
+type DistributiveClipboardEvent<Target = Element> = Target extends any
   ? React.ClipboardEvent<Target>
   : never;
 
@@ -46,7 +44,7 @@ type DistributiveClipboardEvent<Target = Element> = Target extends unknown
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveCompositionEvent<Target = Element> = Target extends unknown
+type DistributiveCompositionEvent<Target = Element> = Target extends any
   ? React.CompositionEvent<Target>
   : never;
 
@@ -62,7 +60,7 @@ type DistributiveDragEvent<Target = Element> = React.DragEvent<Target>;
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributivePointerEvent<Target = Element> = Target extends unknown
+type DistributivePointerEvent<Target = Element> = Target extends any
   ? React.PointerEvent<Target>
   : never;
 
@@ -74,14 +72,14 @@ type DistributivePointerEvent<Target = Element> = Target extends unknown
 type DistributiveFocusEvent<
   Target = Element,
   RelatedTarget = Element
-> = Target extends unknown ? React.FocusEvent<Target, RelatedTarget> : never;
+> = Target extends any ? React.FocusEvent<Target, RelatedTarget> : never;
 
 /**
  * @public
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveFormEvent<Target = Element> = Target extends unknown
+type DistributiveFormEvent<Target = Element> = Target extends any
   ? React.FormEvent<Target>
   : never;
 
@@ -90,7 +88,7 @@ type DistributiveFormEvent<Target = Element> = Target extends unknown
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveInvalidEvent<Target = Element> = Target extends unknown
+type DistributiveInvalidEvent<Target = Element> = Target extends any
   ? React.InvalidEvent<Target>
   : never;
 
@@ -99,7 +97,7 @@ type DistributiveInvalidEvent<Target = Element> = Target extends unknown
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveChangeEvent<Target = Element> = Target extends unknown
+type DistributiveChangeEvent<Target = Element> = Target extends any
   ? React.ChangeEvent<Target>
   : never;
 
@@ -108,7 +106,7 @@ type DistributiveChangeEvent<Target = Element> = Target extends unknown
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveKeyboardEvent<Target = Element> = Target extends unknown
+type DistributiveKeyboardEvent<Target = Element> = Target extends any
   ? React.KeyboardEvent<Target>
   : never;
 
@@ -120,14 +118,14 @@ type DistributiveKeyboardEvent<Target = Element> = Target extends unknown
 type DistributiveMouseEvent<
   Target = Element,
   E = MouseEvent
-> = Target extends unknown ? React.MouseEvent<Target, E> : never;
+> = Target extends any ? React.MouseEvent<Target, E> : never;
 
 /**
  * @public
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveTouchEvent<Target = Element> = Target extends unknown
+type DistributiveTouchEvent<Target = Element> = Target extends any
   ? React.TouchEvent<Target>
   : never;
 
@@ -136,7 +134,7 @@ type DistributiveTouchEvent<Target = Element> = Target extends unknown
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveUIEvent<Target = Element, E = UIEvent> = Target extends unknown
+type DistributiveUIEvent<Target = Element, E = UIEvent> = Target extends any
   ? React.UIEvent<Target, E>
   : never;
 
@@ -145,7 +143,7 @@ type DistributiveUIEvent<Target = Element, E = UIEvent> = Target extends unknown
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveWheelEvent<Target = Element> = Target extends unknown
+type DistributiveWheelEvent<Target = Element> = Target extends any
   ? React.WheelEvent<Target>
   : never;
 
@@ -154,7 +152,7 @@ type DistributiveWheelEvent<Target = Element> = Target extends unknown
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveAnimationEvent<Target = Element> = Target extends unknown
+type DistributiveAnimationEvent<Target = Element> = Target extends any
   ? React.AnimationEvent<Target>
   : never;
 
@@ -163,7 +161,7 @@ type DistributiveAnimationEvent<Target = Element> = Target extends unknown
  *
  * > Redefining react's internal event as they do not support distributive conditionals on union types (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
  */
-type DistributiveTransitionEvent<Target = Element> = Target extends unknown
+type DistributiveTransitionEvent<Target = Element> = Target extends any
   ? React.TransitionEvent<Target>
   : never;
 

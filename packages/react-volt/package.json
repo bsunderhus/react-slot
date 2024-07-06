@@ -8,7 +8,9 @@
     "build": "vite build",
     "build:types": "tsc -b tsconfig.lib.json",
     "build:types:test": "tsc -b tsconfig.test.json",
-    "build:api": "api-extractor run --local --verbose",
+    "build:api": "pnpm run build:api:lib && pnpm run build:api:test",
+    "build:api:lib": "api-extractor run --config api-extractor.json --local --verbose",
+    "build:api:test": "api-extractor run --config api-extractor.test.json --local --verbose",
     "clean": "rimraf dist dist-tsc",
     "test": "vitest run"
   },
@@ -32,21 +34,23 @@
     "dist",
     "*.md"
   ],
-  "main": "./dist/react-volt.cjs",
-  "module": "./dist/react-volt.js",
-  "typings": "./dist/react-volt.d.ts",
+  "module": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/react-volt.d.ts",
-      "node": "./dist/react-volt.cjs",
-      "import": "./dist/react-volt.js",
-      "require": "./dist/react-volt.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
     },
     "./untrimmed": {
-      "types": "./dist/react-volt.untrimmed.d.ts",
-      "node": "./dist/react-volt.cjs",
-      "import": "./dist/react-volt.js",
-      "require": "./dist/react-volt.js"
+      "types": "./dist/index.untrimmed.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./test": {
+      "types": "./dist/test.d.ts",
+      "import": "./dist/test.js",
+      "require": "./dist/test.js"
     },
     "./package.json": "./package.json"
   }

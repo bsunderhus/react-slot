@@ -26,8 +26,10 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: "./src/index.ts",
-      fileName: "react-volt",
+      entry: {
+        index: "./src/index.ts",
+        test: "./src/test/index.ts",
+      },
       formats: ["es"],
     },
     rollupOptions: {

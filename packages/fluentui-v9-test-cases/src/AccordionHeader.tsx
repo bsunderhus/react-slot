@@ -1,16 +1,12 @@
 import * as React from "react";
 import type * as Distributive from "react-distributive-types";
+import { Default, LockedIn, Plug, PlugProps, Unlocked, plug } from "react-volt";
+import { expectTypeOf } from "react-volt/test";
 import {
-  Default,
-  LockedIn,
-  Outlet,
-  Plug,
-  PlugProps,
-  Unlocked,
-  outlet,
-  plug,
-} from "react-volt";
-import { AriaButtonProps, useAriaButtonProps } from "./useARIAButtonAdapter";
+  AriaButtonAProps,
+  AriaButtonButtonProps,
+  useAriaButtonProps,
+} from "./useARIAButtonAdapter";
 export type AccordionHeaderSize = "small" | "medium" | "large" | "extra-large";
 export type AccordionHeaderExpandIconPosition = "start" | "end";
 
@@ -23,15 +19,15 @@ export type AccordionHeaderProps = (
   /**
    * The component to be used as button in heading
    */
-  button?: LockedIn<Plug<AriaButtonProps["button" | "a"]>>;
+  button?: LockedIn<Plug<AriaButtonButtonProps | AriaButtonAProps>>;
   /**
    * Expand icon plug rendered before (or after) children content in heading.
    */
-  expandIcon?: Plug<Default<PlugProps.Intrinsics["span"]>>;
+  expandIcon?: Plug<Default<PlugProps.Intrinsics.Span>>;
   /**
    * Expand icon plug rendered before (or after) children content in heading.
    */
-  icon?: Plug<Default<PlugProps.Intrinsics["span"]>>;
+  icon?: Plug<Default<PlugProps.Intrinsics.Span>>;
   /**
    * The position of the expand  icon plug in heading.
    */
@@ -51,10 +47,10 @@ export type AccordionHeaderProps = (
 export type AccordionHeaderState = Required<
   Distributive.Pick<AccordionHeaderProps, "inline">
 > & {
-  root: Outlet<"div" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6">;
-  button: Outlet<"button" | "a">;
-  expandIcon: Unlocked<Outlet<"span">>;
-  icon: Unlocked<Outlet<"span">>;
+  root: PlugProps.Intrinsics["div" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6"];
+  button: PlugProps.Intrinsics.Button | PlugProps.Intrinsics.A;
+  expandIcon: Unlocked<PlugProps.Intrinsics.Span>;
+  icon: Unlocked<PlugProps.Intrinsics.Span>;
 };
 
 /**
@@ -72,6 +68,7 @@ export const useAccordionHeader = (
     inline = false,
     size = "medium",
     expandIconPosition = "start",
+    ...rest
   } = props;
 
   /**
@@ -94,35 +91,49 @@ export const useAccordionHeader = (
   }
 
   const buttonProps = plug.resolveShorthand(button);
-
   const onButtonClick:
-    | Distributive.MouseEventHandler<AccordionHeaderButtonElement>
+    | React.MouseEventHandler<AccordionHeaderButtonElement>
     | undefined = buttonProps.onClick;
 
-  const handleClick: Distributive.MouseEventHandler<AccordionHeaderButtonElement> =
-    React.useCallback((event) => {
-      onButtonClick?.(event);
-      if (!event.defaultPrevented) {
-        // requestToggle({ value, event });
-      }
-    }, []);
-
-  const state: AccordionHeaderState = {
+  const state = {
     inline,
-    root: outlet("div", props),
-    icon: outlet("span", icon),
-    expandIcon: outlet(
-      "span",
-      plug.merge(<i>some default icon</i>, expandIcon)
+    root: { as: "div" as const, ...rest },
+    icon: plug.extend({ as: "span" }, icon),
+    expandIcon: plug.extend(
+      { as: "span" },
+      <i>some default icon</i>,
+      expandIcon
     ),
-    button: outlet(
-      "button",
-      useAriaButtonProps(
-        plug.merge(buttonProps, {
-          onClick: handleClick,
-        })
-      )
-    ),
+    button: {
+      as: "button" as const,
+      ...useAriaButtonProps(buttonProps),
+      onClick: React.useCallback(
+        (event: React.MouseEvent<AccordionHeaderButtonElement>) => {
+          onButtonClick?.(event);
+          if (!event.defaultPrevented) {
+            // requestToggle({ value, event });
+          }
+        },
+        []
+      ),
+    },
   };
+
+  /* @__PURE__ */ expectTypeOf(state.root).toEquivalentTypeOf<
+    AccordionHeaderState["root"]
+  >();
+
+  /* @__PURE__ */ expectTypeOf(state.icon).toEquivalentTypeOf<
+    AccordionHeaderState["icon"]
+  >();
+
+  /* @__PURE__ */ expectTypeOf(state.expandIcon).toEquivalentTypeOf<
+    AccordionHeaderState["expandIcon"]
+  >();
+
+  /* @__PURE__ */ expectTypeOf(state.button).toEquivalentTypeOf<
+    AccordionHeaderState["button"]
+  >();
+
   return state;
 };

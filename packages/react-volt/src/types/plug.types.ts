@@ -1,8 +1,7 @@
-import type * as plug from "../plug";
 import type * as ReactTypes from "./react.types";
 import type { Never } from "./helper.types";
-import type { DangerouslyRenderFunction } from "./outlet.types";
 import type { _$unplugged } from "../constants";
+import type { outlet } from "../outlet";
 
 /**
  * @public
@@ -15,7 +14,7 @@ import type { _$unplugged } from "../constants";
  *
  * > **Note:** _in the context of electrical systems, a plug is equivalent to the part of the system that is introduced, while the outlet is the part of the system that receives._
  */
-export type Plug<Props extends PlugProps = PlugPropsWithMetadata> =
+export type Plug<Props extends PlugProps = InferencePlugProps> =
   | Props
   | Plug.Shorthand<Props>
   | Plug.Unplugged;
@@ -27,9 +26,16 @@ export namespace Plug {
    *
    * A Shorthand plug is a simplified version of a plug props,
    * it is equivalent to `{children: someValue}`.
+   *
+   * It is a shorter way to define a plug that only has children,
+   * as the children are the most common property used in a plug.
    */
-  export type Shorthand<Props extends PlugProps = PlugPropsWithMetadata> =
-    Props extends unknown
+  export type Shorthand<Props extends PlugProps = InferencePlugProps> =
+    /**
+     * Props extends any is used to distribute the conditional type over the union of props.
+     * See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types} for more information
+     */
+    Props extends any
       ? { children: any } extends Props
         ? Extract<
             | ReactTypes.JSX.Element
@@ -59,31 +65,25 @@ export namespace Plug {
    *
    * > **Note:** _in the context of electrical systems unplugged is a term used to describe the connection between a plug and an outlet_
    */
-  export type Unplugged = typeof _$unplugged;
+  export type Unplugged = null;
 }
 
 /**
  * @public
  *
- * A locked in plug is a plug that is connected to an outlet and cannot be removed.
- * This removes the possibility of opting-out of an outlet.
- *
- * > **Note:** _In the context of electrical systems a Lock-in plug is a plug with a lock mechanism to avoid it from being accidentally unplugged._
+ * Helper type that converts a plug props to a default plug props.
+ * Default plug props are plug props that have the `as` property as optional.
  */
-export type LockedIn<P> = Exclude<P, Plug.Unplugged>;
-
-/**
- * @public
- */
-export type Default<Props extends PlugProps> = PlugProps<
-  NonNullable<Props["as"]>
-> &
-  Omit<Props, "as">;
+export type Default<Props extends PlugProps> = NonNullable<
+  Props["as"]
+> extends string
+  ? Partial<Props>
+  : PlugProps<NonNullable<Props["as"]>> & Omit<Props, "as">;
 
 /**
  * Internal Helper type that picks from an union of plug properties the ones that are {@link Default}.
  *
- * {@link Default} properties are the ones that have `as` property as optional.
+ * {@link Default} plug properties are the ones that have `as` property as optional.
  *
  * @example
  * ```ts
@@ -105,12 +105,8 @@ export type PickDefault<P extends Plug> = P extends PlugProps
  * @public
  *
  * The type of the plug props (`as` property).
- * It can be a function component or an intrinsic element.
  */
-export type PlugPropsType<P = unknown> =
-  | keyof PlugProps.Intrinsics
-  // Due to contravariance on FC signature this has to be any
-  | ReactTypes.FunctionComponent<P>;
+export type PlugPropsType = ReactTypes.JSX.ElementType;
 
 /**
  * @public
@@ -127,7 +123,9 @@ export type PlugPropsType<P = unknown> =
  * 2. {@link PlugProps.FC} - a type that defines a plug props for a function component.
  */
 export interface PlugProps<
-  Type extends PlugPropsType<any> = PlugPropsType<any>
+  // Due to contravariance on function components signature this has to be any
+  // otherwise it will not be compatible with any function component signature.
+  Type extends PlugPropsType = PlugPropsType
 > {
   as?: Type;
 }
@@ -139,15 +137,9 @@ export namespace PlugProps {
    *
    * Definition of the plug props for a function component.
    */
-  export type FC<Props> =
-    /**
-     * Props extends unknown is a distributive conditional on unions (See {@link https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types | distributive conditional types} for more information)
-     */
-    Props extends unknown
-      ? Props &
-          Required<PlugProps<ReactTypes.FC<Props>>> &
-          DangerouslyRender<ReactTypes.FC<Props>, Props>
-      : never;
+  export type FC<Props> = Props &
+    DangerouslyRender<ReactTypes.ReactElement<Props, ReactTypes.FC<Props>>> &
+    Required<PlugProps<ReactTypes.FC<Props>>>;
 
   /**
    * @public
@@ -277,849 +269,522 @@ export namespace PlugProps {
     webview: Intrinsics.WebView;
 
     // SVG
-    svg: SVGPlugProps<SVGSVGElement, "svg">;
+    svg: Intrinsics.SVG<SVGSVGElement> & Required<PlugProps<"svg">>;
 
-    animate: SVGPlugProps<SVGElement, "animate">; // TODO: It is, 'TODO' SVGAnimateElement but is not in TypeScript's lib.dom.d.ts for now.
-    animateMotion: SVGPlugProps<SVGElement, "animateMotion">;
-    animateTransform: SVGPlugProps<SVGElement, "animateTransform">; // TODO: It is, 'TODO' SVGAnimateTransformElement but is not in TypeScript's lib.dom.d.ts for now.
-    circle: SVGPlugProps<SVGCircleElement, "circle">;
-    clipPath: SVGPlugProps<SVGClipPathElement, "clipPath">;
-    defs: SVGPlugProps<SVGDefsElement, "defs">;
-    desc: SVGPlugProps<SVGDescElement, "desc">;
-    ellipse: SVGPlugProps<SVGEllipseElement, "ellipse">;
-    feBlend: SVGPlugProps<SVGFEBlendElement, "feBlend">;
-    feColorMatrix: SVGPlugProps<SVGFEColorMatrixElement, "feColorMatrix">;
-    feComponentTransfer: SVGPlugProps<
-      SVGFEComponentTransferElement,
-      "feComponentTransfer"
-    >;
-    feComposite: SVGPlugProps<SVGFECompositeElement, "feComposite">;
-    feConvolveMatrix: SVGPlugProps<
-      SVGFEConvolveMatrixElement,
-      "feConvolveMatrix"
-    >;
-    feDiffuseLighting: SVGPlugProps<
-      SVGFEDiffuseLightingElement,
-      "feDiffuseLighting"
-    >;
-    feDisplacementMap: SVGPlugProps<
-      SVGFEDisplacementMapElement,
-      "feDisplacementMap"
-    >;
-    feDistantLight: SVGPlugProps<SVGFEDistantLightElement, "feDistantLight">;
-    feDropShadow: SVGPlugProps<SVGFEDropShadowElement, "feDropShadow">;
-    feFlood: SVGPlugProps<SVGFEFloodElement, "feFlood">;
-    feFuncA: SVGPlugProps<SVGFEFuncAElement, "feFuncA">;
-    feFuncB: SVGPlugProps<SVGFEFuncBElement, "feFuncB">;
-    feFuncG: SVGPlugProps<SVGFEFuncGElement, "feFuncG">;
-    feFuncR: SVGPlugProps<SVGFEFuncRElement, "feFuncR">;
-    feGaussianBlur: SVGPlugProps<SVGFEGaussianBlurElement, "feGaussianBlur">;
-    feImage: SVGPlugProps<SVGFEImageElement, "feImage">;
-    feMerge: SVGPlugProps<SVGFEMergeElement, "feMerge">;
-    feMergeNode: SVGPlugProps<SVGFEMergeNodeElement, "feMergeNode">;
-    feMorphology: SVGPlugProps<SVGFEMorphologyElement, "feMorphology">;
-    feOffset: SVGPlugProps<SVGFEOffsetElement, "feOffset">;
-    fePointLight: SVGPlugProps<SVGFEPointLightElement, "fePointLight">;
-    feSpecularLighting: SVGPlugProps<
-      SVGFESpecularLightingElement,
-      "feSpecularLighting"
-    >;
-    feSpotLight: SVGPlugProps<SVGFESpotLightElement, "feSpotLight">;
-    feTile: SVGPlugProps<SVGFETileElement, "feTile">;
-    feTurbulence: SVGPlugProps<SVGFETurbulenceElement, "feTurbulence">;
-    filter: SVGPlugProps<SVGFilterElement, "filter">;
-    foreignObject: SVGPlugProps<SVGForeignObjectElement, "foreignObject">;
-    g: SVGPlugProps<SVGGElement, "g">;
-    image: SVGPlugProps<SVGImageElement, "image">;
-    line: SVGPlugProps<SVGLineElement, "line">;
-    linearGradient: SVGPlugProps<SVGLinearGradientElement, "linearGradient">;
-    marker: SVGPlugProps<SVGMarkerElement, "marker">;
-    mask: SVGPlugProps<SVGMaskElement, "mask">;
-    metadata: SVGPlugProps<SVGMetadataElement, "metadata">;
-    mpath: SVGPlugProps<SVGElement, "mpath">;
-    path: SVGPlugProps<SVGPathElement, "path">;
-    pattern: SVGPlugProps<SVGPatternElement, "pattern">;
-    polygon: SVGPlugProps<SVGPolygonElement, "polygon">;
-    polyline: SVGPlugProps<SVGPolylineElement, "polyline">;
-    radialGradient: SVGPlugProps<SVGRadialGradientElement, "radialGradient">;
-    rect: SVGPlugProps<SVGRectElement, "rect">;
-    stop: SVGPlugProps<SVGStopElement, "stop">;
-    switch: SVGPlugProps<SVGSwitchElement, "switch">;
-    symbol: SVGPlugProps<SVGSymbolElement, "symbol">;
-    text: SVGPlugProps<SVGTextElement, "text">;
-    textPath: SVGPlugProps<SVGTextPathElement, "textPath">;
-    tspan: SVGPlugProps<SVGTSpanElement, "tspan">;
-    use: SVGPlugProps<SVGUseElement, "use">;
-    view: SVGPlugProps<SVGViewElement, "view">;
+    animate: Intrinsics.SVG<SVGElement> & Required<PlugProps<"animate">>; // TODOSVGAnimateElement but is not in TypeScript's lib.dom.d.ts for now.
+    animateMotion: Intrinsics.SVG<SVGElement> &
+      Required<PlugProps<"animateMotion">>;
+    animateTransform: Intrinsics.SVG<SVGElement> &
+      Required<PlugProps<"animateTransform">>; // TODO: It is, 'TODO' SVGAnimateTransformElement but is not in TypeScript's lib.dom.d.ts for now.
+    circle: Intrinsics.SVG<SVGCircleElement> & Required<PlugProps<"circle">>;
+    clipPath: Intrinsics.SVG<SVGClipPathElement> &
+      Required<PlugProps<"clipPath">>;
+    defs: Intrinsics.SVG<SVGDefsElement> & Required<PlugProps<"defs">>;
+    desc: Intrinsics.SVG<SVGDescElement> & Required<PlugProps<"desc">>;
+    ellipse: Intrinsics.SVG<SVGEllipseElement> & Required<PlugProps<"ellipse">>;
+    feBlend: Intrinsics.SVG<SVGFEBlendElement> & Required<PlugProps<"feBlend">>;
+    feColorMatrix: Intrinsics.SVG<SVGFEColorMatrixElement> &
+      Required<PlugProps<"feColorMatrix">>;
+    feComponentTransfer: Intrinsics.SVG<SVGFEComponentTransferElement> &
+      Required<PlugProps<"feComponentTransfer">>;
+    feComposite: Intrinsics.SVG<SVGFECompositeElement> &
+      Required<PlugProps<"feComposite">>;
+    feConvolveMatrix: Intrinsics.SVG<SVGFEConvolveMatrixElement> &
+      Required<PlugProps<"feConvolveMatrix">>;
+    feDiffuseLighting: Intrinsics.SVG<SVGFEDiffuseLightingElement> &
+      Required<PlugProps<"feDiffuseLighting">>;
+    feDisplacementMap: Intrinsics.SVG<SVGFEDisplacementMapElement> &
+      Required<PlugProps<"feDisplacementMap">>;
+    feDistantLight: Intrinsics.SVG<SVGFEDistantLightElement> &
+      Required<PlugProps<"feDistantLight">>;
+    feDropShadow: Intrinsics.SVG<SVGFEDropShadowElement> &
+      Required<PlugProps<"feDropShadow">>;
+    feFlood: Intrinsics.SVG<SVGFEFloodElement> & Required<PlugProps<"feFlood">>;
+    feFuncA: Intrinsics.SVG<SVGFEFuncAElement> & Required<PlugProps<"feFuncA">>;
+    feFuncB: Intrinsics.SVG<SVGFEFuncBElement> & Required<PlugProps<"feFuncB">>;
+    feFuncG: Intrinsics.SVG<SVGFEFuncGElement> & Required<PlugProps<"feFuncG">>;
+    feFuncR: Intrinsics.SVG<SVGFEFuncRElement> & Required<PlugProps<"feFuncR">>;
+    feGaussianBlur: Intrinsics.SVG<SVGFEGaussianBlurElement> &
+      Required<PlugProps<"feGaussianBlur">>;
+    feImage: Intrinsics.SVG<SVGFEImageElement> & Required<PlugProps<"feImage">>;
+    feMerge: Intrinsics.SVG<SVGFEMergeElement> & Required<PlugProps<"feMerge">>;
+    feMergeNode: Intrinsics.SVG<SVGFEMergeNodeElement> &
+      Required<PlugProps<"feMergeNode">>;
+    feMorphology: Intrinsics.SVG<SVGFEMorphologyElement> &
+      Required<PlugProps<"feMorphology">>;
+    feOffset: Intrinsics.SVG<SVGFEOffsetElement> &
+      Required<PlugProps<"feOffset">>;
+    fePointLight: Intrinsics.SVG<SVGFEPointLightElement> &
+      Required<PlugProps<"fePointLight">>;
+    feSpecularLighting: Intrinsics.SVG<SVGFESpecularLightingElement> &
+      Required<PlugProps<"feSpecularLighting">>;
+    feSpotLight: Intrinsics.SVG<SVGFESpotLightElement> &
+      Required<PlugProps<"feSpotLight">>;
+    feTile: Intrinsics.SVG<SVGFETileElement> & Required<PlugProps<"feTile">>;
+    feTurbulence: Intrinsics.SVG<SVGFETurbulenceElement> &
+      Required<PlugProps<"feTurbulence">>;
+    filter: Intrinsics.SVG<SVGFilterElement> & Required<PlugProps<"filter">>;
+    foreignObject: Intrinsics.SVG<SVGForeignObjectElement> &
+      Required<PlugProps<"foreignObject">>;
+    g: Intrinsics.SVG<SVGGElement> & Required<PlugProps<"g">>;
+    image: Intrinsics.SVG<SVGImageElement> & Required<PlugProps<"image">>;
+    line: Intrinsics.SVG<SVGLineElement> & Required<PlugProps<"line">>;
+    linearGradient: Intrinsics.SVG<SVGLinearGradientElement> &
+      Required<PlugProps<"linearGradient">>;
+    marker: Intrinsics.SVG<SVGMarkerElement> & Required<PlugProps<"marker">>;
+    mask: Intrinsics.SVG<SVGMaskElement> & Required<PlugProps<"mask">>;
+    metadata: Intrinsics.SVG<SVGMetadataElement> &
+      Required<PlugProps<"metadata">>;
+    mpath: Intrinsics.SVG<SVGElement> & Required<PlugProps<"mpath">>;
+    path: Intrinsics.SVG<SVGPathElement> & Required<PlugProps<"path">>;
+    pattern: Intrinsics.SVG<SVGPatternElement> & Required<PlugProps<"pattern">>;
+    polygon: Intrinsics.SVG<SVGPolygonElement> & Required<PlugProps<"polygon">>;
+    polyline: Intrinsics.SVG<SVGPolylineElement> &
+      Required<PlugProps<"polyline">>;
+    radialGradient: Intrinsics.SVG<SVGRadialGradientElement> &
+      Required<PlugProps<"radialGradient">>;
+    rect: Intrinsics.SVG<SVGRectElement> & Required<PlugProps<"rect">>;
+    stop: Intrinsics.SVG<SVGStopElement> & Required<PlugProps<"stop">>;
+    switch: Intrinsics.SVG<SVGSwitchElement> & Required<PlugProps<"switch">>;
+    symbol: Intrinsics.SVG<SVGSymbolElement> & Required<PlugProps<"symbol">>;
+    text: Intrinsics.SVG<SVGTextElement> & Required<PlugProps<"text">>;
+    textPath: Intrinsics.SVG<SVGTextPathElement> &
+      Required<PlugProps<"textPath">>;
+    tspan: Intrinsics.SVG<SVGTSpanElement> & Required<PlugProps<"tspan">>;
+    use: Intrinsics.SVG<SVGUseElement> & Required<PlugProps<"use">>;
+    view: Intrinsics.SVG<SVGViewElement> & Required<PlugProps<"view">>;
   }
 
   /** @public */
   export namespace Intrinsics {
-    /** @public */
+    export interface AllHTML<E extends HTMLElement = HTMLElement>
+      extends BaseIntrinsicPlugProps<E, string>,
+        ReactTypes.AllHTMLAttributes<E> {
+      // 'as' has to be re-declared here as there's
+      // a conflict between PlugProps and ReactTypes.AllHTMLAttributes
+      // More specifically it conflicts with LinkHTMLAttributes
+      as: string;
+    }
+
+    export interface HTML<E extends HTMLElement = HTMLElement>
+      extends BaseIntrinsicPlugProps<E, string>,
+        ReactTypes.HTMLAttributes<E> {}
+
+    export interface SVG<E extends SVGElement = SVGElement>
+      extends BaseIntrinsicPlugProps<E, string>,
+        ReactTypes.SVGAttributes<E> {}
+
     export interface A
-      extends DetailedIntrinsicPlugProps<
-        HTMLAnchorElement,
-        ReactTypes.AnchorHTMLAttributes<HTMLAnchorElement>,
-        "a"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLAnchorElement, "a">,
+        ReactTypes.AnchorHTMLAttributes<HTMLAnchorElement> {}
+
     export interface Area
-      extends DetailedIntrinsicPlugProps<
-        HTMLAreaElement,
-        Omit<ReactTypes.AreaHTMLAttributes<HTMLAreaElement>, "children">,
-        "area"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLAreaElement, "area">,
+        ReactTypes.AreaHTMLAttributes<HTMLAreaElement> {}
+
     export interface Audio
-      extends DetailedIntrinsicPlugProps<
-        HTMLAudioElement,
-        ReactTypes.AudioHTMLAttributes<HTMLAudioElement>,
-        "audio"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLAudioElement, "audio">,
+        ReactTypes.AudioHTMLAttributes<HTMLAudioElement> {}
+
     export interface Base
-      extends DetailedIntrinsicPlugProps<
-        HTMLBaseElement,
-        ReactTypes.BaseHTMLAttributes<HTMLBaseElement>,
-        "base"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLBaseElement, "base">,
+        ReactTypes.BaseHTMLAttributes<HTMLBaseElement> {}
+
     export interface Blockquote
-      extends DetailedIntrinsicPlugProps<
-        HTMLQuoteElement,
-        ReactTypes.BlockquoteHTMLAttributes<HTMLQuoteElement>,
-        "blockquote"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLQuoteElement, "blockquote">,
+        ReactTypes.BlockquoteHTMLAttributes<HTMLQuoteElement> {}
+
     export interface Button
-      extends DetailedIntrinsicPlugProps<
-        HTMLButtonElement,
-        ReactTypes.ButtonHTMLAttributes<HTMLButtonElement>,
-        "button"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLButtonElement, "button">,
+        ReactTypes.ButtonHTMLAttributes<HTMLButtonElement> {}
+
     export interface Canvas
-      extends DetailedIntrinsicPlugProps<
-        HTMLCanvasElement,
-        ReactTypes.CanvasHTMLAttributes<HTMLCanvasElement>,
-        "canvas"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLCanvasElement, "canvas">,
+        ReactTypes.CanvasHTMLAttributes<HTMLCanvasElement> {}
+
     export interface Col
-      extends DetailedIntrinsicPlugProps<
-        HTMLTableColElement,
-        Omit<ReactTypes.ColHTMLAttributes<HTMLTableColElement>, "children">,
-        "col"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLTableColElement, "col">,
+        ReactTypes.ColHTMLAttributes<HTMLTableColElement> {}
+
     export interface Colgroup
-      extends DetailedIntrinsicPlugProps<
-        HTMLTableColElement,
-        ReactTypes.ColgroupHTMLAttributes<HTMLTableColElement>,
-        "colgroup"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLTableColElement, "colgroup">,
+        ReactTypes.ColgroupHTMLAttributes<HTMLTableColElement> {}
+
     export interface Data
-      extends DetailedIntrinsicPlugProps<
-        HTMLDataElement,
-        ReactTypes.DataHTMLAttributes<HTMLDataElement>,
-        "data"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLDataElement, "data">,
+        ReactTypes.DataHTMLAttributes<HTMLDataElement> {}
+
     export interface Del
-      extends DetailedIntrinsicPlugProps<
-        HTMLModElement,
-        ReactTypes.DelHTMLAttributes<HTMLModElement>,
-        "del"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLModElement, "del">,
+        ReactTypes.DelHTMLAttributes<HTMLModElement> {}
+
     export interface Details
-      extends DetailedIntrinsicPlugProps<
-        HTMLDetailsElement,
-        ReactTypes.DetailsHTMLAttributes<HTMLDetailsElement>,
-        "details"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLDetailsElement, "details">,
+        ReactTypes.DetailsHTMLAttributes<HTMLDetailsElement> {}
+
     export interface Dialog
-      extends DetailedIntrinsicPlugProps<
-        HTMLDialogElement,
-        ReactTypes.DialogHTMLAttributes<HTMLDialogElement>,
-        "dialog"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLDialogElement, "dialog">,
+        ReactTypes.DialogHTMLAttributes<HTMLDialogElement> {}
+
     export interface Embed
-      extends DetailedIntrinsicPlugProps<
-        HTMLEmbedElement,
-        Omit<ReactTypes.EmbedHTMLAttributes<HTMLEmbedElement>, "children">,
-        "embed"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLEmbedElement, "embed">,
+        ReactTypes.EmbedHTMLAttributes<HTMLEmbedElement> {}
+
     export interface Fieldset
-      extends DetailedIntrinsicPlugProps<
-        HTMLFieldSetElement,
-        ReactTypes.FieldsetHTMLAttributes<HTMLFieldSetElement>,
-        "fieldset"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLFieldSetElement, "fieldset">,
+        ReactTypes.FieldsetHTMLAttributes<HTMLFieldSetElement> {}
+
     export interface Form
-      extends DetailedIntrinsicPlugProps<
-        HTMLFormElement,
-        ReactTypes.FormHTMLAttributes<HTMLFormElement>,
-        "form"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLFormElement, "form">,
+        ReactTypes.FormHTMLAttributes<HTMLFormElement> {}
+
     export interface Html
-      extends DetailedIntrinsicPlugProps<
-        HTMLHtmlElement,
-        ReactTypes.HtmlHTMLAttributes<HTMLHtmlElement>,
-        "html"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLHtmlElement, "html">,
+        ReactTypes.HtmlHTMLAttributes<HTMLHtmlElement> {}
+
     export interface Iframe
-      extends DetailedIntrinsicPlugProps<
-        HTMLIFrameElement,
-        ReactTypes.IframeHTMLAttributes<HTMLIFrameElement>,
-        "iframe"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLIFrameElement, "iframe">,
+        ReactTypes.IframeHTMLAttributes<HTMLIFrameElement> {}
+
     export interface Img
-      extends DetailedIntrinsicPlugProps<
-        HTMLImageElement,
-        Omit<ReactTypes.ImgHTMLAttributes<HTMLImageElement>, "children">,
-        "img"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLImageElement, "img">,
+        ReactTypes.ImgHTMLAttributes<HTMLImageElement> {}
+
     export interface Input
-      extends DetailedIntrinsicPlugProps<
-        HTMLInputElement,
-        Omit<ReactTypes.InputHTMLAttributes<HTMLInputElement>, "children">,
-        "input"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLInputElement, "input">,
+        ReactTypes.InputHTMLAttributes<HTMLInputElement> {}
+
     export interface Ins
-      extends DetailedIntrinsicPlugProps<
-        HTMLModElement,
-        ReactTypes.InsHTMLAttributes<HTMLModElement>,
-        "ins"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLModElement, "ins">,
+        ReactTypes.InsHTMLAttributes<HTMLModElement> {}
+
     export interface Keygen
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.KeygenHTMLAttributes<HTMLElement>,
-        "keygen"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLElement, "keygen">,
+        ReactTypes.KeygenHTMLAttributes<HTMLElement> {}
+
     export interface Label
-      extends DetailedIntrinsicPlugProps<
-        HTMLLabelElement,
-        ReactTypes.LabelHTMLAttributes<HTMLLabelElement>,
-        "label"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLLabelElement, "label">,
+        ReactTypes.LabelHTMLAttributes<HTMLLabelElement> {}
+
     export interface Li
-      extends DetailedIntrinsicPlugProps<
-        HTMLLIElement,
-        ReactTypes.LiHTMLAttributes<HTMLLIElement>,
-        "li"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLLIElement, "li">,
+        ReactTypes.LiHTMLAttributes<HTMLLIElement> {}
+
     export interface Link
-      extends DetailedIntrinsicPlugProps<
-        HTMLLinkElement,
-        Omit<ReactTypes.LinkHTMLAttributes<HTMLLinkElement>, "children" | "as">,
-        "link"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLLinkElement, "link">,
+        ReactTypes.LinkHTMLAttributes<HTMLLinkElement> {
+      // 'as' has to be re-declared here as there's
+      // a conflict between PlugProps and ReactTypes.LinkHTMLAttributes
+      as: "link";
+    }
+
     export interface Map
-      extends DetailedIntrinsicPlugProps<
-        HTMLMapElement,
-        ReactTypes.MapHTMLAttributes<HTMLMapElement>,
-        "map"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLMapElement, "map">,
+        ReactTypes.MapHTMLAttributes<HTMLMapElement> {}
+
     export interface Menu
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.MenuHTMLAttributes<HTMLElement>,
-        "menu"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLElement, "menu">,
+        ReactTypes.MenuHTMLAttributes<HTMLElement> {}
+
     export interface Meta
-      extends DetailedIntrinsicPlugProps<
-        HTMLMetaElement,
-        ReactTypes.MetaHTMLAttributes<HTMLMetaElement>,
-        "meta"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLMetaElement, "meta">,
+        ReactTypes.MetaHTMLAttributes<HTMLMetaElement> {}
+
     export interface Meter
-      extends DetailedIntrinsicPlugProps<
-        HTMLMeterElement,
-        ReactTypes.MeterHTMLAttributes<HTMLMeterElement>,
-        "meter"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLMeterElement, "meter">,
+        ReactTypes.MeterHTMLAttributes<HTMLMeterElement> {}
+
     export interface Object
-      extends DetailedIntrinsicPlugProps<
-        HTMLObjectElement,
-        ReactTypes.ObjectHTMLAttributes<HTMLObjectElement>,
-        "object"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLObjectElement, "object">,
+        ReactTypes.ObjectHTMLAttributes<HTMLObjectElement> {}
+
     export interface Ol
-      extends DetailedIntrinsicPlugProps<
-        HTMLOListElement,
-        ReactTypes.OlHTMLAttributes<HTMLOListElement>,
-        "ol"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLOListElement, "ol">,
+        ReactTypes.OlHTMLAttributes<HTMLOListElement> {}
+
     export interface Optgroup
-      extends DetailedIntrinsicPlugProps<
-        HTMLOptGroupElement,
-        ReactTypes.OptgroupHTMLAttributes<HTMLOptGroupElement>,
-        "optgroup"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLOptGroupElement, "optgroup">,
+        ReactTypes.OptgroupHTMLAttributes<HTMLOptGroupElement> {}
+
     export interface Option
-      extends DetailedIntrinsicPlugProps<
-        HTMLOptionElement,
-        ReactTypes.OptionHTMLAttributes<HTMLOptionElement>,
-        "option"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLOptionElement, "option">,
+        ReactTypes.OptionHTMLAttributes<HTMLOptionElement> {}
+
     export interface Output
-      extends DetailedIntrinsicPlugProps<
-        HTMLOutputElement,
-        ReactTypes.OutputHTMLAttributes<HTMLOutputElement>,
-        "output"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLOutputElement, "output">,
+        ReactTypes.OutputHTMLAttributes<HTMLOutputElement> {}
+
     export interface Param
-      extends DetailedIntrinsicPlugProps<
-        HTMLParamElement,
-        Omit<ReactTypes.ParamHTMLAttributes<HTMLParamElement>, "children">,
-        "param"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLParamElement, "param">,
+        ReactTypes.ParamHTMLAttributes<HTMLParamElement> {}
+
     export interface Progress
-      extends DetailedIntrinsicPlugProps<
-        HTMLProgressElement,
-        ReactTypes.ProgressHTMLAttributes<HTMLProgressElement>,
-        "progress"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLProgressElement, "progress">,
+        ReactTypes.ProgressHTMLAttributes<HTMLProgressElement> {}
+
     export interface Quote
-      extends DetailedIntrinsicPlugProps<
-        HTMLQuoteElement,
-        ReactTypes.QuoteHTMLAttributes<HTMLQuoteElement>,
-        "q"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLQuoteElement, "q">,
+        ReactTypes.QuoteHTMLAttributes<HTMLQuoteElement> {}
+
     export interface Slot
-      extends DetailedIntrinsicPlugProps<
-        HTMLSlotElement,
-        ReactTypes.SlotHTMLAttributes<HTMLSlotElement>,
-        "slot"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLSlotElement, "slot">,
+        ReactTypes.SlotHTMLAttributes<HTMLSlotElement> {}
+
     export interface Script
-      extends DetailedIntrinsicPlugProps<
-        HTMLScriptElement,
-        ReactTypes.ScriptHTMLAttributes<HTMLScriptElement>,
-        "script"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLScriptElement, "script">,
+        ReactTypes.ScriptHTMLAttributes<HTMLScriptElement> {}
+
     export interface Select
-      extends DetailedIntrinsicPlugProps<
-        HTMLSelectElement,
-        ReactTypes.SelectHTMLAttributes<HTMLSelectElement>,
-        "select"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLSelectElement, "select">,
+        ReactTypes.SelectHTMLAttributes<HTMLSelectElement> {}
+
     export interface Source
-      extends DetailedIntrinsicPlugProps<
-        HTMLSourceElement,
-        Omit<ReactTypes.SourceHTMLAttributes<HTMLSourceElement>, "children">,
-        "source"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLSourceElement, "source">,
+        ReactTypes.SourceHTMLAttributes<HTMLSourceElement> {}
+
     export interface Style
-      extends DetailedIntrinsicPlugProps<
-        HTMLStyleElement,
-        ReactTypes.StyleHTMLAttributes<HTMLStyleElement>,
-        "style"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLStyleElement, "style">,
+        ReactTypes.StyleHTMLAttributes<HTMLStyleElement> {}
+
     export interface Table
-      extends DetailedIntrinsicPlugProps<
-        HTMLTableElement,
-        ReactTypes.TableHTMLAttributes<HTMLTableElement>,
-        "table"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLTableElement, "table">,
+        ReactTypes.TableHTMLAttributes<HTMLTableElement> {}
+
     export interface Td
-      extends DetailedIntrinsicPlugProps<
-        HTMLTableDataCellElement,
-        ReactTypes.TdHTMLAttributes<HTMLTableDataCellElement>,
-        "td"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLTableDataCellElement, "td">,
+        ReactTypes.TdHTMLAttributes<HTMLTableDataCellElement> {}
+
     export interface Textarea
-      extends DetailedIntrinsicPlugProps<
-        HTMLTextAreaElement,
-        ReactTypes.TextareaHTMLAttributes<HTMLTextAreaElement>,
-        "textarea"
-      > {}
-    /** @public */
+      extends BaseIntrinsicPlugProps<HTMLTextAreaElement, "textarea">,
+        ReactTypes.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+
     export interface Th
-      extends DetailedIntrinsicPlugProps<
-        HTMLTableHeaderCellElement,
-        ReactTypes.ThHTMLAttributes<HTMLTableHeaderCellElement>,
-        "th"
-      > {}
+      extends BaseIntrinsicPlugProps<HTMLTableHeaderCellElement, "th">,
+        ReactTypes.ThHTMLAttributes<HTMLTableHeaderCellElement> {}
     /** @public */
     export interface Time
-      extends DetailedIntrinsicPlugProps<
-        HTMLTimeElement,
-        ReactTypes.TimeHTMLAttributes<HTMLTimeElement>,
-        "time"
-      > {}
+      extends BaseIntrinsicPlugProps<HTMLTimeElement, "time">,
+        ReactTypes.TimeHTMLAttributes<HTMLTimeElement> {}
     /** @public */
     export interface Track
-      extends DetailedIntrinsicPlugProps<
-        HTMLTrackElement,
-        Omit<ReactTypes.TrackHTMLAttributes<HTMLTrackElement>, "children">,
-        "track"
-      > {}
+      extends BaseIntrinsicPlugProps<HTMLTrackElement, "track">,
+        ReactTypes.TrackHTMLAttributes<HTMLTrackElement> {}
     /** @public */
     export interface Video
-      extends DetailedIntrinsicPlugProps<
-        HTMLVideoElement,
-        ReactTypes.VideoHTMLAttributes<HTMLVideoElement>,
-        "video"
-      > {}
+      extends BaseIntrinsicPlugProps<HTMLVideoElement, "video">,
+        ReactTypes.VideoHTMLAttributes<HTMLVideoElement> {}
     /** @public */
     export interface WebView
-      extends DetailedIntrinsicPlugProps<
-        HTMLWebViewElement,
-        ReactTypes.WebViewHTMLAttributes<HTMLWebViewElement>,
-        "webview"
-      > {}
+      extends BaseIntrinsicPlugProps<HTMLWebViewElement, "webview">,
+        ReactTypes.WebViewHTMLAttributes<HTMLWebViewElement> {}
 
-    export interface Abbr
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "abbr"
-      > {}
-    export interface Address
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "address"
-      > {}
-    export interface Article
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "article"
-      > {}
-    export interface Aside
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "aside"
-      > {}
-    export interface B
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "b"
-      > {}
-    export interface Bdi
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "bdi"
-      > {}
-    export interface Bdo
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "bdo"
-      > {}
-    export interface Big
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "big"
-      > {}
-    export interface Body
-      extends DetailedIntrinsicPlugProps<
-        HTMLBodyElement,
-        ReactTypes.HTMLAttributes<HTMLBodyElement>,
-        "body"
-      > {}
-    export interface Br
-      extends DetailedIntrinsicPlugProps<
-        HTMLBRElement,
-        ReactTypes.HTMLAttributes<HTMLBRElement>,
-        "br"
-      > {}
-    export interface Caption
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "caption"
-      > {}
-    export interface Center
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "center"
-      > {}
-    export interface Cite
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "cite"
-      > {}
-    export interface Code
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "code"
-      > {}
-    export interface Datalist
-      extends DetailedIntrinsicPlugProps<
-        HTMLDataListElement,
-        ReactTypes.HTMLAttributes<HTMLDataListElement>,
-        "datalist"
-      > {}
-    export interface Dd
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "dd"
-      > {}
-    export interface Dfn
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "dfn"
-      > {}
-    export interface Div
-      extends DetailedIntrinsicPlugProps<
-        HTMLDivElement,
-        ReactTypes.HTMLAttributes<HTMLDivElement>,
-        "div"
-      > {}
-    export interface Dl
-      extends DetailedIntrinsicPlugProps<
-        HTMLDListElement,
-        ReactTypes.HTMLAttributes<HTMLDListElement>,
-        "dl"
-      > {}
-    export interface Dt
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "dt"
-      > {}
-    export interface Em
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "em"
-      > {}
-    export interface Figcaption
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "figcaption"
-      > {}
-    export interface Figure
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "figure"
-      > {}
-    export interface Footer
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "footer"
-      > {}
-    export interface H1
-      extends DetailedIntrinsicPlugProps<
-        HTMLHeadingElement,
-        ReactTypes.HTMLAttributes<HTMLHeadingElement>,
-        "h1"
-      > {}
-    export interface H2
-      extends DetailedIntrinsicPlugProps<
-        HTMLHeadingElement,
-        ReactTypes.HTMLAttributes<HTMLHeadingElement>,
-        "h2"
-      > {}
-    export interface H3
-      extends DetailedIntrinsicPlugProps<
-        HTMLHeadingElement,
-        ReactTypes.HTMLAttributes<HTMLHeadingElement>,
-        "h3"
-      > {}
-    export interface H4
-      extends DetailedIntrinsicPlugProps<
-        HTMLHeadingElement,
-        ReactTypes.HTMLAttributes<HTMLHeadingElement>,
-        "h4"
-      > {}
-    export interface H5
-      extends DetailedIntrinsicPlugProps<
-        HTMLHeadingElement,
-        ReactTypes.HTMLAttributes<HTMLHeadingElement>,
-        "h5"
-      > {}
-    export interface H6
-      extends DetailedIntrinsicPlugProps<
-        HTMLHeadingElement,
-        ReactTypes.HTMLAttributes<HTMLHeadingElement>,
-        "h6"
-      > {}
-    export interface Head
-      extends DetailedIntrinsicPlugProps<
-        HTMLHeadElement,
-        ReactTypes.HTMLAttributes<HTMLHeadElement>,
-        "head"
-      > {}
-    export interface Header
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "header"
-      > {}
-    export interface Hgroup
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "hgroup"
-      > {}
-    export interface Hr
-      extends DetailedIntrinsicPlugProps<
-        HTMLHRElement,
-        ReactTypes.HTMLAttributes<HTMLHRElement>,
-        "hr"
-      > {}
-    export interface I
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "i"
-      > {}
-    export interface Kbd
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "kbd"
-      > {}
-    export interface Legend
-      extends DetailedIntrinsicPlugProps<
-        HTMLLegendElement,
-        ReactTypes.HTMLAttributes<HTMLLegendElement>,
-        "legend"
-      > {}
-    export interface Main
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "main"
-      > {}
-    export interface Mark
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "mark"
-      > {}
-    export interface Menuitem
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "menuitem"
-      > {}
-    export interface Nav
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "nav"
-      > {}
-    export interface Noindex
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "noindex"
-      > {}
-    export interface Noscript
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "noscript"
-      > {}
-    export interface P
-      extends DetailedIntrinsicPlugProps<
-        HTMLParagraphElement,
-        ReactTypes.HTMLAttributes<HTMLParagraphElement>,
-        "p"
-      > {}
-    export interface Picture
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "picture"
-      > {}
-    export interface Pre
-      extends DetailedIntrinsicPlugProps<
-        HTMLPreElement,
-        ReactTypes.HTMLAttributes<HTMLPreElement>,
-        "pre"
-      > {}
-    export interface Rp
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "rp"
-      > {}
-    export interface Rt
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "rt"
-      > {}
-    export interface Ruby
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "ruby"
-      > {}
-    export interface S
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "s"
-      > {}
-    export interface Samp
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "samp"
-      > {}
-    export interface Search
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "search"
-      > {}
-    export interface Section
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "section"
-      > {}
-    export interface Small
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "small"
-      > {}
-    export interface Span
-      extends DetailedIntrinsicPlugProps<
-        HTMLSpanElement,
-        ReactTypes.HTMLAttributes<HTMLSpanElement>,
-        "span"
-      > {}
-    export interface Strong
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "strong"
-      > {}
-    export interface Sub
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "sub"
-      > {}
-    export interface Summary
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "summary"
-      > {}
-    export interface Sup
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "sup"
-      > {}
-    export interface Template
-      extends DetailedIntrinsicPlugProps<
-        HTMLTemplateElement,
-        ReactTypes.HTMLAttributes<HTMLTemplateElement>,
-        "template"
-      > {}
-    export interface Tbody
-      extends DetailedIntrinsicPlugProps<
-        HTMLTableSectionElement,
-        ReactTypes.HTMLAttributes<HTMLTableSectionElement>,
-        "tbody"
-      > {}
-    export interface Tfoot
-      extends DetailedIntrinsicPlugProps<
-        HTMLTableSectionElement,
-        ReactTypes.HTMLAttributes<HTMLTableSectionElement>,
-        "tfoot"
-      > {}
-    export interface Thead
-      extends DetailedIntrinsicPlugProps<
-        HTMLTableSectionElement,
-        ReactTypes.HTMLAttributes<HTMLTableSectionElement>,
-        "thead"
-      > {}
-    export interface Title
-      extends DetailedIntrinsicPlugProps<
-        HTMLTitleElement,
-        ReactTypes.HTMLAttributes<HTMLTitleElement>,
-        "title"
-      > {}
-    export interface Tr
-      extends DetailedIntrinsicPlugProps<
-        HTMLTableRowElement,
-        ReactTypes.HTMLAttributes<HTMLTableRowElement>,
-        "tr"
-      > {}
-    export interface U
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "u"
-      > {}
-    export interface Ul
-      extends DetailedIntrinsicPlugProps<
-        HTMLUListElement,
-        ReactTypes.HTMLAttributes<HTMLUListElement>,
-        "ul"
-      > {}
-    export interface Var
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "var"
-      > {}
-    export interface Wbr
-      extends DetailedIntrinsicPlugProps<
-        HTMLElement,
-        ReactTypes.HTMLAttributes<HTMLElement>,
-        "wbr"
-      > {}
+    export interface Abbr extends HTML {
+      as: "abbr";
+    }
+    export interface Address extends HTML {
+      as: "address";
+    }
+    export interface Article extends HTML {
+      as: "article";
+    }
+    export interface Aside extends HTML {
+      as: "aside";
+    }
+    export interface B extends HTML {
+      as: "b";
+    }
+    export interface Bdi extends HTML {
+      as: "bdi";
+    }
+    export interface Bdo extends HTML {
+      as: "bdo";
+    }
+    export interface Big extends HTML {
+      as: "big";
+    }
+    export interface Body extends HTML<HTMLBodyElement> {
+      as: "body";
+    }
+    export interface Br extends HTML<HTMLBRElement> {
+      as: "br";
+    }
+    export interface Caption extends HTML {
+      as: "caption";
+    }
+    export interface Center extends HTML {
+      as: "center";
+    }
+    export interface Cite extends HTML {
+      as: "cite";
+    }
+    export interface Code extends HTML {
+      as: "code";
+    }
+    export interface Datalist extends HTML<HTMLDataListElement> {
+      as: "datalist";
+    }
+    export interface Dd extends HTML {
+      as: "dd";
+    }
+    export interface Dfn extends HTML {
+      as: "dfn";
+    }
+    export interface Div extends HTML<HTMLDivElement> {
+      as: "div";
+    }
+    export interface Dl extends HTML<HTMLDListElement> {
+      as: "dl";
+    }
+    export interface Dt extends HTML {
+      as: "dt";
+    }
+    export interface Em extends HTML {
+      as: "em";
+    }
+    export interface Figcaption extends HTML {
+      as: "figcaption";
+    }
+    export interface Figure extends HTML {
+      as: "figure";
+    }
+    export interface Footer extends HTML {
+      as: "footer";
+    }
+    export interface H1 extends HTML<HTMLHeadingElement> {
+      as: "h1";
+    }
+    export interface H2 extends HTML<HTMLHeadingElement> {
+      as: "h2";
+    }
+    export interface H3 extends HTML<HTMLHeadingElement> {
+      as: "h3";
+    }
+    export interface H4 extends HTML<HTMLHeadingElement> {
+      as: "h4";
+    }
+    export interface H5 extends HTML<HTMLHeadingElement> {
+      as: "h5";
+    }
+    export interface H6 extends HTML<HTMLHeadingElement> {
+      as: "h6";
+    }
+    export interface Head extends HTML<HTMLHeadElement> {
+      as: "head";
+    }
+    export interface Header extends HTML {
+      as: "header";
+    }
+    export interface Hgroup extends HTML {
+      as: "hgroup";
+    }
+    export interface Hr extends HTML<HTMLHRElement> {
+      as: "hr";
+    }
+    export interface I extends HTML {
+      as: "i";
+    }
+    export interface Kbd extends HTML {
+      as: "kbd";
+    }
+    export interface Legend extends HTML<HTMLLegendElement> {
+      as: "legend";
+    }
+    export interface Main extends HTML {
+      as: "main";
+    }
+    export interface Mark extends HTML {
+      as: "mark";
+    }
+    export interface Menuitem extends HTML {
+      as: "menuitem";
+    }
+    export interface Nav extends HTML {
+      as: "nav";
+    }
+    export interface Noindex extends HTML {
+      as: "noindex";
+    }
+    export interface Noscript extends HTML {
+      as: "noscript";
+    }
+    export interface P extends HTML<HTMLParagraphElement> {
+      as: "p";
+    }
+    export interface Picture extends HTML {
+      as: "picture";
+    }
+    export interface Pre extends HTML<HTMLPreElement> {
+      as: "pre";
+    }
+    export interface Rp extends HTML {
+      as: "rp";
+    }
+    export interface Rt extends HTML {
+      as: "rt";
+    }
+    export interface Ruby extends HTML {
+      as: "ruby";
+    }
+    export interface S extends HTML {
+      as: "s";
+    }
+    export interface Samp extends HTML {
+      as: "samp";
+    }
+    export interface Search extends HTML {
+      as: "search";
+    }
+    export interface Section extends HTML {
+      as: "section";
+    }
+    export interface Small extends HTML {
+      as: "small";
+    }
+    export interface Span extends HTML<HTMLSpanElement> {
+      as: "span";
+    }
+    export interface Strong extends HTML {
+      as: "strong";
+    }
+    export interface Sub extends HTML {
+      as: "sub";
+    }
+    export interface Summary extends HTML {
+      as: "summary";
+    }
+    export interface Sup extends HTML {
+      as: "sup";
+    }
+    export interface Template extends HTML<HTMLTemplateElement> {
+      as: "template";
+    }
+    export interface Tbody extends HTML<HTMLTableSectionElement> {
+      as: "tbody";
+    }
+    export interface Tfoot extends HTML<HTMLTableSectionElement> {
+      as: "tfoot";
+    }
+    export interface Thead extends HTML<HTMLTableSectionElement> {
+      as: "thead";
+    }
+    export interface Title extends HTML<HTMLTitleElement> {
+      as: "title";
+    }
+    export interface Tr extends HTML<HTMLTableRowElement> {
+      as: "tr";
+    }
+    export interface U extends HTML {
+      as: "u";
+    }
+    export interface Ul extends HTML<HTMLUListElement> {
+      as: "ul";
+    }
+    export interface Var extends HTML {
+      as: "var";
+    }
+    export interface Wbr extends HTML {
+      as: "wbr";
+    }
   }
 }
 
@@ -1140,36 +805,59 @@ export interface PlugPropsAdapter<
   (inputProps: InputProps): OutputProps;
 }
 
-export type DetailedIntrinsicPlugProps<
-  Element,
-  Attributes,
-  Type extends PlugPropsType
-> = DangerouslyRender<Type, Attributes & ReactTypes.RefAttributes<Element>> &
-  Attributes &
-  ReactTypes.RefAttributes<Element> &
-  ReactTypes.DataAttributes &
-  Required<PlugProps<Type>>;
+/**
+ * @public
+ *
+ * A function that is used to render the outlet.
+ * This function overrides the default rendering behavior of the outlet.
+ *
+ * > Similar to {@link React.RefCallback} and {@link React.EventHandler} dangerously render function
+ * uses a bivariance hack to allow for more flexible types.
+ *
+ * > Here's more {@link https://dev.to/codeoz/how-i-understand-covariance-contravariance-in-typescript-2766 | information on type variance}
+ */
+export type PlugRenderFunction<
+  E extends ReactTypes.JSX.Element = ReactTypes.JSX.Element
+> = {
+  bivarianceHack(element: E): ReactTypes.ReactNode;
+}["bivarianceHack"];
 
-export interface SVGPlugProps<E, T extends keyof PlugProps.Intrinsics>
-  extends DetailedIntrinsicPlugProps<E, ReactTypes.SVGAttributes<E>, T> {}
+interface DangerouslyRender<
+  E extends ReactTypes.JSX.Element = ReactTypes.JSX.Element
+> {
+  dangerouslyRender?: PlugRenderFunction<E>;
+}
+
+interface IntrinsicDangerouslyRender<
+  Type extends string,
+  E,
+  Attributes extends ReactTypes.HTMLAttributes<E>
+> extends DangerouslyRender<
+    ReactTypes.ReactElement<Attributes & ReactTypes.RefAttributes<E>, Type>
+  > {}
 
 /**
- * Internal plug props type that includes the children property.
- * This is used to ensure that the children property is present for the purpose of type checking.
- * It is used in two places:
- * 1. In the {@link plug.resolveShorthand} function to ensure that the children property is present when a shorthand plug is used.
- * 2. As the default generic type for all the {@link Plug} types to ensure that the children property is present while evaluating the default cases.
+ * Base interface that all intrinsic plug props extend.
  */
-export interface PlugPropsWithMetadata extends PlugProps {
+export interface BaseIntrinsicPlugProps<E, Type extends string>
+  extends ReactTypes.RefAttributes<E>,
+    ReactTypes.DataAttributes,
+    Required<PlugProps<Type>>,
+    IntrinsicDangerouslyRender<Type, E, ReactTypes.HTMLAttributes<E>> {}
+
+/**
+ * Used internally to infer the type of plug props with extra
+ * that are used internally properties.
+ */
+// TODO: find a better name
+export interface InferencePlugProps extends PlugProps {
   children?: unknown;
   dangerouslyRender?: unknown;
 }
-
-export interface DangerouslyRender<
-  Type extends ReactTypes.JSX.ElementType = ReactTypes.JSX.ElementType,
-  Props = {}
-> {
-  dangerouslyRender?: DangerouslyRenderFunction<
-    ReactTypes.ReactElement<Props, Type>
-  >;
+/**
+ * Used internally to infer the type of plug props that will be provided to the {@link outlet} method.
+ * It has to have a required `as` property and it may have a `dangerouslyRender` method
+ */
+export interface OutletExoticComponentPlugProps extends Required<PlugProps> {
+  dangerouslyRender?: unknown;
 }

@@ -1,30 +1,20 @@
 export type {
   Plug,
   Default,
-  LockedIn,
   PlugProps,
   PlugPropsType,
+  PlugRenderFunction,
   PlugPropsAdapter,
 } from "./types/plug.types";
 
-export type {
-  Outlet,
-  Unlocked,
-  OutletMetadata,
-  DangerouslyRenderFunction,
-} from "./types/outlet.types";
+export type { OutletExoticComponent } from "./types/outlet.types";
+
+export type { LockedIn, Unlocked } from "./types/helper.types";
 
 export * as plug from "./plug";
 
 export { outlet } from "./outlet";
 
-export { _$outletElementType, _$dangerouslyRender } from "./constants";
+export { _$outletElementType, _$unplugged } from "./constants";
 
-export {
-  isPlug,
-  isOutlet,
-  isShorthand,
-  isPlugProps,
-  isUnplugged,
-  _isDangerouslyRenderFunction,
-} from "./guards";
+export { isShorthand, isPlugProps, isUnplugged } from "./guards";

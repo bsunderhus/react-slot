@@ -2,7 +2,6 @@
   "extends": ["config/tsconfig.node.json", "config/tsconfig.paths.json"],
   "compilerOptions": {
     "outDir": "dist-tsc",
-    "composite": true,
     "jsx": "preserve",
     "verbatimModuleSyntax": false
   },

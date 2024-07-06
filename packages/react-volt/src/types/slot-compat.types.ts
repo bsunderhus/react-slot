@@ -1,8 +1,4 @@
-import type {
-  DangerouslyRender,
-  PlugProps as BasePlugProps,
-  PlugPropsType,
-} from "./plug.types";
+import type { PlugProps as BasePlugProps, PlugPropsType } from "./plug.types";
 import type * as ReactTypes from "./react.types";
 
 /**
@@ -1025,10 +1021,11 @@ type DetailedIntrinsicSlotProps<
   Element,
   Attributes,
   Type extends PlugPropsType
-> = DangerouslyRender<Type, Attributes & ReactTypes.RefAttributes<Element>> &
+> =
+  // DangerouslyRender<Type, Attributes & ReactTypes.RefAttributes<Element>> &
   WithSlotRenderFunction<Attributes & ReactTypes.RefAttributes<Element>> &
-  ReactTypes.DataAttributes &
-  Required<BasePlugProps<Type>>;
+    ReactTypes.DataAttributes &
+    Required<BasePlugProps<Type>>;
 
 interface SVGSlotProps<E, T extends keyof ReactTypes.JSX.IntrinsicElements>
   extends DetailedIntrinsicSlotProps<E, ReactTypes.SVGAttributes<E>, T> {}

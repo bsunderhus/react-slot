@@ -28,6 +28,33 @@ export namespace JSX {
   export type IntrinsicElements = React.JSX.IntrinsicElements;
 }
 
+export interface AreaHTMLAttributes<E>
+  extends Omit<React.AreaHTMLAttributes<E>, "children"> {}
+
+export interface ColHTMLAttributes<E>
+  extends Omit<React.ColHTMLAttributes<E>, "children"> {}
+
+export interface EmbedHTMLAttributes<E>
+  extends Omit<React.EmbedHTMLAttributes<E>, "children"> {}
+
+export interface ImgHTMLAttributes<E>
+  extends Omit<React.ImgHTMLAttributes<E>, "children"> {}
+
+export interface InputHTMLAttributes<E>
+  extends Omit<React.InputHTMLAttributes<E>, "children"> {}
+
+export interface LinkHTMLAttributes<E>
+  extends Omit<React.LinkHTMLAttributes<E>, "children"> {}
+
+export interface ParamHTMLAttributes<E>
+  extends Omit<React.ParamHTMLAttributes<E>, "children"> {}
+
+export interface SourceHTMLAttributes<E>
+  extends Omit<React.SourceHTMLAttributes<E>, "children"> {}
+
+export interface TrackHTMLAttributes<E>
+  extends Omit<React.TrackHTMLAttributes<E>, "children"> {}
+
 export type {
   NamedExoticComponent,
   ReactNode,
@@ -55,6 +82,7 @@ export type {
   AnimationEvent,
   TransitionEvent,
   EventHandler,
+  AllHTMLAttributes,
   HTMLAttributes,
   AnchorHTMLAttributes,
   AudioHTMLAttributes,
@@ -97,15 +125,7 @@ export type {
   TimeHTMLAttributes,
   VideoHTMLAttributes,
   WebViewHTMLAttributes,
-  AreaHTMLAttributes,
-  ColHTMLAttributes,
-  EmbedHTMLAttributes,
-  ImgHTMLAttributes,
-  InputHTMLAttributes,
-  ParamHTMLAttributes,
-  SourceHTMLAttributes,
-  TrackHTMLAttributes,
-  LinkHTMLAttributes,
   RefAttributes,
   SVGAttributes,
+  ChangeEventHandler,
 } from "react";

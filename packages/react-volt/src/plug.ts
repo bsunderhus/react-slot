@@ -1,19 +1,16 @@
 import { forwardRef } from "react";
 import type * as ReactTypes from "./types/react.types";
-import { _$dangerouslyRender, _$unplugged } from "./constants";
-import {
-  isShorthand,
-  isPlugProps,
-  isUnplugged,
-  _isDangerouslyRenderFunction,
-} from "./guards";
+import { _$unplugged } from "./constants";
+import { isShorthand, isPlugProps, isUnplugged } from "./guards";
 import type {
+  InferencePlugProps,
   PickDefault,
   Plug,
   PlugProps,
   PlugPropsAdapter,
-  PlugPropsWithMetadata,
 } from "./types/plug.types";
+import type { ObjectDataType, Unlocked } from "./types/helper.types";
+import type { ExtendedPlug } from "./types/plug-extend.types";
 
 /**
  * @public
@@ -29,18 +26,20 @@ import type {
  *
  * > **Note:** _In the context of electrical systems a plug adapter is a device that allows a plug to connect to a outlet that has a different shape or configuration._
  */
-export function adapt<A extends Plug>(input: A): A;
+export function adapt<A extends Plug>(
+  input: A
+): Extract<A, PlugProps | Plug.Unplugged>;
 /** @public */
 export function adapt<A extends Plug, B extends PlugProps>(
   input: A,
   adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>
-): B | Exclude<A, PlugProps>;
+): B | Extract<A, Plug.Unplugged>;
 /** @public */
 export function adapt<A extends Plug, B extends PlugProps, C extends PlugProps>(
   input: A,
   adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
   adapterBC: PlugPropsAdapter<B, C>
-): C | Exclude<A, PlugProps>;
+): C | Extract<A, Plug.Unplugged>;
 /** @public */
 export function adapt<
   A extends Plug,
@@ -52,7 +51,7 @@ export function adapt<
   adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
   adapterBC: PlugPropsAdapter<B, C>,
   adapterCD: PlugPropsAdapter<C, D>
-): D | Exclude<A, PlugProps>;
+): D | Extract<A, Plug.Unplugged>;
 /** @public */
 export function adapt<
   A extends Plug,
@@ -66,44 +65,16 @@ export function adapt<
   adapterBC: PlugPropsAdapter<B, C>,
   adapterCD: PlugPropsAdapter<C, D>,
   adapterDE: PlugPropsAdapter<D, E>
-): E | Exclude<A, PlugProps>;
-/** @public */
-export function adapt<
-  A extends Plug,
-  B extends PlugProps,
-  C extends PlugProps,
-  D extends PlugProps,
-  E extends PlugProps,
-  F extends PlugProps
->(
-  input: A,
-  adapterAB: PlugPropsAdapter<Extract<A, PlugProps>, B>,
-  adapterBC: PlugPropsAdapter<B, C>,
-  adapterCD: PlugPropsAdapter<C, D>,
-  adapterDE: PlugPropsAdapter<D, E>,
-  adapterEF: PlugPropsAdapter<E, F>
-): F | Exclude<A, PlugProps>;
+): E | Extract<A, Plug.Unplugged>;
 export function adapt(
   inputPlug: Plug,
   ...adapters: PlugPropsAdapter<PlugProps, PlugProps>[]
-): PlugProps | Exclude<Plug, PlugProps> {
-  return isPlugProps<Extract<Plug, PlugProps>>(inputPlug)
-    ? adapters.reduce<PlugProps>(
-        (acc, adapter) => adapter(_assignDangerouslyRenderFunction(acc)),
-        inputPlug
-      )
-    : inputPlug;
+): Unlocked<PlugProps> {
+  if (isUnplugged(inputPlug)) return inputPlug;
+  const inputProps = resolveShorthand(inputPlug);
+  return adapters.reduce<PlugProps>((acc, adapter) => adapter(acc), inputProps);
 }
-/**
- * @public
- *
- * Resolves a shorthand plug to plug properties.
- *
- * @param plug - The plug that will have its shorthand resolved.
- */
-export function resolveShorthand<Props extends PlugProps>(
-  plug: Props | Plug.Shorthand
-): Props;
+
 /**
  * @public
  *
@@ -111,15 +82,34 @@ export function resolveShorthand<Props extends PlugProps>(
  *
  * @param plug - The plug that will have its shorthand resolved.
  */
-export function resolveShorthand<Props extends PlugProps>(
-  plug: Props | Plug.Shorthand | Plug.Unplugged
-): Props | Plug.Unplugged;
-export function resolveShorthand(plug: Plug): Exclude<Plug, Plug.Shorthand> {
+export function resolveShorthand<Props extends PlugProps | Plug.Unplugged>(
+  plug: Props | Plug.Shorthand
+): Props {
   if (isUnplugged(plug)) return plug;
-  if (isPlugProps(plug)) return _assignDangerouslyRenderFunction({ ...plug });
-  if (isShorthand(plug)) return { children: plug };
+  if (isPlugProps(plug)) return plug;
+  if (isShorthand(plug)) {
+    const props: InferencePlugProps = { children: plug };
+    /**
+     * TSError:
+     * Type 'PlugPropsDangerouslyRenderChildren' is not assignable to type 'Props'.
+     * 'PlugPropsDangerouslyRenderChildren' is assignable to the constraint of type 'Props',
+     * but 'Props' could be instantiated with a different subtype of constraint
+     * 'PlugProps<ElementType> | null'.ts(2322)
+     *
+     * Why casting here:
+     * Props may have additional required properties that are not present in `{children: plug}`
+     * (hence: 'Props' could be instantiated with a different subtype of constraint)
+     * but, by definition of {@link Plug.Shorthand}: if the value is a shorthand,
+     * then 'children' is the only required property
+     * (this is enforced by {@link Plug.Shorthand} signature, if any other property is required the type will return never)
+     *
+     * The only way this code is reached, if types were respected, is if
+     * `{children: plug}` is a valid value for Props
+     */
+    return props as Exclude<Props, Plug.Unplugged>;
+  }
   throw new TypeError(/** #__DE-INDENT__ */ `
-    [react-volt - plug.resolveShorthand(plugValue)]:
+    [plug.resolveShorthand(plugValue)]:
     A plug got an invalid value "${String(plug)}" (${typeof plug}).
     A valid value for a plug is a React node, plug properties or 'plug.unplugged()'.
   `);
@@ -128,36 +118,30 @@ export function resolveShorthand(plug: Plug): Exclude<Plug, Plug.Shorthand> {
 /**
  * @public
  *
- * Merges multiple plugs into a single plug.
- * If a plug is unplugged, it will short-circuit and return the unplugged plug.
+ * A method used to combine multiple plugs into a single plug.
+ * As it uses {@link resolveShorthand} internally,
+ * this method will also resolve shorthand plugs.
  *
- * Useful to define default props or overrides for a plug.
+ * This method is useful to provide to a plug default properties and override values.
+ * It is similar to how the {@link Object.assign} method works, but for plugs.
+ *
+ * > **Note:** _In the context of electrical systems a plug extender is a device that allows multiple plugs to converge into a single one._
  */
-export function merge<P extends Plug>(...plugs: P[]): P {
-  const resolvedPlug = {} as Extract<P, PlugProps>;
+export function extend<const Plugs extends (Plug | ObjectDataType)[]>(
+  ...plugs: [...Plugs]
+): ExtendedPlug<Plugs>;
+export function extend(...plugs: PlugProps[]): Plug {
+  // short-circuit if there are no plugs
+  if (plugs.length === 0) return _$unplugged;
+  // short-circuit if there is only one plug (in this case we avoid creating one more object)
+  if (plugs.length === 1) return resolveShorthand(plugs[0]);
+  const resolvedPlug: PlugProps = {};
   for (const plug of plugs) {
     // short-circuit if the plug is unplugged
     if (isUnplugged(plug)) return plug;
     Object.assign(resolvedPlug, resolveShorthand(plug));
   }
   return resolvedPlug;
-}
-
-/**
- * @internal
- *
- * Assigns the `dangerouslyRender` property to the plug props if the children is a function.
- * This method ensures compatibility between children render function and the `dangerouslyRender` method.
- */
-// TODO: remove this once/if `children` stops supporting render functions.
-export function _assignDangerouslyRenderFunction<
-  Props extends PlugPropsWithMetadata
->(plugProps: Props): Props {
-  if (_isDangerouslyRenderFunction(plugProps.children)) {
-    plugProps.dangerouslyRender = plugProps.children;
-    delete plugProps.children;
-  }
-  return plugProps;
 }
 
 /**
@@ -182,7 +166,7 @@ export function unplugged(): Plug.Unplugged {
  * > **Note:** _In the context of electrical systems a plug that is connected to an outlet is considered plugged in._
  */
 export function pluggedIn<P extends Plug | undefined>(
-  defaultProps: PickDefault<Extract<NonNullable<P>, PlugProps>>
+  defaultProps: PickDefault<Extract<NonNullable<P>, InferencePlugProps>>
 ): NonNullable<P> {
   return defaultProps;
 }

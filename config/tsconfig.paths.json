@@ -2,7 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "react-volt": ["../packages/react-volt/src/index.ts"]
+      "react-volt": ["../packages/react-volt/src/index.ts"],
+      "react-volt/test": ["../packages/react-volt/src/test/index.ts"]
     }
   }
 }
