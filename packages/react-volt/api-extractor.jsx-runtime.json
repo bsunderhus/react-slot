@@ -2,9 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
   "projectFolder": ".",
   "extends": "config/api-extractor.base.json",
-  "mainEntryPointFilePath": "<projectFolder>/dist-tsc/test/index.d.ts",
+  "bundledPackages": ["react/jsx-runtime"],
+  "mainEntryPointFilePath": "<projectFolder>/dist-tsc/jsx/jsx-runtime.d.ts",
   "dtsRollup": {
     "enabled": true,
-    "untrimmedFilePath": "<projectFolder>/dist/test.d.ts"
+    "untrimmedFilePath": "<projectFolder>/dist/jsx-runtime.d.ts"
   }
 }

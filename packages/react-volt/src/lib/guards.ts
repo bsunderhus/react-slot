@@ -2,6 +2,20 @@ import { isValidElement } from "react";
 import { _$outletElementType, _$unplugged } from "./constants";
 import type { OutletExoticComponent } from "./types/outlet.types";
 import type { PlugProps, Plug } from "./types/plug.types";
+import type * as ReactTypes from "./types/react.types";
+
+/**
+ * @internal
+ */
+export function _isOutletExoticComponent(
+  value: ReactTypes.JSX.ElementType
+): value is OutletExoticComponent {
+  return (
+    typeof value !== "string" &&
+    "$$typeof" in value &&
+    value.$$typeof === _$outletElementType
+  );
+}
 
 /**
  * @public

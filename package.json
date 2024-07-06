@@ -3,9 +3,6 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "build:types": "turbo build:types",
-    "build:api": "turbo build:api",
-    "prepack": "turbo prepack",
     "clean": "turbo clean"
   },
   "devDependencies": {

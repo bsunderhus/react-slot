@@ -5,8 +5,8 @@
   },
   "include": [],
   "references": [
-    { "path": "./tsconfig.node.json" },
-    { "path": "./tsconfig.src.json" },
-    { "path": "./tsconfig.vitest.json" }
+    { "path": "./src/lib/tsconfig.json" },
+    { "path": "./src/jsx/tsconfig.json" },
+    { "path": "./src/test/tsconfig.json" }
   ]
 }

@@ -2,8 +2,18 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "react-volt": ["../packages/react-volt/src/index.ts"],
-      "react-volt/test": ["../packages/react-volt/src/test/index.ts"]
+      "react-volt": ["../packages/react-volt/src/lib/index.ts"],
+      "react-volt/test": ["../packages/react-volt/src/test/index.ts"],
+      "react-volt/untrimmed": ["../packages/react-volt/src/lib/index.ts"],
+      "react-volt/jsx-runtime": [
+        "../packages/react-volt/src/jsx/jsx-runtime.ts"
+      ],
+      "react-volt/jsx-dev-runtime": [
+        "../packages/react-volt/src/jsx/jsx-dev-runtime.ts"
+      ],
+      "react-distributive-types": [
+        "../packages/react-distributive-types/src/distributive-types.ts"
+      ]
     }
   }
 }

@@ -15,6 +15,10 @@ export interface ExoticComponent<P> extends FunctionComponent<P> {
 /** @public */
 export type FC<P> = FunctionComponent<P>;
 
+export interface ClassComponent<P> {
+  new (props: P): any;
+}
+
 /** @public */
 export interface DataAttributes {
   // TODO: investigate better alternatives
@@ -23,7 +27,10 @@ export interface DataAttributes {
 }
 
 export namespace JSX {
-  export type ElementType = string | FunctionComponent<any>;
+  export type ElementType =
+    | string
+    | FunctionComponent<any>
+    | ClassComponent<any>;
   export type Element = React.JSX.Element;
   export type IntrinsicElements = React.JSX.IntrinsicElements;
 }
@@ -65,22 +72,6 @@ export type {
   RefObject,
   RefCallback,
   Ref,
-  SyntheticEvent,
-  ClipboardEvent,
-  CompositionEvent,
-  DragEvent,
-  FocusEvent,
-  FormEvent,
-  ChangeEvent,
-  KeyboardEvent,
-  MouseEvent,
-  TouchEvent,
-  PointerEvent,
-  UIEvent,
-  InvalidEvent,
-  WheelEvent,
-  AnimationEvent,
-  TransitionEvent,
   EventHandler,
   AllHTMLAttributes,
   HTMLAttributes,
@@ -128,4 +119,5 @@ export type {
   RefAttributes,
   SVGAttributes,
   ChangeEventHandler,
+  Key,
 } from "react";

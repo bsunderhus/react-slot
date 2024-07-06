@@ -858,6 +858,7 @@ export interface InferencePlugProps extends PlugProps {
  * Used internally to infer the type of plug props that will be provided to the {@link outlet} method.
  * It has to have a required `as` property and it may have a `dangerouslyRender` method
  */
-export interface OutletExoticComponentPlugProps extends Required<PlugProps> {
-  dangerouslyRender?: unknown;
+export interface OutletExoticComponentPlugProps extends InferencePlugProps {
+  as: PlugPropsType;
+  dangerouslyRender?: PlugRenderFunction;
 }

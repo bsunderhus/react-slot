@@ -2,9 +2,37 @@
 
 import { defineConfig } from "vite";
 import swc from "@rollup/plugin-swc";
-import * as pkgJSON from "./package.json";
 
 export default defineConfig({
+  build: {
+    lib: {
+      entry: {
+        index: "./src/lib/index.ts",
+        test: "./src/test/index.ts",
+        "jsx-runtime": "./src/jsx/jsx-runtime.ts",
+        "jsx-dev-runtime": "./src/jsx/jsx-dev-runtime.ts",
+      },
+      formats: ["es"],
+    },
+    rollupOptions: {
+      output: {
+        chunkFileNames: "chunks/[name]-[hash].js",
+      },
+      external: [
+        "react",
+        "react-dom",
+        "react-is",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+      ],
+    },
+    minify: false,
+  },
+  resolve: {
+    alias: {
+      "react-volt": "./src/lib/index.ts",
+    },
+  },
   plugins: [
     swc({
       swc: {
@@ -24,28 +52,10 @@ export default defineConfig({
       },
     }),
   ],
-  build: {
-    lib: {
-      entry: {
-        index: "./src/index.ts",
-        test: "./src/test/index.ts",
-      },
-      formats: ["es"],
-    },
-    rollupOptions: {
-      external: Object.keys(pkgJSON.peerDependencies),
-    },
-    minify: false,
-  },
-  resolve: {
-    alias: {
-      "react-volt": "./src/index.ts",
-    },
-  },
   test: {
     typecheck: {
       enabled: true,
-      tsconfig: "./tsconfig.test.json",
+      tsconfig: "./tsconfig.vitest.json",
     },
   },
 });

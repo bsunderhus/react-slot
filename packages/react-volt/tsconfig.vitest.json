@@ -1,13 +1,13 @@
 {
   "extends": "config/tsconfig.node.json",
   "compilerOptions": {
-    "outDir": "dist-tsc",
+    "outDir": "../dist-tsc",
     "composite": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "verbatimModuleSyntax": false,
     "baseUrl": ".",
     "paths": {
-      "react-volt": ["./src/index.ts"]
+      "react-volt": ["./src/lib/index.ts"]
     }
   },
   "include": [
@@ -16,5 +16,9 @@
     "src/**/*.test-d.ts",
     "src/**/*.test-d.tsx"
   ],
-  "references": [{ "path": "./tsconfig.lib.json" }]
+  "references": [
+    { "path": "./src/lib/tsconfig.json" },
+    { "path": "./src/jsx/tsconfig.json" },
+    { "path": "./src/test/tsconfig.json" }
+  ]
 }

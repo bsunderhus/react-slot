@@ -1,0 +1,88 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build:types:lib": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "src/lib/**/*.ts",
+        "src/lib/**/*.tsx",
+        "src/lib/tsconfig.json",
+        "!*.test.ts",
+        "!*.test.tsx"
+      ],
+      "outputs": ["dist-tsc/lib/**"]
+    },
+    "build:types:test": {
+      "dependsOn": ["^build", "build:types:lib"],
+      "inputs": [
+        "src/test/**/*.ts",
+        "src/test/**/*.tsx",
+        "src/test/tsconfig.json",
+        "!*.test.ts",
+        "!*.test.tsx"
+      ],
+      "outputs": ["dist-tsc/test/**"]
+    },
+    "build:types:jsx": {
+      "dependsOn": ["^build", "build:types:lib"],
+      "inputs": [
+        "src/jsx/**/*.ts",
+        "src/jsx/**/*.tsx",
+        "src/jsx/tsconfig.json",
+        "!*.test.ts",
+        "!*.test.tsx"
+      ],
+      "outputs": ["dist-tsc/jsx/**"]
+    },
+    "build:api:lib": {
+      "dependsOn": ["build:types:lib"],
+      "inputs": ["api-extractor.json"],
+      "outputs": ["dist/index.d.ts", "dist/index.untrimmed.d.ts"]
+    },
+    "build:api:test": {
+      "dependsOn": ["build:types:test"],
+      "inputs": ["api-extractor.test.json"],
+      "outputs": ["dist/test.d.ts"]
+    },
+    "build:api:jsx-runtime": {
+      "dependsOn": ["build:types:jsx"],
+      "inputs": ["api-extractor.jsx-runtime.json"],
+      "outputs": ["dist/jsx-runtime.d.ts"]
+    },
+    "build:api:jsx-dev-runtime": {
+      "dependsOn": ["build:types:jsx"],
+      "inputs": ["api-extractor.jsx-dev-runtime.json"],
+      "outputs": ["dist/jsx-dev-runtime.d.ts"]
+    },
+    "build:api:jsx": {
+      "dependsOn": ["build:api:jsx-runtime", "build:api:jsx-dev-runtime"]
+    },
+    "build:types": {
+      "dependsOn": [
+        "^build",
+        "build:types:lib",
+        "build:types:test",
+        "build:types:jsx"
+      ]
+    },
+    "build:api": {
+      "dependsOn": ["build:api:lib", "build:api:test", "build:api:jsx"]
+    },
+    "build:src": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "vite.config.ts",
+        "!src/**/*.types.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.test.tsx"
+      ],
+      "outputs": ["dist/**/*.js"]
+    },
+    "build": {
+      "dependsOn": ["^build", "build:src", "build:api"]
+    }
+  }
+}

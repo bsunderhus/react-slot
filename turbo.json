@@ -1,47 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": [
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "vite.config.ts",
-        "Cargo.toml",
-        "!src/**/*.types.ts",
-        "!src/**/*.test.ts",
-        "!src/**/*.test.tsx"
-      ],
-      "outputs": ["dist/**/*.js", "dist/**/*.cjs"]
-    },
-    "build:types": {
-      "dependsOn": ["^build:types"],
-      "inputs": [
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "tsconfig.json",
-        "tsconfig.*.json",
-        "!src/**/*.test.ts",
-        "!src/**/*.test.tsx"
-      ],
-      "outputs": ["dist-tsc/**"]
-    },
-    "build:api": {
-      "dependsOn": ["^build:api", "build:types"],
-      "inputs": [
-        "dist-tsc/**/*.d.ts",
-        "dist-tsc/**/*.d.ts.map",
-        "api-extractor.json",
-        "api-extractor.*.json"
-      ],
-      "outputs": ["dist/**/*.d.ts"]
-    },
-    "prepack": {
-      "dependsOn": ["build", "build:api"],
-      "outputs": ["*.wasm"]
-    },
-    "clean": {
-      "cache": false
-    }
+    "build": { "dependsOn": ["^build"] },
+    "clean": { "cache": false }
   }
 }

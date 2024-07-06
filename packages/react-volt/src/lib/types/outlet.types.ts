@@ -1,10 +1,6 @@
 import type * as ReactTypes from "./react.types";
 import type { _$outletElementType } from "../constants";
-import type {
-  PlugProps,
-  PlugPropsType,
-  OutletExoticComponentPlugProps,
-} from "./plug.types";
+import type { OutletExoticComponentPlugProps, PlugProps } from "./plug.types";
 
 interface OutletExoticComponentProps {
   children?: ReactTypes.ReactNode;
@@ -19,9 +15,7 @@ interface OutletExoticComponentProps {
  * > **Note:** _In the context of electrical systems an outlet is what allows a plug to connect to the system. It is the receiving end of the connection, while the plug is the sending end._
  */
 export interface OutletExoticComponent<
-  Props extends OutletExoticComponentPlugProps = Required<
-    PlugProps<PlugPropsType>
-  >
+  Props extends Required<PlugProps> = OutletExoticComponentPlugProps
 > extends ReactTypes.ExoticComponent<OutletExoticComponentProps> {
   /**
    * @internal

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vitest run",
-    "build:types": "tsc -b tsconfig.lib.json",
+    "build": "tsc -b tsconfig.lib.json",
     "clean": "rimraf dist",
     "test": "vitest run"
   },

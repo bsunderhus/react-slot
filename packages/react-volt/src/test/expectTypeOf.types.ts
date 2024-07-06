@@ -1,4 +1,4 @@
-import type { IsNever } from "../types/helper.types";
+import type { IsNever } from "../lib/types/helper.types";
 import type { Stringify } from "./stringify.types";
 
 /** @public */

@@ -1,4 +1,4 @@
-import type { FunctionDataType, IsNever } from "../types/helper.types";
+import type { FunctionDataType, IsNever } from "../lib/types/helper.types";
 
 /**
  * ⚠️ **DANGEROUS TYPE, AVOID USING IT, DO NOT EXPORT**
